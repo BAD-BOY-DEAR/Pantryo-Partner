@@ -7,12 +7,14 @@
 6. #5E3360
 
 ======== Font Used ========
+
 1. OpenSans-Regular
 2. OpenSans-Medium
 3. OpenSans-SemiBold
 4. OpenSans-Bold
 5. OpenSans-ExtraBold
 6. FredokaOne-Regular
+
 ================================
 
 ======== Libraries Used ========
@@ -22,9 +24,11 @@
 4. React Native CheckBox
 5. React Native Animatable
 6. React Native Dropdown Picker
+
 ================================
 
-======================== Screens List & Documentation ========================
+=========== Screens List & Documentation ===========
+
 1. SplashScreen - Splash Screen will be active for only 3 Seconds    
 
 2. Login Screen -
@@ -84,6 +88,7 @@
         the complete details of the order placed by the customer 
     
     ================ OrderDetails Screen ================
+    
     1. Show Customer Name
     2. Show Items Ordered by the customer
     3. Show the Quantity
@@ -119,16 +124,18 @@
     product
     5) If User clicks on the disables the toggle switch (In Stock) then the Stock should show as 'Out Of Stock' to the customer
     6) By default the toggle switch will be enabled
-    4) Add Products  Button -       
-        ================ Create Category ================
-        b) The user will first have to create the category of the products for eg: (Frozen Foods, Vegetables etc)
-        c) If user Clicks on the + Icon in the 'CreateCategory' screen, the field should automatically
+    7) Add Products  Button -       
+        
+        ============ Create Category ============
+        a) The user will first have to create the category of the products for eg: (Frozen Foods, Vegetables etc)
+        b) If user Clicks on the + Icon in the 'CreateCategory' screen, the field should automatically
         add below 
-        d) User is also to be given the option to " - " Delete the category on this screen
-        e) Once clicked on CREATE take user to the 'AddProduct' screen
-        f) If the user has already created a category then he can choose to skip        
+        c) User is also to be given the option to " - " Delete the category on this screen
+        d) Once clicked on CREATE take user to the 'AddProduct' screen
+        e) If the user has already created a category then he can choose to skip        
 
-        ================ Add Product ================
+        ============ Add Product ============
+        
         a) User can only upload 4 Images
         b) In the Product Category dropdown, those categories have to be shown which have 
         been added by the user at 'CreateCategory' Screen
