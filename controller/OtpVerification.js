@@ -60,7 +60,7 @@ const OtpVerification = ({navigation}) => {
             </View>
           </View>
           <Pressable
-            onPress={() => navigation.navigate('Navigation')}
+            onPress={() => navigation.navigate('RegistrationForm')}
             style={styles.btn}>
             <Text style={styles.btnTxt}>SUBMIT</Text>
           </Pressable>

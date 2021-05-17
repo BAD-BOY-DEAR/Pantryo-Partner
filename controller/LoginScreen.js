@@ -17,6 +17,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 // ===== Screens ===== //
 import VerificationScreen from './OtpVerification';
 import Navigation from './Navigation';
+import  RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
 
 const LoginScreen = ({navigation}) => {
   return (
@@ -67,6 +68,7 @@ function Login() {
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="VerificationScreen" component={VerificationScreen} />
+      <Stack.Screen name="RegistrationForm" component={RegistrationForm} />
       <Stack.Screen name="Navigation" component={Navigation} />
     </Stack.Navigator>
   );

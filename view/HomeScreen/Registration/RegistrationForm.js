@@ -13,11 +13,13 @@ import {
 import Icons from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
 import DropDownPicker from 'react-native-dropdown-picker';
+///========Screen Loader==========///
+import LoaderScreen from '../../../controller/LoaderScreen';
 
 const RegisterScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
-
+  const [isLoading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(null);
   const [items, setItems] = React.useState([
@@ -27,6 +29,7 @@ const RegisterScreen = ({navigation}) => {
 
   return (
     <>
+      {isLoading === true ? <LoaderScreen /> : null}
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           <Text style={styles.screenDescription}>
@@ -198,6 +201,7 @@ const RegisterScreen = ({navigation}) => {
             style={styles.btn}>
             <Text style={styles.btnTxt}>CONTINUE</Text>
           </Pressable>
+     
         </View>
       </ScrollView>
 
