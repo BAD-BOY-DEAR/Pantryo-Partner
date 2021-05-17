@@ -4,7 +4,7 @@ import {View, Text} from 'react-native';
 const TermsConditions = () => {
   return (
     <View>
-      <Text>TermsConditions</Text>
+      <Text>Terms & Conditions</Text>
     </View>
   );
 };
