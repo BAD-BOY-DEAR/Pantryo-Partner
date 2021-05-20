@@ -1,0 +1,29 @@
+1. Login ==>
+    a) User will login to the panel through mobile number and OTP verification
+    b) If user number is not assigned as admin or the mobile number does not exist, 
+    show Bootstrap alert === "This mobile number is not registered in our system"
+    c) Once user is signed in, he should not have to login again and again. Hold the user
+    in session unless he clicks on the logout button
+
+2) Home Page
+    ============ Dashboard ============    
+    a) Orders - Show total closed orders till date
+    b) Ongoing - Show orders that are open and not yet delivered    
+    c) Closed Orders - Show count of all the orders whose status have been marked as Delivered
+
+    ============ Navigation ============    
+    1) Home
+    2) New & Existing Users
+        1) Pantryo Partners            
+        2) Pantryo Riders        
+        3) Pantryo Customers
+        4) Pantryo Users
+    3) Orders
+        a) New Orders
+        b) Check Order Status 
+        c) Refunds
+    4) Logout
+
+
+
+
