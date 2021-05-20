@@ -60,7 +60,8 @@ const UploadDocs = ({navigation}) => {
 
         <Pressable
           style={styles.btn}
-          onPress={() => navigation.navigate('PostUploadStatus')}>
+          onPress={() => navigation.navigate('PostUploadStatus')}
+          >
           <Text style={styles.btnTxt}>SUBMIT</Text>
         </Pressable>
       </View>

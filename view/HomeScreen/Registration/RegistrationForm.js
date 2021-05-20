@@ -7,16 +7,23 @@ import {
   Pressable,
   Modal,
   TextInput,
+  PermissionsAndroid,
+  Image,
+  Alert,
 } from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
 import DropDownPicker from 'react-native-dropdown-picker';
+import * as ImagePicker from 'react-native-image-picker';
+import {RNCamera} from 'react-native-camera';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 ///========Screen Loader==========///
 import LoaderScreen from '../../../controller/LoaderScreen';
+import {event, onChange} from 'react-native-reanimated';
 
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
@@ -26,6 +33,154 @@ const RegisterScreen = ({navigation}) => {
     {label: 'Yes', value: 'Yes'},
     {label: 'No', value: 'No'},
   ]);
+  const [storeImage, setStoreImage] = React.useState('');
+  const [storeImagePath, setStoreImagePath] = React.useState('');
+  const [shopName, setShopName] = React.useState('');
+  const [gstNumber, setGSTNumber] = React.useState('');
+  const [gstStatus, setGSTStatus] = React.useState('');
+  const [partnerCategory, setPartnerCategory] = React.useState('');
+  const [partnerContactNumber, setPartnerContactNumber] = React.useState();
+  const [partnerAddress, setPartnerAddress] = React.useState('');
+  const [bankHolderName, setBankHolderName] = React.useState('');
+  const [bankName, setBankName] = React.useState('');
+  const [bankAccountNumber, setBankAccountNumber] = React.useState('');
+  const [bankISFCCode, setBankISFCCode] = React.useState('');
+
+  ///Take Image
+  const requestGalleryPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Pantryo Partner Camera Permission',
+          message: 'Pantryo Partner  needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        // let SelectFor = selectForImage;
+        let options = {
+          storageOptions: {
+            skipBackup: true,
+            path: 'images',
+          },
+          maxWidth: 900,
+          maxHeight: 900,
+          quality: 1,
+          videoQuality: 'medium',
+          durationLimit: 30,
+          includeBase64: true,
+        };
+        await ImagePicker.launchImageLibrary(options, res => {
+          if (res) {
+            if (res.errorCode == 'permission') {
+              alert('Permission not granted');
+              return;
+            } else if (res.errorCode == 'others') {
+              alert(res.errorMessage);
+              return;
+            } else if (res.didCancel) {
+              console.log('User cancelled image picker');
+            } else {
+              let temp = {name: res.fileName, uri: res.uri, type: res.type};
+              setStoreImagePath(res.uri);
+              setStoreImage(temp);
+            }
+          }
+        });
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  ////======Registration Api=============////
+  const registrationApi = async () => {
+    if (!shopName) {
+      Alert.alert('Please Enter Your Shop Name');
+      return;
+    } else if (!partnerCategory) {
+      Alert.alert('Please Enter Your Category');
+      return;
+    } else if (!partnerContactNumber) {
+      Alert.alert('Please Enter Your Contact Number');
+      return;
+    } else if (!partnerAddress) {
+      Alert.alert('Please Enter Your Full Address');
+      return;
+    } else if (!bankHolderName) {
+      Alert.alert('Please Enter Your Bank Account Holder Name');
+      return;
+    } else if (!bankAccountNumber) {
+      Alert.alert('Please Enter Your Bank Account Number');
+      return;
+    } else if (!bankName) {
+      Alert.alert('Please Enter Your Bank Name');
+      return;
+    } else if (!bankISFCCode) {
+      Alert.alert('Please Enter Your Bank ISFC Code');
+      return;
+    } else {
+      const data = new FormData();
+      data.append('partner_shopName', shopName);
+      data.append('partner_category', partnerCategory);
+      data.append('partner_gstNumber', gstNumber);
+      data.append('partner_address', partnerAddress);
+      data.append('partner_contactNumber', partnerContactNumber);
+      data.append('partner_accountNumber', bankAccountNumber);
+      data.append('partner_bankAccountHolderName', bankHolderName);
+      data.append('partner_bankName', bankName);
+      data.append('partner_bankISFCCode', bankISFCCode);
+      data.append('partner_storeImage', storeImage);
+      setLoading(true);
+      fetch(
+        'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartnerRegistration.php',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data;',
+          },
+          body: data,
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          console.log(result);
+          if (result.error == 0) {
+            AsyncStorage.setItem('partner_id', result.partner_id);
+            AsyncStorage.setItem('partner_shopName', result.partner_shopName);
+            AsyncStorage.setItem(
+              'partner_contactNumber',
+              result.partner_contactNumber,
+            );
+            Alert.alert('Welcome');
+            AsyncStorage.setItem('userToken', '1');
+            navigation.navigate('Navigation');
+          } else if (result.error == 2) {
+            Alert.alert(result.msg);
+            navigation.navigate('LoginScreen');
+          } else {
+            Alert.alert('Something went wrong');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+  ////======Registration Api=============////
+
+  React.useEffect(() => {
+    setPartnerContactNumber(route.params.partner_contactNumber);
+  }, []);
 
   return (
     <>
@@ -37,10 +192,28 @@ const RegisterScreen = ({navigation}) => {
           </Text>
 
           <View style={styles.imgContainer}>
-            <View style={styles.imgBox}>
-              <Icons name="image-outline" size={30} color="#C6B5C7" />
-            </View>
-            <Text style={styles.imgLabel}>Upload Store Logo (if any)</Text>
+            <Pressable
+              onPress={() => requestGalleryPermission()}
+              style={styles.imgBox}>
+              {storeImagePath === '' ? (
+                <Icons name="image-outline" size={30} color="#C6B5C7" />
+              ) : (
+                <Image
+                  source={{uri: storeImagePath}}
+                  style={{
+                    height: 60,
+                    width: 65,
+                    borderWidth: 0.5,
+                    borderRadius: 7,
+                  }}
+                />
+              )}
+            </Pressable>
+            {storeImagePath === '' ? (
+              <Text style={styles.imgLabel}>Upload Store Logo (if any)</Text>
+            ) : (
+              <Text style={styles.imgLabel}>Upload Store Logo Uploaded</Text>
+            )}
           </View>
 
           <View style={styles.formGroup}>
@@ -52,11 +225,12 @@ const RegisterScreen = ({navigation}) => {
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
+                onChangeText={txt => setShopName(txt)}
               />
             </View>
           </View>
 
-          <View style={styles.formGroup}>
+          {/* <View style={styles.formGroup}>
             <Text style={styles.formLabel}>GST REGISTERED</Text>
             <View style={[styles.formRow, {marginTop: 10}]}>
               <DropDownPicker
@@ -64,6 +238,7 @@ const RegisterScreen = ({navigation}) => {
                 value={value}
                 items={items}
                 setOpen={setOpen}
+                onChangeIte
                 setValue={setValue}
                 setItems={setItems}
                 bottomOffset={100}
@@ -84,7 +259,7 @@ const RegisterScreen = ({navigation}) => {
                 }}
               />
             </View>
-          </View>
+          </View> */}
 
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>GST NUMBER</Text>
@@ -95,6 +270,7 @@ const RegisterScreen = ({navigation}) => {
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="characters"
+                onChangeText={txt => setGSTNumber(txt)}
               />
             </View>
           </View>
@@ -110,6 +286,7 @@ const RegisterScreen = ({navigation}) => {
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
+                onChangeText={txt => setPartnerCategory(txt)}
               />
             </Pressable>
           </View>
@@ -126,6 +303,8 @@ const RegisterScreen = ({navigation}) => {
                 selectionColor="#5E3360"
                 keyboardType="phone-pad"
                 maxLength={10}
+                value={partnerContactNumber}
+                onChangeText={txt => setPartnerContactNumber(txt)}
               />
             </View>
           </View>
@@ -139,6 +318,7 @@ const RegisterScreen = ({navigation}) => {
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
+                onChangeText={txt => setPartnerAddress(txt)}
               />
             </View>
           </View>
@@ -152,6 +332,7 @@ const RegisterScreen = ({navigation}) => {
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
+                onChangeText={txt => setBankHolderName(txt)}
               />
             </View>
           </View>
@@ -165,6 +346,7 @@ const RegisterScreen = ({navigation}) => {
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
+                onChangeText={txt => setBankName(txt)}
               />
             </View>
           </View>
@@ -178,6 +360,7 @@ const RegisterScreen = ({navigation}) => {
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 keyboardType="number-pad"
+                onChangeText={txt => setBankAccountNumber(txt)}
               />
             </View>
           </View>
@@ -192,16 +375,17 @@ const RegisterScreen = ({navigation}) => {
                 selectionColor="#5E3360"
                 keyboardType="default"
                 autoCapitalize="characters"
+                onChangeText={txt => setBankISFCCode(txt)}
               />
             </View>
           </View>
 
           <Pressable
-            onPress={() => navigation.navigate('UploadDocs')}
+            onPress={() => registrationApi()}
+            // onPress={() => navigation.navigate('UploadDocs')}
             style={styles.btn}>
             <Text style={styles.btnTxt}>CONTINUE</Text>
           </Pressable>
-     
         </View>
       </ScrollView>
 

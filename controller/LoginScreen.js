@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
   TextInput,
+  Alert,
 } from 'react-native';
 
 // ===== Images ===== //
@@ -13,19 +14,80 @@ import coffeeIcon from '../assets/icons/coffee.png';
 
 // ===== Library ===== //
 import {createStackNavigator} from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ===== Screens ===== //
 import VerificationScreen from './OtpVerification';
 import Navigation from './Navigation';
-import  RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
+import RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
+import LoaderScreen from '../controller/LoaderScreen';
 
 const LoginScreen = ({navigation}) => {
+  const [contactNumber, setContactNumber] = React.useState('');
+  const [isLoading, setLoading] = React.useState(false);
+
+  ///==========Login Start================///
+  const loginApi = async () => {
+    if (!contactNumber) {
+      Alert.alert('Please Enter Your Registered Mobile Number');
+      return;
+    } else if (contactNumber.length !== 10) {
+      Alert.alert('Please Enter Valid  Mobile Number');
+      return;
+    } else {
+      setLoading(true);
+      fetch(
+        'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=login',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_contactNumber: contactNumber,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          console.log(result);
+          if (result.error == 0) {
+            AsyncStorage.setItem('partner_id', result.partner_id);
+            AsyncStorage.setItem('partner_shopName', result.partner_shopName);
+            AsyncStorage.setItem(
+              'partner_contactNumber',
+              result.partner_contactNumber,
+            );
+            AsyncStorage.setItem('userToken', '1');
+            navigation.navigate('Navigation');
+          } else if (result.error == 1) {
+            // console.log(result.msg);
+            navigation.navigate('VerificationScreen', {
+              mobilenumbmer: result.partner_contactNumber,
+              otp: result.otp,
+            });
+          } else {
+            Alert.alert('Something went wrong');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+  ///==========Login End================///
+
   return (
     <>
+      {isLoading == true ? <LoaderScreen /> : null}
       <View style={styles.topContainer}>
         <View>
-          <Text style={styles.topHeading}>SOME</Text>
-          <Text style={styles.bottomHeading}>CAPTION</Text>
+          <Text style={styles.topHeading}>Pantryo</Text>
+          <Text style={styles.bottomHeading}>Partner</Text>
         </View>
         <Image source={coffeeIcon} style={styles.topIcon} />
       </View>
@@ -43,16 +105,16 @@ const LoginScreen = ({navigation}) => {
           <View style={styles.formRow}>
             <Text style={styles.formDigit}>+91</Text>
             <TextInput
-              placeholder=""
+              placeholder="Enter Mobile Number"
+              placeholderTextColor="#777"
               style={styles.txtInput}
               keyboardType="phone-pad"
               selectionColor="#5E3360"
               maxLength={10}
+              onChangeText={text => setContactNumber(text)}
             />
           </View>
-          <Pressable
-            onPress={() => navigation.navigate('VerificationScreen')}
-            style={styles.btn}>
+          <Pressable onPress={loginApi} style={styles.btn}>
             <Text style={styles.btnTxt}>CONTINUE</Text>
           </Pressable>
         </View>
@@ -154,6 +216,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontFamily: 'OpenSans-Medium',
     fontSize: 16,
+    color: '#000',
   },
   btn: {
     backgroundColor: '#5E3360',

@@ -4,8 +4,11 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
+///// Utils
+import {AuthContext} from '../../controller/Utils';
 
 const SettingsScreen = () => {
+  const {signOut} = React.useContext(AuthContext);
   return (
     <>
       <View style={styles.container}>
@@ -35,10 +38,10 @@ const SettingsScreen = () => {
             <Icons name="document-attach-outline" size={30} color="#5E3360" />
             <Text style={styles.tabTxt}>Terms & Conditions</Text>
           </View>
-          <View style={styles.tab}>
+          <Pressable onPress={() => signOut()} style={styles.tab}>
             <Icons name="log-out-outline" size={30} color="#5E3360" />
             <Text style={styles.tabTxt}>Sign Out</Text>
-          </View>
+          </Pressable>
         </View>
       </View>
     </>

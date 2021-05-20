@@ -6,23 +6,86 @@ import {
   StyleSheet,
   Pressable,
   TextInput,
+  Alert,
 } from 'react-native';
 
-const OtpVerification = ({navigation}) => {
+import LoaderScreen from '../controller/LoaderScreen';
+
+const OtpVerification = ({navigation, route}) => {
   let textInput = useRef(null);
   const lengthInput = 6;
   const [internalVal, setInternalVal] = useState('');
+  const [OTP, setOTP] = useState('');
+  const [partner_contactNumber, setContactNumber] = useState('');
+  const [isLoading, setLoading] = React.useState(false);
 
   const onChangeText = val => {
     setInternalVal(val);
   };
 
+  ///==========Login Start================///
+  const resentOTP = async () => {
+    if (!partner_contactNumber) {
+      Alert.alert('Please Enter Your Registered Mobile Number');
+      return;
+    } else {
+      setLoading(true);
+      fetch(
+        'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=resendOTP',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_contactNumber: partner_contactNumber,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          console.log(result);
+          if (result.error == 0) {
+            setOTP(result.otp);
+            setOTP(result.partner_contactNumber);
+            Alert.alert(result.msg);
+            textInput.focus();
+          } else {
+            Alert.alert(result.msg);
+            navigation.navigate('LoginScreen');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+  ///==========Login End================///
+
+  const otpMatch = () => {
+    if (OTP == internalVal) {
+      Alert.alert('Matched');
+      navigation.navigate('RegistrationForm', {
+        partner_contactNumber: partner_contactNumber,
+      });
+    } else {
+      Alert.alert('Not Matched');
+    }
+  };
+
   useEffect(() => {
     textInput.focus();
+    setOTP(route.params.otp);
+    setContactNumber(route.params.mobilenumbmer);
   }, []);
 
   return (
     <>
+      {isLoading == true ? <LoaderScreen /> : null}
       <View style={styles.container}>
         <KeyboardAvoidingView
           keyboardVerticalOffset={50}
@@ -58,9 +121,23 @@ const OtpVerification = ({navigation}) => {
                   </View>
                 ))}
             </View>
+            <Pressable
+              onPress={resentOTP}
+              style={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans-Medium',
+                  color: 'blue',
+                  fontSize: 19,
+                  textDecorationLine: 'underline',
+                }}>
+                resend otp?
+              </Text>
+            </Pressable>
           </View>
           <Pressable
-            onPress={() => navigation.navigate('RegistrationForm')}
+            // onPress={() => navigation.navigate('RegistrationForm')}
+            onPress={() => otpMatch()}
             style={styles.btn}>
             <Text style={styles.btnTxt}>SUBMIT</Text>
           </Pressable>
