@@ -191,6 +191,7 @@ const RegisterScreen = ({navigation, route}) => {
             Enter your business/shop details
           </Text>
 
+          {/* ======= Store Logo Section ======= */}
           <View style={styles.imgContainer}>
             <Pressable
               onPress={() => requestGalleryPermission()}
@@ -201,9 +202,8 @@ const RegisterScreen = ({navigation, route}) => {
                 <Image
                   source={{uri: storeImagePath}}
                   style={{
-                    height: 60,
-                    width: 65,
-                    borderWidth: 0.5,
+                    height: 70,
+                    width: 70,
                     borderRadius: 7,
                   }}
                 />
@@ -215,7 +215,9 @@ const RegisterScreen = ({navigation, route}) => {
               <Text style={styles.imgLabel}>Upload Store Logo Uploaded</Text>
             )}
           </View>
+          {/* ======= Store Logo Section ======= */}
 
+          {/* ======= Business Name Section ======= */}
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>BUSINESS/SHOP NAME</Text>
             <View style={styles.formRow}>
@@ -229,6 +231,7 @@ const RegisterScreen = ({navigation, route}) => {
               />
             </View>
           </View>
+          {/* ======= Business Name Section ======= */}
 
           {/* <View style={styles.formGroup}>
             <Text style={styles.formLabel}>GST REGISTERED</Text>
@@ -238,7 +241,6 @@ const RegisterScreen = ({navigation, route}) => {
                 value={value}
                 items={items}
                 setOpen={setOpen}
-                onChangeIte
                 setValue={setValue}
                 setItems={setItems}
                 bottomOffset={100}
@@ -261,12 +263,13 @@ const RegisterScreen = ({navigation, route}) => {
             </View>
           </View> */}
 
+          {/* ======= GST Number ======= */}
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>GST NUMBER</Text>
             <View style={styles.formRow}>
               <Icons name="grid-outline" size={20} color="#5E3360" />
               <TextInput
-                placeholder=""
+                placeholder="Optional"
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="characters"
@@ -274,7 +277,9 @@ const RegisterScreen = ({navigation, route}) => {
               />
             </View>
           </View>
+          {/* ======= GST Number ======= */}
 
+          {/* ======= Business Category ======= */}
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>CATEGORY</Text>
             <Pressable
@@ -290,6 +295,7 @@ const RegisterScreen = ({navigation, route}) => {
               />
             </Pressable>
           </View>
+          {/* ======= Business Category ======= */}
 
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>CONTACT NUMBER</Text>
@@ -521,6 +527,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
+    paddingHorizontal: 10,
   },
   imgLabel: {
     fontFamily: 'OpenSans-SemiBold',

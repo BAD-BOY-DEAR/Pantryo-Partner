@@ -22,6 +22,8 @@
 4. React Native CheckBox
 5. React Native Animatable
 6. React Native Dropdown Picker
+7. React Native Image Picker
+8. React Native Maps
 ================================
 
 ======================== Screens List & Documentation ========================

@@ -68,12 +68,12 @@ const OtpVerification = ({navigation, route}) => {
 
   const otpMatch = () => {
     if (OTP == internalVal) {
-      Alert.alert('Matched');
+      console.log('OTP Verification successful');
       navigation.navigate('RegistrationForm', {
         partner_contactNumber: partner_contactNumber,
       });
     } else {
-      Alert.alert('Not Matched');
+      console.log('OTP Verification Unsuccessful');
     }
   };
 
@@ -128,10 +128,10 @@ const OtpVerification = ({navigation, route}) => {
                 style={{
                   fontFamily: 'OpenSans-Medium',
                   color: 'blue',
-                  fontSize: 19,
-                  textDecorationLine: 'underline',
+                  fontSize: 16,
+                  marginTop: 20,
                 }}>
-                resend otp?
+                Resend OTP?
               </Text>
             </Pressable>
           </View>
