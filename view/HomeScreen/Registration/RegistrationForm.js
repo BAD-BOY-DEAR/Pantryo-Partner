@@ -50,6 +50,7 @@ const RegisterScreen = ({navigation, route}) => {
   const [bankName, setBankName] = React.useState('');
   const [bankAccountNumber, setBankAccountNumber] = React.useState('');
   const [bankISFCCode, setBankISFCCode] = React.useState('');
+  const [addressPlaceHolder, setAddressPlaceHolder] = React.useState('');
 
   ///Take Image
   const requestGalleryPermission = async () => {
@@ -185,11 +186,13 @@ const RegisterScreen = ({navigation, route}) => {
 
   ///////======Get user location==========//////////
   const getOneTimeLocation = () => {
+    setAddressPlaceHolder('Getting Location ...');
     watchID = Geolocation.getCurrentPosition(
       position => {
+        setAddressPlaceHolder('You are Here..');
         const currentLongitude = JSON.stringify(position.coords.longitude);
         const currentLatitude = JSON.stringify(position.coords.latitude);
-        setPartnerAddress(currentLongitude + '= ' + currentLatitude);
+        setPartnerAddress(currentLongitude + '  ' + currentLatitude);
         // fetch(
         //   'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=getAddressByLongitudeLatitude',
         //   {
@@ -359,7 +362,8 @@ const RegisterScreen = ({navigation, route}) => {
               style={styles.formRow}>
               <Icons name="list-outline" size={20} color="#5E3360" />
               <TextInput
-                placeholder=""
+                placeholder="Choose  Category"
+                placeholderTextColor="#777"
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
@@ -394,10 +398,12 @@ const RegisterScreen = ({navigation, route}) => {
             <View style={styles.formRow}>
               <Icons name="location-outline" size={20} color="#5E3360" />
               <TextInput
-                placeholder=""
+                placeholder={addressPlaceHolder}
+                placeholderTextColor="#777"
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
+                value={partnerAddress}
                 onChangeText={txt => setPartnerAddress(txt)}
               />
             </View>

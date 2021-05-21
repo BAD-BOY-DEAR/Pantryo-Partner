@@ -28,6 +28,67 @@ const LoginScreen = ({navigation}) => {
   const [loading, setLoading] = React.useState(false);
   const {signIn} = React.useContext(AuthContext);
 
+  ///==========Login Start================///
+  const loginApi = async () => {
+    if (!contactNumber) {
+      console.log('Please Enter Your Registered Mobile Number');
+      return;
+    } else if (contactNumber.length !== 10) {
+      console.log('Please Enter Valid  Mobile Number');
+      return;
+    } else {
+      setLoading(true);
+      fetch(
+        'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=login',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_contactNumber: contactNumber,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          console.log(result);
+          if (result.error == 0) {
+            // AsyncStorage.setItem('partner_id', result.partner_id);
+            // AsyncStorage.setItem('partner_shopName', result.partner_shopName);
+            // AsyncStorage.setItem(
+            //   'partner_contactNumber',
+            //   result.partner_contactNumber,
+            // );
+            // AsyncStorage.setItem('userToken', '1');
+            // navigation.navigate('Navigation');
+
+            signIn(
+              result.partner_id,
+              result.partner_contactNumber,
+              result.partner_shopName,
+            );
+          } else if (result.error == 1) {
+            // console.log(result.msg);
+            navigation.navigate('VerificationScreen', {
+              mobilenumbmer: result.partner_contactNumber,
+              otp: result.otp,
+            });
+          } else {
+            Alert.alert('Something went wrong');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+  ///==========Login End================///
+
   return (
     <>
       {loading == true ? <LoaderScreen /> : null}
@@ -62,11 +123,12 @@ const LoginScreen = ({navigation}) => {
             />
           </View>
           <Pressable
-            onPress={() =>
-              navigation.navigate('RegistrationForm', {
-                partner_contactNumber: '7380993224',
-              })
-            }
+            // onPress={() =>
+            //   navigation.navigate('RegistrationForm', {
+            //     partner_contactNumber: '7380993224',
+            //   })
+            // }
+            onPress={loginApi}
             // onPress={() => {
             //   signIn({contactNumber});
             // }}

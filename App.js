@@ -78,59 +78,13 @@ const App = () => {
   const authContext = React.useMemo(
     () => ({
       signIn: async data => {
-        const {contactNumber} = data;
-        if (!contactNumber) {
-          showToast('Please Enter Your Registered Mobile Number');
-          return;
-        } else if (contactNumber.length !== 10) {
-          showToast('Please Enter Valid  Mobile Number');
-          return;
-        } else {
-          fetch(
-            'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=login',
-            {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                partner_contactNumber: contactNumber,
-              }),
-            },
-          )
-            .then(function (response) {
-              return response.json();
-            })
-            .then(function (result) {
-              if (result.error == 0) {
-                AsyncStorage.setItem('partner_id', result.partner_id);
-                AsyncStorage.setItem(
-                  'partner_shopName',
-                  result.partner_shopName,
-                );
-                AsyncStorage.setItem(
-                  'partner_contactNumber',
-                  result.partner_contactNumber,
-                );
-                dispatch({type: 'SIGN_IN', token: 'userToken'});
-                AsyncStorage.setItem('userToken', '1');
-                showToast('Welcome');
-              } else if (result.error == 1) {
-                AsyncStorage.setItem(
-                  'mobilenumber',
-                  result.partner_contactNumber,
-                );
-                AsyncStorage.setItem('otp', JSON.stringify(result.otp));
-                showToast(result.msg);
-              } else {
-                showToast('Something went wrong! Please try Again!');
-              }
-            })
-            .catch(error => {
-              console.error(error);
-            });
-        }
+        const {partner_id, partner_contactNumber, partner_shopName} = data;
+        AsyncStorage.setItem('partner_id', partner_id);
+        AsyncStorage.setItem('partner_shopName', partner_shopName);
+        AsyncStorage.setItem('partner_contactNumber', partner_contactNumber);
+        dispatch({type: 'SIGN_IN', token: 'userToken'});
+        AsyncStorage.setItem('userToken', '1');
+        showToast('Welcome');
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),
       signUp: async data => {
