@@ -24,8 +24,7 @@ import LoaderScreen from '../controller/LoaderScreen';
 
 const LoginScreen = ({navigation}) => {
   const [contactNumber, setContactNumber] = React.useState('');
-  const [isLoading, setLoading] = React.useState(false);
-
+  const [loading, setLoading] = React.useState(false);
   ///==========Login Start================///
   const loginApi = async () => {
     if (!contactNumber) {
@@ -83,7 +82,7 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <>
-      {isLoading == true ? <LoaderScreen /> : null}
+      {loading == true ? <LoaderScreen /> : null}
       <View style={styles.topContainer}>
         <View>
           <Text style={styles.topHeading}>Pantryo</Text>

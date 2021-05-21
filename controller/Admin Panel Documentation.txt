@@ -24,9 +24,9 @@
     d) Show user Status as Online
 
 2) Home Page
-    ============ Dashboard ============    
+    ============= Dashboard ============    
     a) Orders - Show total closed orders till date
-    b) Ongoing - Show orders that are open and not yet delivered    
+    b) Ongoing Orders - Show orders that are open and not yet delivered    
     c) Closed Orders - Show count of all the orders whose status have been marked as Delivered
 
     ============ Navigation ============    
