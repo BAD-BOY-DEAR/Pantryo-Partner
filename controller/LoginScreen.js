@@ -29,10 +29,10 @@ const LoginScreen = ({navigation}) => {
   ///==========Login Start================///
   const loginApi = async () => {
     if (!contactNumber) {
-      Alert.alert('Please Enter Your Registered Mobile Number');
+      console.log('Please Enter Your Registered Mobile Number');
       return;
     } else if (contactNumber.length !== 10) {
-      Alert.alert('Please Enter Valid  Mobile Number');
+      console.log('Please Enter Valid  Mobile Number');
       return;
     } else {
       setLoading(true);

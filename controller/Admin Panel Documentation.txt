@@ -21,6 +21,7 @@
     show Bootstrap alert === "This mobile number is not registered in our system"
     c) Once user is signed in, he should not have to login again and again. Hold the user
     in session unless he clicks on the logout button
+    d) Show user Status as Online
 
 2) Home Page
     ============ Dashboard ============    
@@ -31,7 +32,7 @@
     ============ Navigation ============    
     1) Home
     2) New & Existing Users
-        1) Pantryo Partners            
+        1) Pantryo Partners                         
         2) Pantryo Riders        
         3) Pantryo Customers
         4) Pantryo Users
