@@ -17,6 +17,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ===== Screens ===== //
+import {AuthContext} from './Utils';
 import VerificationScreen from './OtpVerification';
 import Navigation from './Navigation';
 import RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
@@ -25,60 +26,7 @@ import LoaderScreen from '../controller/LoaderScreen';
 const LoginScreen = ({navigation}) => {
   const [contactNumber, setContactNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  ///==========Login Start================///
-  const loginApi = async () => {
-    if (!contactNumber) {
-      console.log('Please Enter Your Registered Mobile Number');
-      return;
-    } else if (contactNumber.length !== 10) {
-      console.log('Please Enter Valid  Mobile Number');
-      return;
-    } else {
-      setLoading(true);
-      fetch(
-        'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=login',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            partner_contactNumber: contactNumber,
-          }),
-        },
-      )
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (result) {
-          console.log(result);
-          if (result.error == 0) {
-            AsyncStorage.setItem('partner_id', result.partner_id);
-            AsyncStorage.setItem('partner_shopName', result.partner_shopName);
-            AsyncStorage.setItem(
-              'partner_contactNumber',
-              result.partner_contactNumber,
-            );
-            AsyncStorage.setItem('userToken', '1');
-            navigation.navigate('Navigation');
-          } else if (result.error == 1) {
-            // console.log(result.msg);
-            navigation.navigate('VerificationScreen', {
-              mobilenumbmer: result.partner_contactNumber,
-              otp: result.otp,
-            });
-          } else {
-            Alert.alert('Something went wrong');
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        })
-        .finally(() => setLoading(false));
-    }
-  };
-  ///==========Login End================///
+  const {signIn} = React.useContext(AuthContext);
 
   return (
     <>
@@ -113,7 +61,16 @@ const LoginScreen = ({navigation}) => {
               onChangeText={text => setContactNumber(text)}
             />
           </View>
-          <Pressable onPress={loginApi} style={styles.btn}>
+          <Pressable
+            onPress={() =>
+              navigation.navigate('RegistrationForm', {
+                partner_contactNumber: '7380993224',
+              })
+            }
+            // onPress={() => {
+            //   signIn({contactNumber});
+            // }}
+            style={styles.btn}>
             <Text style={styles.btnTxt}>CONTINUE</Text>
           </Pressable>
         </View>

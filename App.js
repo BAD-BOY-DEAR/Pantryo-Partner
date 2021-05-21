@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {ToastAndroid} from 'react-native';
 // ======= Libraries ======= //
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
@@ -15,6 +15,15 @@ import Navigation from './controller/Navigation';
 const Stack = createStackNavigator();
 
 const App = () => {
+  const showToast = msg => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
   const [isLoading, setLoading] = React.useState();
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
@@ -66,51 +75,62 @@ const App = () => {
     }, 3000);
   }, []);
 
-  // Test Commit
-
   const authContext = React.useMemo(
     () => ({
       signIn: async data => {
-        const {user_mobile, user_password} = data;
-
-        if (!user_mobile) {
-          alert('Please Enter Mobile Number!');
+        const {contactNumber} = data;
+        if (!contactNumber) {
+          showToast('Please Enter Your Registered Mobile Number');
           return;
-        }
-        if (!user_password) {
-          alert('Please Enter Password!');
+        } else if (contactNumber.length !== 10) {
+          showToast('Please Enter Valid  Mobile Number');
           return;
+        } else {
+          fetch(
+            'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=login',
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                partner_contactNumber: contactNumber,
+              }),
+            },
+          )
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (result) {
+              if (result.error == 0) {
+                AsyncStorage.setItem('partner_id', result.partner_id);
+                AsyncStorage.setItem(
+                  'partner_shopName',
+                  result.partner_shopName,
+                );
+                AsyncStorage.setItem(
+                  'partner_contactNumber',
+                  result.partner_contactNumber,
+                );
+                dispatch({type: 'SIGN_IN', token: 'userToken'});
+                AsyncStorage.setItem('userToken', '1');
+                showToast('Welcome');
+              } else if (result.error == 1) {
+                AsyncStorage.setItem(
+                  'mobilenumber',
+                  result.partner_contactNumber,
+                );
+                AsyncStorage.setItem('otp', JSON.stringify(result.otp));
+                showToast(result.msg);
+              } else {
+                showToast('Something went wrong! Please try Again!');
+              }
+            })
+            .catch(error => {
+              console.error(error);
+            });
         }
-        fetch('https://lmis.in/MyAPIs/PHP_API/CustomerApp/customerLogin.php', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            mobile: user_mobile,
-            password: user_password,
-          }),
-        })
-          .then(function (response) {
-            return response.json();
-          })
-          .then(function (result) {
-            setLoading(false);
-            if (result.error == 0) {
-              AsyncStorage.setItem('user_id', result.user_id);
-              AsyncStorage.setItem('user_name', result.user_name);
-              dispatch({type: 'SIGN_IN', token: 'userToken'});
-              AsyncStorage.setItem('userToken', '1');
-            } else {
-              console.log(result.msg);
-            }
-          })
-          .catch(error => {
-            console.error(error);
-          });
-
-        // dispatch({type: 'SIGN_IN', token: 'userToken'});
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),
       signUp: async data => {

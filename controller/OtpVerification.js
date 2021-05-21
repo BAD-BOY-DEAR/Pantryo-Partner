@@ -7,7 +7,12 @@ import {
   Pressable,
   TextInput,
   Alert,
+  ToastAndroid,
+  BackHandler,
 } from 'react-native';
+
+import {useFocusEffect} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import LoaderScreen from '../controller/LoaderScreen';
 
@@ -51,12 +56,26 @@ const OtpVerification = ({navigation, route}) => {
           if (result.error == 0) {
             setOTP(result.otp);
             setOTP(result.partner_contactNumber);
-            Alert.alert(result.msg);
-            textInput.focus();
+            // Alert.alert(result.msg);
+            ToastAndroid.showWithGravityAndOffset(
+              result.msg,
+              ToastAndroid.SHORT,
+              ToastAndroid.BOTTOM,
+              25,
+              50,
+            );
           } else {
-            Alert.alert(result.msg);
+            // Alert.alert(result.msg);
+            ToastAndroid.showWithGravityAndOffset(
+              result.msg,
+              ToastAndroid.SHORT,
+              ToastAndroid.BOTTOM,
+              25,
+              50,
+            );
             navigation.navigate('LoginScreen');
           }
+          // textInputFocus();
         })
         .catch(error => {
           console.error(error);
@@ -66,19 +85,54 @@ const OtpVerification = ({navigation, route}) => {
   };
   ///==========Login End================///
 
+  const showToast = msg => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
+
   const otpMatch = () => {
-    if (OTP == internalVal) {
-      console.log('OTP Verification successful');
+    if (!internalVal) {
+      showToast('Please Enter Otp!');
+    } else if (internalVal.length !== 6) {
+      showToast('Please enter valid Otp!');
+    } else if (OTP == internalVal) {
+      // console.log('OTP Verification successful');
+      showToast('OTP Verification successfully completed!');
       navigation.navigate('RegistrationForm', {
         partner_contactNumber: partner_contactNumber,
       });
     } else {
-      console.log('OTP Verification Unsuccessful');
+      showToast('OTP Verification Unsuccessful');
     }
   };
 
-  useEffect(() => {
+  const textInputFocus = () => {
     textInput.focus();
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        AsyncStorage.clear();
+        // AsyncStorage.setItem('mobilenumber', '');
+        // AsyncStorage.setItem('otp', '');
+        navigation.navigate('LoginScreen');
+        return true;
+      };
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, []),
+  );
+
+  useEffect(() => {
+    textInputFocus();
     setOTP(route.params.otp);
     setContactNumber(route.params.mobilenumbmer);
   }, []);
@@ -121,7 +175,7 @@ const OtpVerification = ({navigation, route}) => {
                   </View>
                 ))}
             </View>
-            <Pressable
+            {/* <Pressable
               onPress={resentOTP}
               style={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
               <Text
@@ -133,7 +187,7 @@ const OtpVerification = ({navigation, route}) => {
                 }}>
                 Resend OTP?
               </Text>
-            </Pressable>
+            </Pressable> */}
           </View>
           <Pressable
             // onPress={() => navigation.navigate('RegistrationForm')}
