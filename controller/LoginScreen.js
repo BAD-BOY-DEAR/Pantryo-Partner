@@ -55,24 +55,12 @@ const LoginScreen = ({navigation}) => {
           return response.json();
         })
         .then(function (result) {
-          console.log(result);
           if (result.error == 0) {
-            // AsyncStorage.setItem('partner_id', result.partner_id);
-            // AsyncStorage.setItem('partner_shopName', result.partner_shopName);
-            // AsyncStorage.setItem(
-            //   'partner_contactNumber',
-            //   result.partner_contactNumber,
-            // );
-            // AsyncStorage.setItem('userToken', '1');
-            // navigation.navigate('Navigation');
-
-            signIn(
-              result.partner_id,
-              result.partner_contactNumber,
-              result.partner_shopName,
-            );
+            let partner_id = result.partner_id;
+            let partner_contactNumber = result.partner_contactNumber;
+            let partner_shopName = result.partner_shopName;
+            signIn({partner_id, partner_contactNumber, partner_shopName});
           } else if (result.error == 1) {
-            // console.log(result.msg);
             navigation.navigate('VerificationScreen', {
               mobilenumbmer: result.partner_contactNumber,
               otp: result.otp,
@@ -123,15 +111,12 @@ const LoginScreen = ({navigation}) => {
             />
           </View>
           <Pressable
-            // onPress={() =>
-            //   navigation.navigate('RegistrationForm', {
-            //     partner_contactNumber: '7380993224',
-            //   })
-            // }
-            onPress={loginApi}
-            // onPress={() => {
-            //   signIn({contactNumber});
-            // }}
+            onPress={() =>
+              navigation.navigate('RegistrationForm', {
+                partner_contactNumber: '7380993224',
+              })
+            }
+            // onPress={loginApi}
             style={styles.btn}>
             <Text style={styles.btnTxt}>CONTINUE</Text>
           </Pressable>
