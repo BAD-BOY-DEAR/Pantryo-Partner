@@ -74,13 +74,13 @@ const App = () => {
         const {user_mobile, user_password} = data;
 
         if (!user_mobile) {
-          alert('Please Enter Mobile Number!');
+          alert('Enter Mobile Number!');
           return;
         }
-        if (!user_password) {
-          alert('Please Enter Password!');
-          return;
-        }
+        // if (!user_password) {
+        //   alert('Enter Password!');
+        //   return;
+        // }
         fetch('https://lmis.in/MyAPIs/PHP_API/CustomerApp/customerLogin.php', {
           method: 'POST',
           headers: {
@@ -103,7 +103,7 @@ const App = () => {
               dispatch({type: 'SIGN_IN', token: 'userToken'});
               AsyncStorage.setItem('userToken', '1');
             } else {
-              console.log(result.msg);
+              // console.log(result.msg);
             }
           })
           .catch(error => {

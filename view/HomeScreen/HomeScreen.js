@@ -56,41 +56,21 @@ const HomeScreen = ({navigation}) => {
           </View>
           {/* ========== Header Section ========== */}
 
-          {/* ========== Activity Section ========== */}
-          <View style={styles.tabContainer}>
-            <Text style={styles.tabHeading}>Activity</Text>
-            <View style={styles.div}>
-              <ScrollView style={{paddingBottom: 20}} horizontal={true}>
-                <Pressable
-                  onPress={() => navigation.navigate('OrdersList')}
-                  style={styles.activityBtn}>
-                  <Icons name="bookmark-outline" size={30} color="#5E3360" />
-                  <Text style={styles.activityBtnTxt}>Orders</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => navigation.navigate('PaymentScreen')}
-                  style={styles.activityBtn}>
-                  <Icons name="cash-outline" size={30} color="#5E3360" />
-                  <Text style={styles.activityBtnTxt}>Payments</Text>
-                </Pressable>
-              </ScrollView>
-            </View>
-          </View>
-          {/* ========== Activity Section ========== */}
-
           {/* ========== Middle Section ========== */}
           <View style={styles.middleSection}>
             <Text style={styles.tabHeading}>Overview</Text>
             <View style={styles.row}>
-              <View style={styles.tab}>
+              <Pressable
+                onPress={() => navigation.navigate('OrdersList')}
+                style={styles.tab}>
                 <Text styles={styles.midTabLabel}>ORDERS</Text>
                 <Text style={styles.midTabText}>50</Text>
-              </View>
+              </Pressable>
 
-              <View style={styles.tab}>
-                <Text styles={styles.midTabLabel}>TOTAL SALES</Text>
+              <Pressable style={styles.tab}>
+                <Text styles={styles.midTabLabel}>TOTAL SALE </Text>
                 <Text style={styles.midTabText}>₹651.8</Text>
-              </View>
+              </Pressable>
             </View>
           </View>
           {/* ========== Middle Section ========== */}
@@ -164,8 +144,10 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     marginTop: 30,
-    width: '100%',
     paddingHorizontal: 20,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   activityBtn: {
     marginTop: 20,
@@ -185,7 +167,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingHorizontal: 40,
     paddingVertical: 30,
-    flex: 1,
   },
   activityBtnTxt: {
     fontFamily: 'OpenSans-Regular',
