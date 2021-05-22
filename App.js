@@ -78,48 +78,6 @@ const App = () => {
   const authContext = React.useMemo(
     () => ({
       signIn: async data => {
-<<<<<<< HEAD
-        const {user_mobile, user_password} = data;
-
-        if (!user_mobile) {
-          alert('Enter Mobile Number!');
-          return;
-        }
-        // if (!user_password) {
-        //   alert('Enter Password!');
-        //   return;
-        // }
-        fetch('https://lmis.in/MyAPIs/PHP_API/CustomerApp/customerLogin.php', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            mobile: user_mobile,
-            password: user_password,
-          }),
-        })
-          .then(function (response) {
-            return response.json();
-          })
-          .then(function (result) {
-            setLoading(false);
-            if (result.error == 0) {
-              AsyncStorage.setItem('user_id', result.user_id);
-              AsyncStorage.setItem('user_name', result.user_name);
-              dispatch({type: 'SIGN_IN', token: 'userToken'});
-              AsyncStorage.setItem('userToken', '1');
-            } else {
-              // console.log(result.msg);
-            }
-          })
-          .catch(error => {
-            console.error(error);
-          });
-
-        // dispatch({type: 'SIGN_IN', token: 'userToken'});
-=======
         const {partner_id, partner_contactNumber, partner_shopName} = data;
         AsyncStorage.setItem('partner_id', partner_id);
         AsyncStorage.setItem('partner_shopName', partner_shopName);
@@ -127,7 +85,6 @@ const App = () => {
         dispatch({type: 'SIGN_IN', token: 'userToken'});
         AsyncStorage.setItem('userToken', '1');
         showToast('Welcome');
->>>>>>> 8e7c3a3759f9a3135fd38b4675772851a0300b46
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),
       signUp: async data => {
