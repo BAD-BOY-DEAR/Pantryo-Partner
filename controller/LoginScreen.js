@@ -17,6 +17,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ===== Screens ===== //
+import {AuthContext} from './Utils';
 import VerificationScreen from './OtpVerification';
 import Navigation from './Navigation';
 import RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
@@ -25,6 +26,8 @@ import LoaderScreen from '../controller/LoaderScreen';
 const LoginScreen = ({navigation}) => {
   const [contactNumber, setContactNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const {signIn} = React.useContext(AuthContext);
+
   ///==========Login Start================///
   const loginApi = async () => {
     if (!contactNumber) {
@@ -54,14 +57,20 @@ const LoginScreen = ({navigation}) => {
         .then(function (result) {
           console.log(result);
           if (result.error == 0) {
-            AsyncStorage.setItem('partner_id', result.partner_id);
-            AsyncStorage.setItem('partner_shopName', result.partner_shopName);
-            AsyncStorage.setItem(
-              'partner_contactNumber',
+            // AsyncStorage.setItem('partner_id', result.partner_id);
+            // AsyncStorage.setItem('partner_shopName', result.partner_shopName);
+            // AsyncStorage.setItem(
+            //   'partner_contactNumber',
+            //   result.partner_contactNumber,
+            // );
+            // AsyncStorage.setItem('userToken', '1');
+            // navigation.navigate('Navigation');
+
+            signIn(
+              result.partner_id,
               result.partner_contactNumber,
+              result.partner_shopName,
             );
-            AsyncStorage.setItem('userToken', '1');
-            navigation.navigate('Navigation');
           } else if (result.error == 1) {
             // console.log(result.msg);
             navigation.navigate('VerificationScreen', {
@@ -113,7 +122,17 @@ const LoginScreen = ({navigation}) => {
               onChangeText={text => setContactNumber(text)}
             />
           </View>
-          <Pressable onPress={loginApi} style={styles.btn}>
+          <Pressable
+            // onPress={() =>
+            //   navigation.navigate('RegistrationForm', {
+            //     partner_contactNumber: '7380993224',
+            //   })
+            // }
+            onPress={loginApi}
+            // onPress={() => {
+            //   signIn({contactNumber});
+            // }}
+            style={styles.btn}>
             <Text style={styles.btnTxt}>CONTINUE</Text>
           </Pressable>
         </View>

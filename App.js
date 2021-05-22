@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {ToastAndroid} from 'react-native';
 // ======= Libraries ======= //
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
@@ -15,6 +15,15 @@ import Navigation from './controller/Navigation';
 const Stack = createStackNavigator();
 
 const App = () => {
+  const showToast = msg => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
   const [isLoading, setLoading] = React.useState();
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
@@ -66,11 +75,10 @@ const App = () => {
     }, 3000);
   }, []);
 
-  // Test Commit
-
   const authContext = React.useMemo(
     () => ({
       signIn: async data => {
+<<<<<<< HEAD
         const {user_mobile, user_password} = data;
 
         if (!user_mobile) {
@@ -111,6 +119,15 @@ const App = () => {
           });
 
         // dispatch({type: 'SIGN_IN', token: 'userToken'});
+=======
+        const {partner_id, partner_contactNumber, partner_shopName} = data;
+        AsyncStorage.setItem('partner_id', partner_id);
+        AsyncStorage.setItem('partner_shopName', partner_shopName);
+        AsyncStorage.setItem('partner_contactNumber', partner_contactNumber);
+        dispatch({type: 'SIGN_IN', token: 'userToken'});
+        AsyncStorage.setItem('userToken', '1');
+        showToast('Welcome');
+>>>>>>> 8e7c3a3759f9a3135fd38b4675772851a0300b46
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),
       signUp: async data => {

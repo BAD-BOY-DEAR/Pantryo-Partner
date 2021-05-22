@@ -10,20 +10,25 @@ import {
   PermissionsAndroid,
   Image,
   Alert,
+  Platform,
 } from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
+import Geolocation from '@react-native-community/geolocation';
+import * as Animatable from 'react-native-animatable';
 import DropDownPicker from 'react-native-dropdown-picker';
 import * as ImagePicker from 'react-native-image-picker';
 import {RNCamera} from 'react-native-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 ///========Screen Loader==========///
 import LoaderScreen from '../../../controller/LoaderScreen';
-import {event, onChange} from 'react-native-reanimated';
+import {event, onChange, set} from 'react-native-reanimated';
+import {AuthContext} from '../../../controller/Utils';
 
 const RegisterScreen = ({navigation, route}) => {
+  const {signOut} = React.useContext(AuthContext);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
@@ -45,6 +50,7 @@ const RegisterScreen = ({navigation, route}) => {
   const [bankName, setBankName] = React.useState('');
   const [bankAccountNumber, setBankAccountNumber] = React.useState('');
   const [bankISFCCode, setBankISFCCode] = React.useState('');
+  const [addressPlaceHolder, setAddressPlaceHolder] = React.useState('');
 
   ///Take Image
   const requestGalleryPermission = async () => {
@@ -178,8 +184,77 @@ const RegisterScreen = ({navigation, route}) => {
   };
   ////======Registration Api=============////
 
+  ///////======Get user location==========//////////
+  const getOneTimeLocation = () => {
+    setAddressPlaceHolder('Getting Location ...');
+    watchID = Geolocation.getCurrentPosition(
+      position => {
+        setAddressPlaceHolder('You are Here..');
+        const currentLongitude = JSON.stringify(position.coords.longitude);
+        const currentLatitude = JSON.stringify(position.coords.latitude);
+        setPartnerAddress(currentLongitude + '  ' + currentLatitude);
+        // fetch(
+        //   'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=getAddressByLongitudeLatitude',
+        //   {
+        //     method: 'POST',
+        //     headers: {
+        //       Accept: 'application/json',
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //       longitude: currentLongitude,
+        //       latitude: currentLatitude,
+        //     }),
+        //   },
+        // )
+        //   .then(function (response) {
+        //     return response.json();
+        //   })
+        //   .then(function (result) {})
+        //   .catch(error => {
+        //     console.error(error);
+        //   });
+      },
+      error => {
+        console.log(error.message);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 1000,
+      },
+    );
+  };
+  ///////======Get user location==========//////////
   React.useEffect(() => {
     setPartnerContactNumber(route.params.partner_contactNumber);
+    const requestLocationPermission = async () => {
+      if (Platform.OS === 'ios') {
+        getOneTimeLocation();
+      } else {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+              title: 'Location Access Required',
+              message: 'This App needs to Access your location',
+            },
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            getOneTimeLocation();
+          } else {
+            setLocationStatus('Permission Denied');
+          }
+        } catch (err) {
+          console.warn(err);
+        }
+      }
+    };
+    requestLocationPermission();
+    return () => {
+      Geolocation.clearWatch({watchID});
+      setLoading(false);
+    };
   }, []);
 
   return (
@@ -287,10 +362,13 @@ const RegisterScreen = ({navigation, route}) => {
               style={styles.formRow}>
               <Icons name="list-outline" size={20} color="#5E3360" />
               <TextInput
-                placeholder=""
+                placeholder="Choose  Category"
+                placeholderTextColor="#777"
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
+                editable={false}
+                value={partnerCategory}
                 onChangeText={txt => setPartnerCategory(txt)}
               />
             </Pressable>
@@ -320,10 +398,12 @@ const RegisterScreen = ({navigation, route}) => {
             <View style={styles.formRow}>
               <Icons name="location-outline" size={20} color="#5E3360" />
               <TextInput
-                placeholder=""
+                placeholder={addressPlaceHolder}
+                placeholderTextColor="#777"
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
+                value={partnerAddress}
                 onChangeText={txt => setPartnerAddress(txt)}
               />
             </View>
@@ -401,7 +481,7 @@ const RegisterScreen = ({navigation, route}) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          setModalVisible(false);
         }}>
         <View style={styles.modalContainer}>
           <View style={styles.modalCard}>
@@ -409,80 +489,115 @@ const RegisterScreen = ({navigation, route}) => {
               <Text style={styles.modalHeadingTxt}>
                 Select Business Category
               </Text>
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
+              <Pressable onPress={() => setModalVisible(false)}>
                 <Icons name="close-circle-outline" size={25} />
               </Pressable>
             </View>
 
             <ScrollView>
-              <View style={styles.modalCategory}>
+              <Pressable
+                onPress={() => {
+                  setPartnerCategory('Kirana Store, FMCG & Grocery Store');
+                  setModalVisible(false);
+                }}
+                style={styles.modalCategory}>
                 <Text style={styles.categoryTxt}>
                   Kirana Store, FMCG & Grocery Store
                 </Text>
-                <CheckBox
+                {/* <CheckBox
                   disabled={false}
                   value={toggleCheckBox}
                   onValueChange={newValue => setToggleCheckBox(newValue)}
-                />
-              </View>
+                /> */}
+              </Pressable>
 
-              <View style={styles.modalCategory}>
+              <Pressable
+                onPress={() => {
+                  setPartnerCategory('Fruits & Vegetables');
+                  setModalVisible(false);
+                }}
+                style={styles.modalCategory}>
                 <Text style={styles.categoryTxt}>Fruits & Vegetables</Text>
-                <CheckBox
+                {/* <CheckBox
                   disabled={false}
                   value={toggleCheckBox}
                   onValueChange={newValue => setToggleCheckBox(newValue)}
-                />
-              </View>
+                /> */}
+              </Pressable>
 
-              <View style={styles.modalCategory}>
+              <Pressable
+                onPress={() => {
+                  setPartnerCategory('Meat, Chicken & Fish Store');
+                  setModalVisible(false);
+                }}
+                style={styles.modalCategory}>
                 <Text style={styles.categoryTxt}>
                   Meat, Chicken & Fish Store
                 </Text>
-                <CheckBox
+                {/* <CheckBox
                   disabled={false}
                   value={toggleCheckBox}
                   onValueChange={newValue => setToggleCheckBox(newValue)}
-                />
-              </View>
+                /> */}
+              </Pressable>
 
-              <View style={styles.modalCategory}>
+              <Pressable
+                onPress={() => {
+                  setPartnerCategory('Home Decoration & Electronic Appliances');
+                  setModalVisible(false);
+                }}
+                style={styles.modalCategory}>
                 <Text style={styles.categoryTxt}>
                   Home Decoration & Electronic Appliances
                 </Text>
-                <CheckBox
+                {/* <CheckBox
                   disabled={false}
                   value={toggleCheckBox}
                   onValueChange={newValue => setToggleCheckBox(newValue)}
-                />
-              </View>
+                /> */}
+              </Pressable>
 
-              <View style={styles.modalCategory}>
+              <Pressable
+                onPress={() => {
+                  setPartnerCategory('Pharmacy & Medical Store');
+                  setModalVisible(false);
+                }}
+                style={styles.modalCategory}>
                 <Text style={styles.categoryTxt}>Pharmacy & Medical Store</Text>
-                <CheckBox
+                {/* <CheckBox
                   disabled={false}
                   value={toggleCheckBox}
                   onValueChange={newValue => setToggleCheckBox(newValue)}
-                />
-              </View>
+                /> */}
+              </Pressable>
 
-              <View style={styles.modalCategory}>
+              <Pressable
+                onPress={() => {
+                  setPartnerCategory('Dairy Shops');
+                  setModalVisible(false);
+                }}
+                style={styles.modalCategory}>
                 <Text style={styles.categoryTxt}>Dairy Shops</Text>
-                <CheckBox
+                {/* <CheckBox
                   disabled={false}
                   value={toggleCheckBox}
                   onValueChange={newValue => setToggleCheckBox(newValue)}
-                />
-              </View>
+                /> */}
+              </Pressable>
 
-              <View style={styles.modalCategory}>
+              <Pressable
+                onPress={() => {
+                  setPartnerCategory('Bakery');
+                  setModalVisible(false);
+                }}
+                style={styles.modalCategory}>
                 <Text style={styles.categoryTxt}>Bakery</Text>
-                <CheckBox
+                {/* <CheckBox
                   disabled={false}
                   value={toggleCheckBox}
                   onValueChange={newValue => setToggleCheckBox(newValue)}
-                />
-              </View>
+                /> */}
+              </Pressable>
             </ScrollView>
           </View>
         </View>
