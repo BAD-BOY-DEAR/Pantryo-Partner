@@ -240,6 +240,7 @@ const RegisterScreen = ({navigation, route}) => {
       50,
     );
   };
+
   React.useEffect(() => {
     setPartnerContactNumber(route.params.partner_contactNumber);
     const requestLocationPermission = async () => {
