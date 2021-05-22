@@ -9,6 +9,7 @@ import {AuthContext} from './Utils';
 import HomeScreen from '../view/HomeScreen/HomeScreen';
 import SettingsScreen from '../view/SettingsScreen/SettingScreen';
 import InventoryScreen from '../view/Inventory/InventoryScreen';
+import WalletScreen from '../view/Wallet/WalletScreen';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -22,7 +23,7 @@ const Navigation = ({navigation}) => {
         inactiveColor="#5E3360"
         backBehavior="initialRoute"
         labeled="true"
-        barStyle={{backgroundColor: '#F4AA79'}}
+        barStyle={{backgroundColor: '#FFFFFF'}}
         style={{
           backgroundColor: '#00000000',
         }}>
@@ -30,10 +31,21 @@ const Navigation = ({navigation}) => {
           name="HomeScreen"
           component={HomeScreen}
           options={{
-            tabBarLabel: '',
+            tabBarLabel: 'Home',
             tabBarColor: '#fff',
             tabBarIcon: ({color}) => (
-              <Icons name="home" color={color} size={25} />
+              <Icons name="home-outline" color={color} size={25} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="WalletScreen"
+          component={WalletScreen}
+          options={{
+            tabBarLabel: 'Wallet',
+            tabBarColor: '#fff',
+            tabBarIcon: ({color}) => (
+              <Icons name="wallet-outline" color={color} size={25} />
             ),
           }}
         />
@@ -41,10 +53,10 @@ const Navigation = ({navigation}) => {
           name="InventoryScreen"
           component={InventoryScreen}
           options={{
-            tabBarLabel: '',
+            tabBarLabel: 'Inventory',
             tabBarColor: '#fff',
             tabBarIcon: ({color}) => (
-              <Icons name="fast-food" color={color} size={25} />
+              <Icons name="fast-food-outline" color={color} size={25} />
             ),
           }}
         />
@@ -52,10 +64,10 @@ const Navigation = ({navigation}) => {
           name="SettingsScreen"
           component={SettingsScreen}
           options={{
-            tabBarLabel: '',
+            tabBarLabel: 'Settings',
             tabBarColor: '#fff',
             tabBarIcon: ({color}) => (
-              <Icons name="hammer" color={color} size={25} />
+              <Icons name="hammer-outline" color={color} size={25} />
             ),
           }}
         />
