@@ -8,10 +8,8 @@ import {
   TextInput,
   Alert,
   ToastAndroid,
-  BackHandler,
 } from 'react-native';
 
-import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import LoaderScreen from '../controller/LoaderScreen';
@@ -101,7 +99,6 @@ const OtpVerification = ({navigation, route}) => {
     } else if (internalVal.length !== 6) {
       showToast('Please enter valid Otp!');
     } else if (OTP == internalVal) {
-      // console.log('OTP Verification successful');
       showToast('OTP Verification successfully completed!');
       navigation.navigate('RegistrationForm', {
         partner_contactNumber: partner_contactNumber,
@@ -114,22 +111,6 @@ const OtpVerification = ({navigation, route}) => {
   const textInputFocus = () => {
     textInput.focus();
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        AsyncStorage.clear();
-        // AsyncStorage.setItem('mobilenumber', '');
-        // AsyncStorage.setItem('otp', '');
-        navigation.navigate('LoginScreen');
-        return true;
-      };
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
-      return () => {
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-      };
-    }, []),
-  );
 
   useEffect(() => {
     textInputFocus();

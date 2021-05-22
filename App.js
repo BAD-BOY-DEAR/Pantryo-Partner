@@ -82,81 +82,13 @@ const App = () => {
         AsyncStorage.setItem('partner_id', partner_id);
         AsyncStorage.setItem('partner_shopName', partner_shopName);
         AsyncStorage.setItem('partner_contactNumber', partner_contactNumber);
+        console.log(data);
         dispatch({type: 'SIGN_IN', token: 'userToken'});
         AsyncStorage.setItem('userToken', '1');
         showToast('Welcome');
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),
-      signUp: async data => {
-        const {
-          user_mobile,
-          user_password,
-          user_address,
-          user_name,
-          user_confirmpassword,
-        } = data;
-
-        if (!user_mobile) {
-          alert('Please Fill Mobile Number!');
-          return;
-        }
-        if (user_mobile.length !== 10) {
-          alert('Please Enter Vailid Mobile Number!');
-          return;
-        }
-        if (!user_password) {
-          alert('Please Fill Password!');
-          return;
-        }
-        if (!user_address) {
-          alert('Please Fill Address!');
-          return;
-        }
-        if (!user_name) {
-          alert('Please Fill Name!');
-          return;
-        }
-        if (!user_confirmpassword) {
-          alert('Please Fill Confirm Password!');
-          return;
-        }
-        if (user_password == user_confirmpassword) {
-          fetch(
-            'https://lmis.in/MyAPIs/PHP_API/CustomerApp/customerRegistration.php',
-            {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                mobile: user_mobile,
-                password: user_password,
-                name: user_name,
-                address: user_address,
-              }),
-            },
-          )
-            .then(function (response) {
-              return response.json();
-            })
-            .then(function (result) {
-              if (result.error == 0) {
-                AsyncStorage.setItem('user_id', result.user_id);
-                AsyncStorage.setItem('user_name', result.user_name);
-                dispatch({type: 'SIGN_IN', token: 'userToken'});
-                AsyncStorage.setItem('userToken', '1');
-              } else {
-              }
-            })
-            .catch(error => {
-              console.error(error);
-            });
-        } else {
-          alert('Password and Confirm Passworsd do not Match!');
-          return;
-        }
-      },
+      signUp: async data => {},
     }),
     [],
   );

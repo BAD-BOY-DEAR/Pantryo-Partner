@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Pressable,
   TextInput,
-  Alert,
+ToastAndroid
 } from 'react-native';
 
 // ===== Images ===== //
@@ -28,13 +28,23 @@ const LoginScreen = ({navigation}) => {
   const [loading, setLoading] = React.useState(false);
   const {signIn} = React.useContext(AuthContext);
 
+  const showToast = msg => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
+
   ///==========Login Start================///
   const loginApi = async () => {
     if (!contactNumber) {
-      console.log('Please Enter Your Registered Mobile Number');
+      showToast('Please Enter Your Registered Mobile Number');
       return;
     } else if (contactNumber.length !== 10) {
-      console.log('Please Enter Valid  Mobile Number');
+      showToast('Please Enter Valid  Mobile Number');
       return;
     } else {
       setLoading(true);
@@ -55,30 +65,18 @@ const LoginScreen = ({navigation}) => {
           return response.json();
         })
         .then(function (result) {
-          console.log(result);
           if (result.error == 0) {
-            // AsyncStorage.setItem('partner_id', result.partner_id);
-            // AsyncStorage.setItem('partner_shopName', result.partner_shopName);
-            // AsyncStorage.setItem(
-            //   'partner_contactNumber',
-            //   result.partner_contactNumber,
-            // );
-            // AsyncStorage.setItem('userToken', '1');
-            // navigation.navigate('Navigation');
-
-            signIn(
-              result.partner_id,
-              result.partner_contactNumber,
-              result.partner_shopName,
-            );
+            let partner_id = result.partner_id;
+            let partner_contactNumber = result.partner_contactNumber;
+            let partner_shopName = result.partner_shopName;
+            signIn({partner_id, partner_contactNumber, partner_shopName});
           } else if (result.error == 1) {
-            // console.log(result.msg);
             navigation.navigate('VerificationScreen', {
               mobilenumbmer: result.partner_contactNumber,
               otp: result.otp,
             });
           } else {
-            Alert.alert('Something went wrong');
+            showToast('Something went wrong');
           }
         })
         .catch(error => {
@@ -122,17 +120,7 @@ const LoginScreen = ({navigation}) => {
               onChangeText={text => setContactNumber(text)}
             />
           </View>
-          <Pressable
-            // onPress={() =>
-            //   navigation.navigate('RegistrationForm', {
-            //     partner_contactNumber: '7380993224',
-            //   })
-            // }
-            onPress={loginApi}
-            // onPress={() => {
-            //   signIn({contactNumber});
-            // }}
-            style={styles.btn}>
+          <Pressable onPress={loginApi} style={styles.btn}>
             <Text style={styles.btnTxt}>CONTINUE</Text>
           </Pressable>
         </View>
