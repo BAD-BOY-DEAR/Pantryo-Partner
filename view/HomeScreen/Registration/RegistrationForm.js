@@ -196,7 +196,6 @@ const RegisterScreen = ({navigation, route}) => {
         setAddressPlaceHolder('You are Here..');
         const currentLongitude = JSON.stringify(position.coords.longitude);
         const currentLatitude = JSON.stringify(position.coords.latitude);
-        // setPartnerAddress(currentLongitude + '  ' + currentLatitude);
         fetch(
           'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=getAddressByLongitudeLatitude',
           {
