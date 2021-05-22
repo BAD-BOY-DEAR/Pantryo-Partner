@@ -155,7 +155,6 @@ const AllProduct = ({navigation}) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
         <View style={styles.modalContainer}>
@@ -232,7 +231,6 @@ const AllProduct = ({navigation}) => {
         transparent={true}
         visible={searchModal}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
           setSearchModal(!searchModal);
         }}>
         <View style={styles.searchModalContainer}>
