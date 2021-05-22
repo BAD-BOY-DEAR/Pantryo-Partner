@@ -175,7 +175,7 @@ const RegisterScreen = ({navigation, route}) => {
             signIn({partner_id, partner_contactNumber, partner_shopName});
           } else if (result.error == 2) {
             showToast(result.msg);
-            navigation.navigate('LoginScreen');
+            navigation.navigate('UploadDocs');
           } else {
             showToast('Something went wrong');
           }
@@ -418,7 +418,7 @@ const RegisterScreen = ({navigation, route}) => {
           </View>
 
           <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>ADDRESS</Text>
+            <Text style={styles.formLabel}>GPS LOCATION</Text>
             <View style={styles.formRow}>
               <Icons name="location-outline" size={20} color="#5E3360" />
               <TextInput
@@ -429,6 +429,20 @@ const RegisterScreen = ({navigation, route}) => {
                 autoCapitalize="words"
                 value={partnerAddress}
                 onChangeText={txt => setPartnerAddress(txt)}
+              />
+            </View>
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.formLabel}>SHOP ADDRESS</Text>
+            <View style={styles.formRow}>
+              <Icons name="location-outline" size={20} color="#5E3360" />
+              <TextInput
+                placeholder=""
+                placeholderTextColor="#777"
+                style={styles.txtInput}
+                selectionColor="#5E3360"
+                autoCapitalize="words"
               />
             </View>
           </View>
@@ -571,20 +585,6 @@ const RegisterScreen = ({navigation, route}) => {
                 <Text style={styles.categoryTxt}>
                   Home Decoration & Electronic Appliances
                 </Text>
-                {/* <CheckBox
-                  disabled={false}
-                  value={toggleCheckBox}
-                  onValueChange={newValue => setToggleCheckBox(newValue)}
-                /> */}
-              </Pressable>
-
-              <Pressable
-                onPress={() => {
-                  setPartnerCategory('Pharmacy & Medical Store');
-                  setModalVisible(false);
-                }}
-                style={styles.modalCategory}>
-                <Text style={styles.categoryTxt}>Pharmacy & Medical Store</Text>
                 {/* <CheckBox
                   disabled={false}
                   value={toggleCheckBox}
