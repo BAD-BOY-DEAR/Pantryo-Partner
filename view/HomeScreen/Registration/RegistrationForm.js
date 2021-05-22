@@ -9,8 +9,9 @@ import {
   TextInput,
   PermissionsAndroid,
   Image,
-  Alert,
+  ToastAndroid,
   Platform,
+  Picker,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -28,7 +29,7 @@ import {event, onChange, set} from 'react-native-reanimated';
 import {AuthContext} from '../../../controller/Utils';
 
 const RegisterScreen = ({navigation, route}) => {
-  const {signOut} = React.useContext(AuthContext);
+  const {signIn} = React.useContext(AuthContext);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
@@ -107,33 +108,42 @@ const RegisterScreen = ({navigation, route}) => {
   ////======Registration Api=============////
   const registrationApi = async () => {
     if (!shopName) {
-      Alert.alert('Please Enter Your Shop Name');
+      showToast('Please Enter Your Shop Name');
       return;
+    } else if (!gstStatus) {
+      showToast('Please Choose GST  registartion Status');
+      return;
+    } else if (gstStatus == 'Yes') {
+      if (!gstNumber) {
+        showToast('Please Enter Your GST Number');
+        return;
+      }
     } else if (!partnerCategory) {
-      Alert.alert('Please Enter Your Category');
+      showToast('Please Enter Your Category');
       return;
     } else if (!partnerContactNumber) {
-      Alert.alert('Please Enter Your Contact Number');
+      showToast('Please Enter Your Contact Number');
       return;
     } else if (!partnerAddress) {
-      Alert.alert('Please Enter Your Full Address');
+      showToast('Please Enter Your Full Address');
       return;
     } else if (!bankHolderName) {
-      Alert.alert('Please Enter Your Bank Account Holder Name');
+      showToast('Please Enter Your Bank Account Holder Name');
       return;
     } else if (!bankAccountNumber) {
-      Alert.alert('Please Enter Your Bank Account Number');
+      showToast('Please Enter Your Bank Account Number');
       return;
     } else if (!bankName) {
-      Alert.alert('Please Enter Your Bank Name');
+      showToast('Please Enter Your Bank Name');
       return;
     } else if (!bankISFCCode) {
-      Alert.alert('Please Enter Your Bank ISFC Code');
+      showToast('Please Enter Your Bank ISFC Code');
       return;
     } else {
       const data = new FormData();
       data.append('partner_shopName', shopName);
       data.append('partner_category', partnerCategory);
+      data.append('partner_gstStatus', gstStatus);
       data.append('partner_gstNumber', gstNumber);
       data.append('partner_address', partnerAddress);
       data.append('partner_contactNumber', partnerContactNumber);
@@ -158,22 +168,16 @@ const RegisterScreen = ({navigation, route}) => {
           return response.json();
         })
         .then(function (result) {
-          console.log(result);
           if (result.error == 0) {
-            AsyncStorage.setItem('partner_id', result.partner_id);
-            AsyncStorage.setItem('partner_shopName', result.partner_shopName);
-            AsyncStorage.setItem(
-              'partner_contactNumber',
-              result.partner_contactNumber,
-            );
-            Alert.alert('Welcome');
-            AsyncStorage.setItem('userToken', '1');
-            navigation.navigate('Navigation');
+            let partner_id = result.partner_id;
+            let partner_contactNumber = result.partner_contactNumber;
+            let partner_shopName = result.partner_shopName;
+            signIn({partner_id, partner_contactNumber, partner_shopName});
           } else if (result.error == 2) {
-            Alert.alert(result.msg);
+            showToast(result.msg);
             navigation.navigate('LoginScreen');
           } else {
-            Alert.alert('Something went wrong');
+            showToast('Something went wrong');
           }
         })
         .catch(error => {
@@ -192,28 +196,30 @@ const RegisterScreen = ({navigation, route}) => {
         setAddressPlaceHolder('You are Here..');
         const currentLongitude = JSON.stringify(position.coords.longitude);
         const currentLatitude = JSON.stringify(position.coords.latitude);
-        setPartnerAddress(currentLongitude + '  ' + currentLatitude);
-        // fetch(
-        //   'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=getAddressByLongitudeLatitude',
-        //   {
-        //     method: 'POST',
-        //     headers: {
-        //       Accept: 'application/json',
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //       longitude: currentLongitude,
-        //       latitude: currentLatitude,
-        //     }),
-        //   },
-        // )
-        //   .then(function (response) {
-        //     return response.json();
-        //   })
-        //   .then(function (result) {})
-        //   .catch(error => {
-        //     console.error(error);
-        //   });
+        // setPartnerAddress(currentLongitude + '  ' + currentLatitude);
+        fetch(
+          'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=getAddressByLongitudeLatitude',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              longitude: currentLongitude,
+              latitude: currentLatitude,
+            }),
+          },
+        )
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (result) {
+            setPartnerAddress(result);
+          })
+          .catch(error => {
+            console.error(error);
+          });
       },
       error => {
         console.log(error.message);
@@ -226,6 +232,15 @@ const RegisterScreen = ({navigation, route}) => {
     );
   };
   ///////======Get user location==========//////////
+  const showToast = msg => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
   React.useEffect(() => {
     setPartnerContactNumber(route.params.partner_contactNumber);
     const requestLocationPermission = async () => {
@@ -308,10 +323,20 @@ const RegisterScreen = ({navigation, route}) => {
           </View>
           {/* ======= Business Name Section ======= */}
 
-          {/* <View style={styles.formGroup}>
+          <View style={styles.formGroup}>
             <Text style={styles.formLabel}>GST REGISTERED</Text>
             <View style={[styles.formRow, {marginTop: 10}]}>
-              <DropDownPicker
+              <Icons name="flag-outline" size={20} color="#5E3360" />
+              <Picker
+                selectedValue={gstStatus}
+                style={{height: 50, width: 150}}
+                onValueChange={(itemValue, itemIndex) =>
+                  setGSTStatus(itemValue)
+                }>
+                <Picker.Item label="Yes" value="Yes" />
+                <Picker.Item label="No" value="No" />
+              </Picker>
+              {/* <DropDownPicker
                 open={open}
                 value={value}
                 items={items}
@@ -334,9 +359,9 @@ const RegisterScreen = ({navigation, route}) => {
                   fontFamily: 'OpenSans-Regular',
                   backgroundColor: '#FFFFFF',
                 }}
-              />
+              /> */}
             </View>
-          </View> */}
+          </View>
 
           {/* ======= GST Number ======= */}
           <View style={styles.formGroup}>
@@ -466,10 +491,7 @@ const RegisterScreen = ({navigation, route}) => {
             </View>
           </View>
 
-          <Pressable
-            onPress={() => registrationApi()}
-            // onPress={() => navigation.navigate('UploadDocs')}
-            style={styles.btn}>
+          <Pressable onPress={() => registrationApi()} style={styles.btn}>
             <Text style={styles.btnTxt}>CONTINUE</Text>
           </Pressable>
         </View>

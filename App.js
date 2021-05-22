@@ -88,9 +88,7 @@ const App = () => {
         showToast('Welcome');
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),
-      signUp: async data => {
-        
-      },
+      signUp: async data => {},
     }),
     [],
   );
