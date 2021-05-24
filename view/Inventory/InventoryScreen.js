@@ -13,8 +13,7 @@ import {
   FlatList,
 } from 'react-native';
 
-// // ===== Library ===== //
-import Icons from 'react-native-vector-icons/Ionicons';
+// ===== Library ===== //
 import {createStackNavigator} from '@react-navigation/stack';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -208,68 +207,47 @@ const AllProduct = ({navigation}) => {
               </View>
             </View>
           </View>
-        </View>
-      </Modal>
-      {/* ============ Product details modal ============ */}
 
-      {/* ============ Search modal ============ */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={searchModal}
-        onRequestClose={() => {
-          setSearchModal(!searchModal);
-        }}>
-        <View style={styles.searchModalContainer}>
-          <View style={styles.searchModalCard}>
-            <Pressable
-              onPress={() => setSearchModal(!searchModal)}
-              style={styles.closeBtn}>
-              <Icons name="close-circle-outline" size={25} />
-            </Pressable>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-              }}>
-              <TextInput
-                placeholder="Enter product name"
-                style={{
-                  flex: 1,
-                  borderBottomWidth: 0.5,
-                  marginBottom: 20,
-                  marginRight: 20,
-                  fontFamily: 'OpenSans-Regular',
-                }}
-              />
-              <Icons name="search-outline" size={25} />
-            </View>
-          </View>
+// ===== Components ===== //
+import SelectCategory from './Product/CreateCategory';
+import AddProducts from './Product/AddProduct';
+
+const InventoryScreen = ({navigation}) => {
+  return (
+    <>
+      <View style={styles.container}>
+        <Text style={styles.alert}>No Inventory Found</Text>
+
+        <View style={styles.btnSection}>
+          <Pressable
+            onPress={() => navigation.navigate('SelectCategory')}
+            style={styles.btn}>
+            <Text style={styles.btnTxt}>Add Products</Text>
+          </Pressable>
         </View>
-      </Modal>
-      {/* ============ Search modal ============ */}
+      </View>
     </>
   );
 };
 
 const Stack = createStackNavigator();
 
-function Inventory() {
+const InventoryScreenHolder = () => {
   return (
     <Stack.Navigator headerMode="none">
-      <Stack.Screen name="AllProduct" component={AllProduct} />
-      <Stack.Screen name="AddProduct" component={AddProduct} />
-      <Stack.Screen name="CreateCategory" component={CreateCategory} />
+      <Stack.Screen name="InventoryScreen" component={InventoryScreen} />
+      <Stack.Screen name="SelectCategory" component={SelectCategory} />
+      <Stack.Screen name="AddProducts" component={AddProducts} />
     </Stack.Navigator>
   );
-}
+};
 
-export default Inventory;
+export default InventoryScreenHolder;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+<<<<<<< HEAD
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
@@ -320,116 +298,30 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flex: 1,
     flexDirection: 'column',
+=======
+>>>>>>> f93c11323a053ef4202b81ff858e908a12c77694
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-  },
-  cardImg: {
-    width: 150,
-    height: 150,
-    borderRadius: 10,
-    flex: 1,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  cardProduct: {
-    fontFamily: 'OpenSans-Bold',
-    fontSize: 16,
-  },
-  cardContent: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 14,
-  },
-  modalContainer: {
-    backgroundColor: 'rgba(52, 52, 52, 0.8)',
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  modalCard: {
-    backgroundColor: '#FFFFFF',
-    width: '100%',
-    borderTopStartRadius: 20,
-    borderTopEndRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalHeadingRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 20,
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  modalHeadingTxt: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 18,
-    flex: 1,
-  },
-  modalProductDetailsSection: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  modalDiv: {
-    flex: 1,
-    marginBottom: 20,
-  },
-  productDetailsLabel: {
-    fontFamily: 'OpenSans-Regular',
-  },
-  productDetailsMain: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 16,
-  },
-  searchModalContainer: {
-    backgroundColor: 'rgba(52, 52, 52, 0.5)',
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingTop: 10,
-  },
-  searchModalCard: {
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 15,
     backgroundColor: '#ffffff',
-    borderRadius: 5,
   },
-  closeBtn: {
+  alert: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 16,
+  },
+  btnSection: {
     justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    marginBottom: 15,
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 20,
   },
-  searchBox: {
-    borderWidth: 0,
-  },
-  searchBoxContainer: {
-    borderBottomWidth: 0,
-  },
-  searchBoxTxtInput: {
-    color: '#000',
-    borderWidth: 0,
-    borderBottomWidth: 0.5,
-    fontFamily: 'OpenSans-Regular',
-  },
-  headerAddBtn: {
-    width: 70,
+  btn: {
+    backgroundColor: '#F4AA79',
+    width: '60%',
+    marginTop: 20,
+    borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#C6B5C7',
+    paddingVertical: 15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -438,7 +330,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginLeft: 10,
-    borderRadius: 5,
+  },
+  btnTxt: {
+    fontFamily: 'OpenSans-SemiBold',
   },
 });
