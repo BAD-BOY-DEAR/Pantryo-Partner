@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Pressable,
   TextInput,
-ToastAndroid
+  ToastAndroid,
 } from 'react-native';
 
 // ===== Images ===== //

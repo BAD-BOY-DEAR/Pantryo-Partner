@@ -1,22 +1,28 @@
-import React from 'react';
-import {View, Text, Pressable, StyleSheet, ScrollView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+} from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreateCategory = ({navigation}) => {
   return (
     <>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-          <Pressable
-            onPress={() => navigation.navigate('AddProducts')}
-            style={styles.tab}>
-            <Text style={styles.tabTxt}>Fruits & Vegetables</Text>
-            <Icons name="arrow-forward-circle" color="#5E3360" size={25} />
-          </Pressable>
-        </View>
-      </ScrollView>
+      <View style={styles.container}>
+        <Pressable
+          onPress={() => navigation.navigate('AddProducts')}
+          style={styles.tab}>
+          <Text style={styles.tabTxt}>Fruits & Vegetables</Text>
+          <Icons name="arrow-forward-circle" color="#5E3360" size={25} />
+        </Pressable>
+      </View>
     </>
   );
 };
@@ -24,13 +30,10 @@ const CreateCategory = ({navigation}) => {
 export default CreateCategory;
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: '#fff',
-  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     marginTop: 20,
     paddingHorizontal: 10,
   },

@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TextInput,
+} from 'react-native';
 
 // ===== Images ===== //
 import attaImg from '../../../assets/productImages/atta.jpg';
@@ -18,105 +25,21 @@ const AddProducts = () => {
         <View style={styles.container}>
           <View style={styles.catSection}>
             <View style={styles.catContainer}>
-              <Image source={attaImg} style={styles.catImg} />
-              <Text style={styles.catName}>Atta</Text>
-            </View>
-
-            <View style={styles.productContainer}>
-              <View style={styles.productDiv}>
-                <Text style={styles.prodName}>Aashirwaad Atta Multigrain</Text>
-                <Text style={styles.prodQty}>
-                  5 Kg
-                  <Text style={styles.prodPrice}> ₹300</Text>
-                </Text>
-              </View>
-              <CheckBox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={newValue => setToggleCheckBox(newValue)}
-              />
-            </View>
-          </View>
-
-          <View style={styles.catSection}>
-            <View style={styles.catContainer}>
-              <Image source={flour} style={styles.catImg} />
-              <Text style={styles.catName}>Maida</Text>
-            </View>
-
-            <View style={styles.productContainer}>
-              <View style={styles.productDiv}>
-                <Text style={styles.prodName}>Aashirwaad Atta Multigrain</Text>
-                <Text style={styles.prodQty}>
-                  5 Kg
-                  <Text style={styles.prodPrice}> ₹300</Text>
-                </Text>
-              </View>
-              <CheckBox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={newValue => setToggleCheckBox(newValue)}
-              />
-            </View>
-          </View>
-
-          <View style={styles.catSection}>
-            <View style={styles.catContainer}>
               <Image source={masala} style={styles.catImg} />
               <Text style={styles.catName}>Masale</Text>
             </View>
 
             <View style={styles.productContainer}>
               <View style={styles.productDiv}>
-                <Text style={styles.prodName}>MDH Garam Masala </Text>
-                <Text style={styles.prodQty}>
-                  5 Kg
-                  <Text style={styles.prodPrice}> ₹300</Text>
-                </Text>
+                <Text style={styles.prodBrandName}>MDH</Text>
+                <Text style={styles.prodName}>Garam Masala </Text>
+                <Text style={styles.prodQty}>5 Kg</Text>
               </View>
-              <CheckBox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={newValue => setToggleCheckBox(newValue)}
+              <TextInput
+                placeholder="Price in ₹"
+                keyboardType="number-pad"
+                style={styles.prodTxtInput}
               />
-            </View>
-            <View style={styles.productContainer}>
-              <View style={styles.productDiv}>
-                <Text style={styles.prodName}>MDH Sookhi Dhaniya Masala</Text>
-                <Text style={styles.prodQty}>
-                  5 Kg
-                  <Text style={styles.prodPrice}> ₹300</Text>
-                </Text>
-              </View>
-              <CheckBox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={newValue => setToggleCheckBox(newValue)}
-              />
-            </View>
-            <View style={styles.productContainer}>
-              <View style={styles.productDiv}>
-                <Text style={styles.prodName}>MDH Chicken Masala</Text>
-                <Text style={styles.prodQty}>
-                  5 Kg
-                  <Text style={styles.prodPrice}> ₹300</Text>
-                </Text>
-              </View>
-              <CheckBox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={newValue => setToggleCheckBox(newValue)}
-              />
-            </View>
-
-            <View style={styles.productContainer}>
-              <View style={styles.productDiv}>
-                <Text style={styles.prodName}>MDH Korma Masala</Text>
-                <Text style={styles.prodQty}>
-                  5 Kg
-                  <Text style={styles.prodPrice}> ₹300</Text>
-                </Text>
-              </View>
               <CheckBox
                 disabled={false}
                 value={toggleCheckBox}
@@ -179,6 +102,9 @@ const styles = StyleSheet.create({
   productDiv: {
     flex: 1,
   },
+  prodBrandName: {
+    fontFamily: 'OpenSans-Regular',
+  },
   prodName: {
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 16,
@@ -190,5 +116,12 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Bold',
     fontSize: 16,
     color: 'green',
+  },
+  prodTxtInput: {
+    fontFamily: 'OpenSans-Regular',
+    marginRight: 15,
+    flex: 1,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#c7c7c7c7',
   },
 });
