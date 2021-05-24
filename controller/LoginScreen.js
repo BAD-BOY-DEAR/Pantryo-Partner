@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Pressable,
   TextInput,
-ToastAndroid
+  ToastAndroid,
 } from 'react-native';
 
 // ===== Images ===== //
@@ -49,7 +49,7 @@ const LoginScreen = ({navigation}) => {
     } else {
       setLoading(true);
       fetch(
-        'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=login',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=login',
         {
           method: 'POST',
           headers: {
@@ -69,7 +69,13 @@ const LoginScreen = ({navigation}) => {
             let partner_id = result.partner_id;
             let partner_contactNumber = result.partner_contactNumber;
             let partner_shopName = result.partner_shopName;
-            signIn({partner_id, partner_contactNumber, partner_shopName});
+            let partner_category = result.partner_category;
+            signIn({
+              partner_id,
+              partner_contactNumber,
+              partner_shopName,
+              partner_category,
+            });
           } else if (result.error == 1) {
             navigation.navigate('VerificationScreen', {
               mobilenumbmer: result.partner_contactNumber,

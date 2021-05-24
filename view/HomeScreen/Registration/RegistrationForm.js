@@ -47,6 +47,7 @@ const RegisterScreen = ({navigation, route}) => {
   const [partnerCategory, setPartnerCategory] = React.useState('');
   const [partnerContactNumber, setPartnerContactNumber] = React.useState();
   const [partnerAddress, setPartnerAddress] = React.useState('');
+  const [partnerShopAddress, setPartnerShopAddress] = React.useState('');
   const [bankHolderName, setBankHolderName] = React.useState('');
   const [bankName, setBankName] = React.useState('');
   const [bankAccountNumber, setBankAccountNumber] = React.useState('');
@@ -127,6 +128,9 @@ const RegisterScreen = ({navigation, route}) => {
     } else if (!partnerAddress) {
       showToast('Please Enter Your Full Address');
       return;
+    } else if (!partnerShopAddress) {
+      showToast('Please Enter Your  Full Shop Address');
+      return;
     } else if (!bankHolderName) {
       showToast('Please Enter Your Bank Account Holder Name');
       return;
@@ -145,7 +149,8 @@ const RegisterScreen = ({navigation, route}) => {
       data.append('partner_category', partnerCategory);
       data.append('partner_gstStatus', gstStatus);
       data.append('partner_gstNumber', gstNumber);
-      data.append('partner_address', partnerAddress);
+      data.append('partner_shopaddress', partnerShopAddress);
+      data.append('partner_shopgpslocation', partnerAddress);
       data.append('partner_contactNumber', partnerContactNumber);
       data.append('partner_accountNumber', bankAccountNumber);
       data.append('partner_bankAccountHolderName', bankHolderName);
@@ -154,7 +159,7 @@ const RegisterScreen = ({navigation, route}) => {
       data.append('partner_storeImage', storeImage);
       setLoading(true);
       fetch(
-        'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartnerRegistration.php',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerRegistration.php',
         {
           method: 'POST',
           headers: {
@@ -172,7 +177,13 @@ const RegisterScreen = ({navigation, route}) => {
             let partner_id = result.partner_id;
             let partner_contactNumber = result.partner_contactNumber;
             let partner_shopName = result.partner_shopName;
-            signIn({partner_id, partner_contactNumber, partner_shopName});
+            let partner_category = result.partner_category;
+            signIn({
+              partner_id,
+              partner_contactNumber,
+              partner_shopName,
+              partner_category,
+            });
           } else if (result.error == 2) {
             showToast(result.msg);
             navigation.navigate('UploadDocs');
@@ -197,7 +208,7 @@ const RegisterScreen = ({navigation, route}) => {
         const currentLongitude = JSON.stringify(position.coords.longitude);
         const currentLatitude = JSON.stringify(position.coords.latitude);
         fetch(
-          'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=getAddressByLongitudeLatitude',
+          'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getAddressByLongitudeLatitude',
           {
             method: 'POST',
             headers: {
@@ -215,6 +226,7 @@ const RegisterScreen = ({navigation, route}) => {
           })
           .then(function (result) {
             setPartnerAddress(result);
+            setPartnerShopAddress(result);
           })
           .catch(error => {
             console.error(error);
@@ -274,7 +286,7 @@ const RegisterScreen = ({navigation, route}) => {
 
   return (
     <>
-      {isLoading === true ? <LoaderScreen /> : null}
+      {isLoading == true ? <LoaderScreen /> : null}
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           <Text style={styles.screenDescription}>
@@ -444,6 +456,8 @@ const RegisterScreen = ({navigation, route}) => {
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 autoCapitalize="words"
+                value={partnerShopAddress}
+                onChangeText={txt => setPartnerShopAddress(txt)}
               />
             </View>
           </View>

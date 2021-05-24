@@ -34,7 +34,7 @@ const OtpVerification = ({navigation, route}) => {
     } else {
       setLoading(true);
       fetch(
-        'https://lmis.in/PantryoApp/PartnerAppApi/PantryoPartner.php?flag=resendOTP',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=resendOTP',
         {
           method: 'POST',
           headers: {
