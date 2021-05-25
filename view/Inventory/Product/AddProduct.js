@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
+  Pressable,
   Image,
   TextInput,
   FlatList,
@@ -13,10 +13,13 @@ import {
 import attaImg from '../../../assets/productImages/atta.jpg';
 import flour from '../../../assets/productImages/flour.jpg';
 import masala from '../../../assets/productImages/masala.png';
-///=======LoaderScreen=========/////
+
+//======= Components =========//
 import LoaderScreen from '../../../controller/LoaderScreen';
+
 // ===== Library ===== //
 import CheckBox from '@react-native-community/checkbox';
+import Icons from 'react-native-vector-icons/Ionicons';
 
 const AddProducts = ({route, navigation}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
@@ -24,22 +27,12 @@ const AddProducts = ({route, navigation}) => {
   const [pantryoInvetory, setPantryoInventory] = React.useState([]);
   const [mainCategoryName, setMainCategoryName] = React.useState([]);
 
-  const showToast = msg => {
-    ToastAndroid.showWithGravityAndOffset(
-      msg,
-      ToastAndroid.SHORT,
-      ToastAndroid.BOTTOM,
-      25,
-      50,
-    );
-  };
-  ///Fetch Partner Category
   const fetchPantryoInventory = (partner_category, main_category_id) => {
     if (!partner_category) {
-      showToast('Partner Category Id not found!');
+      console.log('Partner Category ID not found!');
       return;
     } else if (!main_category_id) {
-      showToast('Partner Main Category Id not found!');
+      console.log('Partner Main Category ID not found!');
       return;
     } else {
       setLoading(true);
@@ -66,7 +59,7 @@ const AddProducts = ({route, navigation}) => {
             setPantryoInventory(result.PantryoInventoryData);
             setMainCategoryName(result.MainCategoryName);
           } else {
-            showToast('Something went Wrong!');
+            console.log('Something went Wrong!');
           }
         })
         .catch(error => {
@@ -91,10 +84,32 @@ const AddProducts = ({route, navigation}) => {
         <LoaderScreen />
       ) : (
         <View style={styles.container}>
+          <View style={styles.searchSection}>
+            <View style={styles.searchBox}>
+              <Icons name="search-outline" size={20} color="#777" />
+              <TextInput
+                placeholder="Search by Brand or Product"
+                autoCapitalize="words"
+                style={styles.searchTxtInput}
+              />
+              <Pressable style={styles.searchBtn}>
+                <Icons name="arrow-forward-outline" size={25} color="#fff" />
+              </Pressable>
+            </View>
+          </View>
           <View style={styles.catSection}>
             <View style={styles.catContainer}>
               <Image source={masala} style={styles.catImg} />
               <Text style={styles.catName}>{mainCategoryName}</Text>
+            </View>
+
+            <View style={styles.noticeSection}>
+              <View style={styles.noticeTab}>
+                <Text style={styles.noticeTxt}>
+                  Select all the items that you sell from your store. You can
+                  also edit the price of the items accordingly
+                </Text>
+              </View>
             </View>
             {pantryoInvetory !== '' ? (
               <FlatList
@@ -154,6 +169,31 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: '#fff',
   },
+  searchSection: {
+    width: '100%',
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    marginTop: 20,
+  },
+  searchBox: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#c7c7c7c7',
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  searchTxtInput: {
+    flex: 1,
+    marginLeft: 10,
+    fontFamily: 'OpenSans-Regular',
+  },
+  searchBtn: {
+    backgroundColor: '#5E3360',
+    padding: 3,
+    borderRadius: 5,
+  },
   catSection: {
     width: '100%',
     marginBottom: 30,
@@ -174,9 +214,25 @@ const styles = StyleSheet.create({
   },
   catName: {
     fontFamily: 'OpenSans-SemiBold',
-    flex: 1,
     marginLeft: 20,
     fontSize: 20,
+    flex: 1,
+  },
+  noticeSection: {
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  noticeTab: {
+    borderWidth: 2.5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    backgroundColor: '#C6B5C7',
+    borderColor: '#5E3360',
+  },
+  noticeTxt: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 14,
   },
   productContainer: {
     flexDirection: 'row',
@@ -190,7 +246,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   productDiv: {
-    flex: 1,
+    flex: 2,
   },
   prodBrandName: {
     fontFamily: 'OpenSans-Regular',

@@ -18,20 +18,20 @@ const CreateCategory = ({navigation}) => {
   const [allMainCategory, setAllMainCategory] = React.useState([]);
   const [isLoading, setLoading] = React.useState(false);
 
-  const showToast = msg => {
-    ToastAndroid.showWithGravityAndOffset(
-      msg,
-      ToastAndroid.SHORT,
-      ToastAndroid.BOTTOM,
-      25,
-      50,
-    );
-  };
+  // const showToast = msg => {
+  //   ToastAndroid.showWithGravityAndOffset(
+  //     msg,
+  //     ToastAndroid.SHORT,
+  //     ToastAndroid.BOTTOM,
+  //     25,
+  //     50,
+  //   );
+  // };
   ///Fetch Partner Category
   const fetchPartnerMainCategoryApi = async () => {
     let category_id = await AsyncStorage.getItem('partner_category');
     if (!category_id) {
-      showToast('Partner Category Id not found!');
+      console.log('Partner Category Id not found!');
       return;
     } else {
       setLoading(true);
@@ -55,7 +55,7 @@ const CreateCategory = ({navigation}) => {
           if (result.error == 0) {
             setAllMainCategory(result.AllMainCategory);
           } else {
-            showToast('Something went Wrong!');
+            console.log('Something went Wrong!');
           }
         })
         .catch(error => {
@@ -117,8 +117,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginTop: 20,
+    paddingTop: 20,
     paddingHorizontal: 10,
+    backgroundColor: '#fff',
   },
   tab: {
     width: '100%',
