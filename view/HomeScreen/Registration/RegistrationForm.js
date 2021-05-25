@@ -12,6 +12,7 @@ import {
   ToastAndroid,
   Platform,
   Picker,
+  FlatList,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -45,6 +46,8 @@ const RegisterScreen = ({navigation, route}) => {
   const [gstNumber, setGSTNumber] = React.useState('');
   const [gstStatus, setGSTStatus] = React.useState('');
   const [partnerCategory, setPartnerCategory] = React.useState('');
+  const [partnerCategoryId, setPartnerCategoryId] = React.useState('');
+  const [partnerAllCategory, setPartnerAllCategory] = React.useState('');
   const [partnerContactNumber, setPartnerContactNumber] = React.useState();
   const [partnerAddress, setPartnerAddress] = React.useState('');
   const [partnerShopAddress, setPartnerShopAddress] = React.useState('');
@@ -146,7 +149,7 @@ const RegisterScreen = ({navigation, route}) => {
     } else {
       const data = new FormData();
       data.append('partner_shopName', shopName);
-      data.append('partner_category', partnerCategory);
+      data.append('partner_category', partnerCategoryId);
       data.append('partner_gstStatus', gstStatus);
       data.append('partner_gstNumber', gstNumber);
       data.append('partner_shopaddress', partnerShopAddress);
@@ -178,11 +181,13 @@ const RegisterScreen = ({navigation, route}) => {
             let partner_contactNumber = result.partner_contactNumber;
             let partner_shopName = result.partner_shopName;
             let partner_category = result.partner_category;
+            let partner_categoryName = result.partner_category_name;
             signIn({
               partner_id,
               partner_contactNumber,
               partner_shopName,
               partner_category,
+              partner_categoryName,
             });
           } else if (result.error == 2) {
             showToast(result.msg);
@@ -253,7 +258,28 @@ const RegisterScreen = ({navigation, route}) => {
     );
   };
 
+  ///Fetch Partner Category
+  const fetchPartnerCategoryApi = () => {
+    setLoading(true);
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getAllPartnerCategory',
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        if (result.error == 0) {
+          setPartnerAllCategory(result.AllCategory);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => setLoading(false));
+  };
+
   React.useEffect(() => {
+    fetchPartnerCategoryApi();
     setPartnerContactNumber(route.params.partner_contactNumber);
     const requestLocationPermission = async () => {
       if (Platform.OS === 'ios') {
@@ -544,97 +570,23 @@ const RegisterScreen = ({navigation, route}) => {
               </Pressable>
             </View>
 
-            <ScrollView>
-              <Pressable
-                onPress={() => {
-                  setPartnerCategory('Kirana Store, FMCG & Grocery Store');
-                  setModalVisible(false);
-                }}
-                style={styles.modalCategory}>
-                <Text style={styles.categoryTxt}>
-                  Kirana Store, FMCG & Grocery Store
-                </Text>
-                {/* <CheckBox
-                  disabled={false}
-                  value={toggleCheckBox}
-                  onValueChange={newValue => setToggleCheckBox(newValue)}
-                /> */}
-              </Pressable>
-
-              <Pressable
-                onPress={() => {
-                  setPartnerCategory('Fruits & Vegetables');
-                  setModalVisible(false);
-                }}
-                style={styles.modalCategory}>
-                <Text style={styles.categoryTxt}>Fruits & Vegetables</Text>
-                {/* <CheckBox
-                  disabled={false}
-                  value={toggleCheckBox}
-                  onValueChange={newValue => setToggleCheckBox(newValue)}
-                /> */}
-              </Pressable>
-
-              <Pressable
-                onPress={() => {
-                  setPartnerCategory('Meat, Chicken & Fish Store');
-                  setModalVisible(false);
-                }}
-                style={styles.modalCategory}>
-                <Text style={styles.categoryTxt}>
-                  Meat, Chicken & Fish Store
-                </Text>
-                {/* <CheckBox
-                  disabled={false}
-                  value={toggleCheckBox}
-                  onValueChange={newValue => setToggleCheckBox(newValue)}
-                /> */}
-              </Pressable>
-
-              <Pressable
-                onPress={() => {
-                  setPartnerCategory('Home Decoration & Electronic Appliances');
-                  setModalVisible(false);
-                }}
-                style={styles.modalCategory}>
-                <Text style={styles.categoryTxt}>
-                  Home Decoration & Electronic Appliances
-                </Text>
-                {/* <CheckBox
-                  disabled={false}
-                  value={toggleCheckBox}
-                  onValueChange={newValue => setToggleCheckBox(newValue)}
-                /> */}
-              </Pressable>
-
-              <Pressable
-                onPress={() => {
-                  setPartnerCategory('Dairy Shops');
-                  setModalVisible(false);
-                }}
-                style={styles.modalCategory}>
-                <Text style={styles.categoryTxt}>Dairy Shops</Text>
-                {/* <CheckBox
-                  disabled={false}
-                  value={toggleCheckBox}
-                  onValueChange={newValue => setToggleCheckBox(newValue)}
-                /> */}
-              </Pressable>
-
-              <Pressable
-                onPress={() => {
-                  setPartnerCategory('Bakery');
-                  setModalVisible(false);
-                }}
-                style={styles.modalCategory}>
-                <Text style={styles.categoryTxt}>Bakery</Text>
-                {/* <CheckBox
-                  disabled={false}
-                  value={toggleCheckBox}
-                  onValueChange={newValue => setToggleCheckBox(newValue)}
-                /> */}
-              </Pressable>
-            </ScrollView>
+            <FlatList
+              data={partnerAllCategory}
+              renderItem={({item}) => (
+                <Pressable
+                  onPress={() => {
+                    setPartnerCategory(item.partner_category_name);
+                    setPartnerCategoryId(item.partner_category_id);
+                    setModalVisible(false);
+                  }}
+                  style={styles.modalCategory}>
+                  <Text style={styles.categoryTxt}>
+                    {item.partner_category_name}
+                  </Text>
+                </Pressable>
+              )}
+              keyExtractor={item => item.partner_category_id}
+            />
           </View>
         </View>
       </Modal>

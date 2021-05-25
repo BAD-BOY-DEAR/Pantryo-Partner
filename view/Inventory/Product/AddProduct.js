@@ -6,49 +6,141 @@ import {
   ScrollView,
   Image,
   TextInput,
+  FlatList,
 } from 'react-native';
 
 // ===== Images ===== //
 import attaImg from '../../../assets/productImages/atta.jpg';
 import flour from '../../../assets/productImages/flour.jpg';
 import masala from '../../../assets/productImages/masala.png';
-
+///=======LoaderScreen=========/////
+import LoaderScreen from '../../../controller/LoaderScreen';
 // ===== Library ===== //
 import CheckBox from '@react-native-community/checkbox';
 
-const AddProducts = () => {
+const AddProducts = ({route, navigation}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [isLoading, setLoading] = React.useState(false);
+  const [pantryoInvetory, setPantryoInventory] = React.useState([]);
+  const [mainCategoryName, setMainCategoryName] = React.useState([]);
+
+  const showToast = msg => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
+  ///Fetch Partner Category
+  const fetchPantryoInventory = (partner_category, main_category_id) => {
+    if (!partner_category) {
+      showToast('Partner Category Id not found!');
+      return;
+    } else if (!main_category_id) {
+      showToast('Partner Main Category Id not found!');
+      return;
+    } else {
+      setLoading(true);
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getPantryoInventoryData',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_category: partner_category,
+            main_category_id: main_category_id,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          // console.log(result);
+          if (result.error == 0) {
+            setPantryoInventory(result.PantryoInventoryData);
+            setMainCategoryName(result.MainCategoryName);
+          } else {
+            showToast('Something went Wrong!');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+
+  React.useEffect(() => {
+    let {partner_category, main_category_id} = route.params;
+    if (partner_category) {
+      if (main_category_id) {
+        fetchPantryoInventory(partner_category, main_category_id);
+      }
+    }
+  }, []);
 
   return (
     <>
-      <ScrollView style={styles.scrollView}>
+      {isLoading == true ? (
+        <LoaderScreen />
+      ) : (
         <View style={styles.container}>
           <View style={styles.catSection}>
             <View style={styles.catContainer}>
               <Image source={masala} style={styles.catImg} />
-              <Text style={styles.catName}>Masale</Text>
+              <Text style={styles.catName}>{mainCategoryName}</Text>
             </View>
-
-            <View style={styles.productContainer}>
-              <View style={styles.productDiv}>
-                <Text style={styles.prodBrandName}>MDH</Text>
-                <Text style={styles.prodName}>Garam Masala </Text>
-                <Text style={styles.prodQty}>5 Kg</Text>
-              </View>
-              <TextInput
-                placeholder="Price in ₹"
-                keyboardType="number-pad"
-                style={styles.prodTxtInput}
+            {pantryoInvetory !== '' ? (
+              <FlatList
+                style={{width: '100%'}}
+                data={pantryoInvetory}
+                renderItem={({item}) => (
+                  <View style={styles.productContainer}>
+                    <View style={styles.productDiv}>
+                      <Text style={styles.prodBrandName}>
+                        {item.pantryo_brand_name
+                          ? item.pantryo_brand_name
+                          : 'no brand name'}
+                      </Text>
+                      <Text style={styles.prodName}>
+                        {item.pantryo_item_name
+                          ? item.pantryo_item_name
+                          : 'item name not found!'}
+                      </Text>
+                      <Text style={styles.prodQty}>
+                        {item.pantryo_item_qty
+                          ? item.pantryo_item_qty
+                          : 'no quantity'}
+                      </Text>
+                    </View>
+                    <TextInput
+                      placeholder="Price in ₹"
+                      keyboardType="number-pad"
+                      style={styles.prodTxtInput}
+                    />
+                    <CheckBox
+                      disabled={false}
+                      value={toggleCheckBox}
+                      onValueChange={newValue => setToggleCheckBox(newValue)}
+                    />
+                  </View>
+                )}
+                keyExtractor={(item, pantryo_inventory_id) =>
+                  String(pantryo_inventory_id)
+                }
               />
-              <CheckBox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={newValue => setToggleCheckBox(newValue)}
-              />
-            </View>
+            ) : (
+              <Text style={styles.prodName}>No Inventory Found!!</Text>
+            )}
           </View>
         </View>
-      </ScrollView>
+      )}
     </>
   );
 };
@@ -56,13 +148,11 @@ const AddProducts = () => {
 export default AddProducts;
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: '#fff',
-  },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    backgroundColor: '#fff',
   },
   catSection: {
     width: '100%',
