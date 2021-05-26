@@ -10,19 +10,28 @@ import {
 } from 'react-native';
 
 // ===== Images ===== //
-import attaImg from '../../../assets/productImages/atta.jpg';
-import flour from '../../../assets/productImages/flour.jpg';
 import masala from '../../../assets/productImages/masala.png';
+import edibleOils from '../../../assets/productImages/edibleOils.jpg';
+import attaImg from '../../../assets/productImages/atta.jpg';
+import besan from '../../../assets/productImages/besan.jpg';
+import flour from '../../../assets/productImages/flour.jpg';
+import sooji from '../../../assets/productImages/sooji.jpg';
+import riceFlour from '../../../assets/productImages/riceflour.jpg';
+import otherFlour from '../../../assets/productImages/otherFlour.jpg';
+import rice from '../../../assets/productImages/rice.jpg';
+import saltSugar from '../../../assets/productImages/saltsugar.jpg';
+import pulsesGrains from '../../../assets/productImages/pulsesgrains.jpg';
+import baking from '../../../assets/productImages/baking.jpg';
+import frozenFood from '../../../assets/productImages/frozenFood.jpg';
+import packaged from '../../../assets/productImages/packaged.jpg';
 
 //======= Components =========//
 import LoaderScreen from '../../../controller/LoaderScreen';
 
 // ===== Library ===== //
-import CheckBox from '@react-native-community/checkbox';
 import Icons from 'react-native-vector-icons/Ionicons';
 
 const AddProducts = ({route, navigation}) => {
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [isLoading, setLoading] = React.useState(false);
   const [pantryoInvetory, setPantryoInventory] = React.useState([]);
   const [mainCategoryName, setMainCategoryName] = React.useState([]);
@@ -99,7 +108,35 @@ const AddProducts = ({route, navigation}) => {
           </View>
           <View style={styles.catSection}>
             <View style={styles.catContainer}>
-              <Image source={masala} style={styles.catImg} />
+              {mainCategoryName == 'Spices & Masala' ? (
+                <Image source={masala} style={styles.catImg} />
+              ) : mainCategoryName == 'Edible Oils' ? (
+                <Image source={edibleOils} style={styles.catImg} />
+              ) : mainCategoryName == 'Wheat Flour' ? (
+                <Image source={attaImg} style={styles.catImg} />
+              ) : mainCategoryName == 'Besan' ? (
+                <Image source={besan} style={styles.catImg} />
+              ) : mainCategoryName == 'Flour' ? (
+                <Image source={flour} style={styles.catImg} />
+              ) : mainCategoryName == 'Sooji' ? (
+                <Image source={sooji} style={styles.catImg} />
+              ) : mainCategoryName == 'Rice Flour' ? (
+                <Image source={riceFlour} style={styles.catImg} />
+              ) : mainCategoryName == 'Other Flours' ? (
+                <Image source={otherFlour} style={styles.catImg} />
+              ) : mainCategoryName == 'Rice' ? (
+                <Image source={rice} style={styles.catImg} />
+              ) : mainCategoryName == 'Salt & Sugar' ? (
+                <Image source={saltSugar} style={styles.catImg} />
+              ) : mainCategoryName == 'Pulses & Grains' ? (
+                <Image source={pulsesGrains} style={styles.catImg} />
+              ) : mainCategoryName == 'Baking Items' ? (
+                <Image source={baking} style={styles.catImg} />
+              ) : mainCategoryName == 'Frozen Food' ? (
+                <Image source={frozenFood} style={styles.catImg} />
+              ) : mainCategoryName == 'Packaged Products' ? (
+                <Image source={packaged} style={styles.catImg} />
+              ) : null}
               <Text style={styles.catName}>{mainCategoryName}</Text>
             </View>
 
@@ -139,11 +176,9 @@ const AddProducts = ({route, navigation}) => {
                       keyboardType="number-pad"
                       style={styles.prodTxtInput}
                     />
-                    <CheckBox
-                      disabled={false}
-                      value={toggleCheckBox}
-                      onValueChange={newValue => setToggleCheckBox(newValue)}
-                    />
+                    <Pressable style={styles.addBtn}>
+                      <Icons name="add-outline" size={15} color="green" />
+                    </Pressable>
                   </View>
                 )}
                 keyExtractor={(item, pantryo_inventory_id) =>
@@ -269,5 +304,17 @@ const styles = StyleSheet.create({
     flex: 1,
     borderBottomWidth: 0.5,
     borderBottomColor: '#c7c7c7c7',
+  },
+  addBtn: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'green',
+    width: 50,
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
