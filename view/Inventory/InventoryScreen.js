@@ -88,9 +88,11 @@ const InventoryScreen = ({navigation}) => {
         </ScrollView>
         {/* ========== Selected Inventory Section ========== */}
 
-        {/* <View style={styles.alertSection}>
+        {/* ========== No Inventory Found ALert ========== */}
+        <View style={styles.alertSection}>
           <Text style={styles.alert}>You have not selected any products</Text>
-        </View> */}
+        </View>
+        {/* ========== No Inventory Found ALert ========== */}
       </View>
 
       {/* ========== Category Modal ========== */}
