@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   productDiv: {
-    flex: 2,
+    flex: 3,
   },
   prodBrandName: {
     fontFamily: 'OpenSans-Regular',
@@ -293,14 +293,9 @@ const styles = StyleSheet.create({
   prodQty: {
     fontFamily: 'OpenSans-Regular',
   },
-  prodPrice: {
-    fontFamily: 'OpenSans-Bold',
-    fontSize: 16,
-    color: 'green',
-  },
   prodTxtInput: {
     fontFamily: 'OpenSans-Regular',
-    marginRight: 15,
+    marginRight: 25,
     flex: 1,
     borderBottomWidth: 0.5,
     borderBottomColor: '#c7c7c7c7',
