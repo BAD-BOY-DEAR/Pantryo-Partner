@@ -150,6 +150,7 @@ const AddProducts = ({route, navigation}) => {
             </View>
             {pantryoInvetory !== '' ? (
               <FlatList
+                showsVerticalScrollIndicator={false}
                 style={{width: '100%'}}
                 data={pantryoInvetory}
                 renderItem={({item}) => (
