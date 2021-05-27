@@ -192,6 +192,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
     implementation project(':react-native-maps') 
+    implementation project(':react-native-linear-gradient')
 
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {

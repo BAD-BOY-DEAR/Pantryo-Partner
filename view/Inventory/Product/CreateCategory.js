@@ -76,6 +76,7 @@ const CreateCategory = ({navigation}) => {
         <View style={styles.container}>
           {allMainCategory !== '' ? (
             <FlatList
+              showsVerticalScrollIndicator={false}
               style={{width: '100%'}}
               data={allMainCategory}
               renderItem={({item}) => (

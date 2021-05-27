@@ -12,9 +12,10 @@ import {
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
+import LinearGradient from 'react-native-linear-gradient';
 
 // ===== Images ===== //
-import productIcon from '../../assets/icons/productIcon.png';
+import mascot from '../../assets/logo/mascot.png';
 
 // ===== Screens ===== //
 import RegistrationForm from './Registration/RegistrationForm';
@@ -56,7 +57,7 @@ const HomeScreen = ({navigation}) => {
           </View>
           {/* ========== Header Section ========== */}
 
-          {/* ========== Middle Section ========== */}
+          {/* ========== Overview Section ========== */}
           <View style={styles.middleSection}>
             <Text style={styles.tabHeading}>Overview</Text>
             <View style={styles.row}>
@@ -73,7 +74,7 @@ const HomeScreen = ({navigation}) => {
               </Pressable>
             </View>
           </View>
-          {/* ========== Middle Section ========== */}
+          {/* ========== Overview Section ========== */}
 
           {/* ========== Ongoing Orders Section ========== */}
           <View style={styles.section}>
@@ -255,14 +256,6 @@ const styles = StyleSheet.create({
     height: 100,
     flex: 1,
     marginHorizontal: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   midTabLabel: {
     fontFamily: 'OpenSans-Regular',
