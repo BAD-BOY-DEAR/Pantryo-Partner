@@ -105,6 +105,7 @@ const AddProducts = ({route, navigation}) => {
     inventory_id,
     product_name,
     product_brand,
+    product_qty,
     product_price,
   ) => {
     let partner_id = await AsyncStorage.getItem('partner_id');
@@ -129,12 +130,10 @@ const AddProducts = ({route, navigation}) => {
     } else if (!product_name) {
       showToast('Enter Product Name!');
       return;
-    }
-    //  else if (!product_brand) {
-    //   showToast('Enter Product Brand Name!');
-    //   return;
-    // }
-    else if (!price) {
+    } else if (!product_qty) {
+      showToast('Enter Product Brand Name!');
+      return;
+    } else if (!price) {
       showToast('Enter Product Price!');
       return;
     } else {
@@ -154,6 +153,7 @@ const AddProducts = ({route, navigation}) => {
             inventory_id: inventory_id,
             product_brand: product_brand,
             product_name: product_name,
+            partner_product_quantity: product_qty,
             product_price: price,
           }),
         },
@@ -301,6 +301,7 @@ const AddProducts = ({route, navigation}) => {
                             item.pantryo_inventory_id,
                             item.pantryo_item_name,
                             item.pantryo_brand_name,
+                            item.pantryo_item_qty,
                             item.pantryo_item_price,
                           )
                         }
