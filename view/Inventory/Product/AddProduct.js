@@ -25,6 +25,8 @@ import pulsesGrains from '../../../assets/productImages/pulsesgrains.jpg';
 import baking from '../../../assets/productImages/baking.jpg';
 import frozenFood from '../../../assets/productImages/frozenFood.jpg';
 import packaged from '../../../assets/productImages/packaged.jpg';
+import veg from '../../../assets/productImages/veg.jpg';
+import fruits from '../../../assets/productImages/fruits.jpg';
 
 //======= Components =========//
 import LoaderScreen from '../../../controller/LoaderScreen';
@@ -240,6 +242,10 @@ const AddProducts = ({route, navigation}) => {
                 <Image source={frozenFood} style={styles.catImg} />
               ) : mainCategoryName == 'Packaged Products' ? (
                 <Image source={packaged} style={styles.catImg} />
+              ) : mainCategoryName == 'Vegetables' ? (
+                <Image source={veg} style={styles.catImg} />
+              ) : mainCategoryName == 'Fruits' ? (
+                <Image source={fruits} style={styles.catImg} />
               ) : (
                 <Icons name="image" size={40} color="#777" />
               )}
@@ -263,9 +269,7 @@ const AddProducts = ({route, navigation}) => {
                   <View style={styles.productContainer}>
                     <View style={styles.productDiv}>
                       <Text style={styles.prodBrandName}>
-                        {item.pantryo_brand_name
-                          ? item.pantryo_brand_name
-                          : 'no brand name'}
+                        {item.pantryo_brand_name ? item.pantryo_brand_name : ''}
                       </Text>
                       <Text style={styles.prodName}>
                         {item.pantryo_item_name
@@ -311,7 +315,7 @@ const AddProducts = ({route, navigation}) => {
                     ) : (
                       <Pressable style={styles.addBtn}>
                         <Icons
-                          name="checkbox-outline"
+                          name="checkmark-outline"
                           size={15}
                           color="green"
                         />
