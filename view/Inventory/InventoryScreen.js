@@ -26,6 +26,7 @@ const InventoryScreen = ({navigation}) => {
   const [changeCategoryModal, setChangeCategoryModal] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [isLoading, setLoading] = useState(true);
+  const [partnerCategory, setPartnerCategory] = useState('');
   const [partnerProducts, setPartnerProducts] = useState([]);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -77,7 +78,13 @@ const InventoryScreen = ({navigation}) => {
     }
   };
 
+  //Set User Category
+  const setPartnerCategoryName = async () => {
+    setPartnerCategory(await AsyncStorage.getItem('partner_category_name'));
+  };
+
   React.useEffect(() => {
+    setPartnerCategoryName();
     fetchAllProductsOfPartnerApi();
   }, []);
 
@@ -112,7 +119,7 @@ const InventoryScreen = ({navigation}) => {
         <View style={styles.categorySection}>
           <View style={styles.div}>
             <Text style={styles.categoryLabel}>Category</Text>
-            <Text style={styles.categoryResponse}>Spices & Masala</Text>
+            <Text style={styles.categoryResponse}>{partnerCategory}</Text>
           </View>
           <Pressable onPress={() => setChangeCategoryModal(true)}>
             <Icons name="filter-outline" size={20} style={styles.icon} />
