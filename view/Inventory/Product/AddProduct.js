@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   FlatList,
+  ToastAndroid,
 } from 'react-native';
 
 // ===== Images ===== //
@@ -30,18 +31,36 @@ import LoaderScreen from '../../../controller/LoaderScreen';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddProducts = ({route, navigation}) => {
   const [isLoading, setLoading] = React.useState(false);
   const [pantryoInvetory, setPantryoInventory] = React.useState([]);
   const [mainCategoryName, setMainCategoryName] = React.useState([]);
+  const [newprice, setNewPrice] = React.useState('');
+  const [inventoryId, setInventoryId] = React.useState('');
 
-  const fetchPantryoInventory = (partner_category, main_category_id) => {
+  ///Toast Show//
+  const showToast = msg => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
+
+  const fetchPantryoInventory = async (partner_category, main_category_id) => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_category) {
-      console.log('Partner Category ID not found!');
+      showToast('Partner Category ID not found!');
       return;
     } else if (!main_category_id) {
-      console.log('Partner Main Category ID not found!');
+      showToast('Partner Main Category ID not found!');
+      return;
+    } else if (!partner_id) {
+      showToast('Partner ID not found!');
       return;
     } else {
       setLoading(true);
@@ -56,6 +75,7 @@ const AddProducts = ({route, navigation}) => {
           body: JSON.stringify({
             partner_category: partner_category,
             main_category_id: main_category_id,
+            partner_id: partner_id,
           }),
         },
       )
@@ -68,7 +88,7 @@ const AddProducts = ({route, navigation}) => {
             setPantryoInventory(result.PantryoInventoryData);
             setMainCategoryName(result.MainCategoryName);
           } else {
-            console.log('Something went Wrong!');
+            showToast('Something went Wrong!');
           }
         })
         .catch(error => {
@@ -77,6 +97,90 @@ const AddProducts = ({route, navigation}) => {
         .finally(() => setLoading(false));
     }
   };
+
+  ///======Add Product =======//
+  const addProductApi = async (
+    partner_category_id,
+    main_category_id,
+    inventory_id,
+    product_name,
+    product_brand,
+    product_price,
+  ) => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    let price = null;
+    if (newprice) {
+      price = newprice;
+    } else {
+      price = product_price;
+    }
+    if (!partner_category_id) {
+      showToast('Partner Category ID not found!');
+      return;
+    } else if (!main_category_id) {
+      showToast('Partner Main Category ID not found!');
+      return;
+    } else if (!partner_id) {
+      showToast('Partner ID not found!');
+      return;
+    } else if (!inventory_id) {
+      showToast('Partner Inventory ID not found!');
+      return;
+    } else if (!product_name) {
+      showToast('Enter Product Name!');
+      return;
+    }
+    //  else if (!product_brand) {
+    //   showToast('Enter Product Brand Name!');
+    //   return;
+    // }
+    else if (!price) {
+      showToast('Enter Product Price!');
+      return;
+    } else {
+      setLoading(true);
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=addProductByPartner',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_id: partner_id,
+            partner_category_id: partner_category_id,
+            main_category_id: main_category_id,
+            inventory_id: inventory_id,
+            product_brand: product_brand,
+            product_name: product_name,
+            product_price: price,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          console.log(result);
+          if (result.error == 0) {
+            showToast(result.msg);
+            fetchPantryoInventory(
+              result.partner_category_id,
+              result.main_category_id,
+            );
+          } else {
+            // showToast('Something went Wrong! Please try Again!');
+            showToast(result.msg);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+  ///======Add Product =======//
 
   React.useEffect(() => {
     let {partner_category, main_category_id} = route.params;
@@ -136,7 +240,9 @@ const AddProducts = ({route, navigation}) => {
                 <Image source={frozenFood} style={styles.catImg} />
               ) : mainCategoryName == 'Packaged Products' ? (
                 <Image source={packaged} style={styles.catImg} />
-              ) : null}
+              ) : (
+                <Icons name="image" size={40} color="#777" />
+              )}
               <Text style={styles.catName}>{mainCategoryName}</Text>
             </View>
 
@@ -174,12 +280,43 @@ const AddProducts = ({route, navigation}) => {
                     </View>
                     <TextInput
                       placeholder="Price in ₹"
+                      placeholderTextColor="#000"
                       keyboardType="number-pad"
+                      value={
+                        item.pantryo_inventory_id === inventoryId
+                          ? newprice
+                          : item.pantryo_item_price
+                      }
                       style={styles.prodTxtInput}
+                      onChangeText={text => {
+                        setNewPrice(text);
+                        setInventoryId(item.pantryo_inventory_id);
+                      }}
                     />
-                    <Pressable style={styles.addBtn}>
-                      <Icons name="add-outline" size={15} color="green" />
-                    </Pressable>
+                    {item.product_assign_status == 'not added' ? (
+                      <Pressable
+                        onPress={() =>
+                          addProductApi(
+                            item.partner_category_id,
+                            item.pantryo_main_category_id,
+                            item.pantryo_inventory_id,
+                            item.pantryo_item_name,
+                            item.pantryo_brand_name,
+                            item.pantryo_item_price,
+                          )
+                        }
+                        style={styles.addBtn}>
+                        <Icons name="add-outline" size={15} color="green" />
+                      </Pressable>
+                    ) : (
+                      <Pressable style={styles.addBtn}>
+                        <Icons
+                          name="checkbox-outline"
+                          size={15}
+                          color="green"
+                        />
+                      </Pressable>
+                    )}
                   </View>
                 )}
                 keyExtractor={(item, pantryo_inventory_id) =>
@@ -300,6 +437,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderBottomWidth: 0.5,
     borderBottomColor: '#c7c7c7c7',
+    color: '#000',
   },
   addBtn: {
     flexDirection: 'row',
