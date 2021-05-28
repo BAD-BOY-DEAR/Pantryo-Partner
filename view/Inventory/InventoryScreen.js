@@ -98,8 +98,9 @@ const InventoryScreen = ({navigation}) => {
           return response.json();
         })
         .then(function (result) {
+          // console.log(result);
           if (result.error == 0) {
-            setPartnerProducts(result.Allproduct);
+            setPartnerProducts(result.AllPartnerProduct);
           } else {
             showToast('Something went Wrong!');
           }
@@ -114,6 +115,50 @@ const InventoryScreen = ({navigation}) => {
   const setPartnerCategoryName = async () => {
     setPartnerCategory(await AsyncStorage.getItem('partner_category_name'));
   };
+
+  ////========Remove Products========////
+  const removeProductApi = async partner_product_id => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    if (!partner_id) {
+      showToast('Partner ID not found!');
+      return;
+    } else if (!partner_product_id) {
+      showToast('Partner Product ID not found!');
+      return;
+    } else {
+      setLoading(true);
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=removePartnerProduct',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_id: partner_id,
+            partner_product_id: partner_product_id,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          if (result.error == 0) {
+            showToast(result.msg);
+            fetchAllProductsOfPartnerApi();
+          } else {
+            showToast('Something went Wrong!');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+  ////========Remove Products========////
 
   React.useEffect(() => {
     setPartnerCategoryName();
@@ -150,6 +195,7 @@ const InventoryScreen = ({navigation}) => {
           {/* ========== Search Box Section ========== */}
         </View>
         {/* ========== Header Section ========== */}
+        
 
         {/* ========== Category Selection Section ========== */}
         <View style={styles.categorySection}>
@@ -165,15 +211,15 @@ const InventoryScreen = ({navigation}) => {
 
         {/* ========== Selected Inventory Section ========== */}
 
-        <View style={styles.inventorySection}>
-          <FlatList
-            style={{width: '100%'}}
-            data={partnerProducts}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            renderItem={({item}) => (
-              <>
+        <FlatList
+          style={{width: '100%'}}
+          data={partnerProducts}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          renderItem={({item}) => (
+            <>
+              <View style={styles.inventorySection}>
                 <View style={styles.inventoryTab}>
                   <View style={styles.inventoryTabDiv}>
                     <Text style={styles.inventoryBrand}>
@@ -198,7 +244,8 @@ const InventoryScreen = ({navigation}) => {
                           : 'No Price'}
                       </Text>
                     </View>
-                    <Pressable>
+                    <Pressable
+                      onPress={() => removeProductApi(partner_product_id)}>
                       <Text
                         style={{
                           fontFamily: 'OpenSans-Regular',
@@ -227,13 +274,13 @@ const InventoryScreen = ({navigation}) => {
                     </Text>
                   </View>
                 </View>
-              </>
-            )}
-            keyExtractor={(item, partner_product_id) =>
-              String(partner_product_id)
-            }
-          />
-        </View>
+              </View>
+            </>
+          )}
+          keyExtractor={(item, partner_product_id) =>
+            String(partner_product_id)
+          }
+        />
         {/* ========== Selected Inventory Section ========== */}
 
         {/* ========== No Inventory Found ALert ========== */}
