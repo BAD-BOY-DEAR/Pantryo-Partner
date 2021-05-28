@@ -170,15 +170,13 @@ const InventoryScreen = ({navigation}) => {
                       trackColor={{false: '#767577', true: '#ababab'}}
                       thumbColor={isEnabled ? 'green' : '#f4f3f4'}
                       ios_backgroundColor="#3e3e3e"
-                      onValueChange={toggleSwitch}
+                      onValueChange={toggleSwitch()}
                       value={isEnabled}
                       style={styles.toggle}
                     />
-                    {isEnabled ? (
-                      <Text>In Stock</Text>
-                    ) : (
-                      <Text>Out of Stock</Text>
-                    )}
+                    <Text>
+                      {item.product_status ? item.product_status : null}
+                    </Text>
                   </View>
                 </View>
               </>
