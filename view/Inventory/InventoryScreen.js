@@ -130,7 +130,7 @@ const InventoryScreen = ({navigation}) => {
         {/* ========== Category Selection Section ========== */}
         <View style={styles.categorySection}>
           <View style={styles.div}>
-            <Text style={styles.categoryLabel}>Category</Text>
+            <Text style={styles.categoryLabel}>Product Category</Text>
             <Text style={styles.categoryResponse}>{partnerCategory}</Text>
           </View>
           <Pressable onPress={() => setChangeCategoryModal(true)}>
@@ -155,7 +155,7 @@ const InventoryScreen = ({navigation}) => {
                     <Text style={styles.inventoryBrand}>
                       {item.partner_product_brand
                         ? item.partner_product_brand
-                        : 'No Brand Name'}
+                        : ''}
                     </Text>
                     <Text style={styles.inventoryProduct}>
                       {item.partner_product_name
@@ -174,6 +174,15 @@ const InventoryScreen = ({navigation}) => {
                           : 'No Price'}
                       </Text>
                     </View>
+                    <Pressable>
+                      <Text
+                        style={{
+                          fontFamily: 'OpenSans-Regular',
+                          color: 'red',
+                        }}>
+                        Remove
+                      </Text>
+                    </Pressable>
                   </View>
                   <View style={styles.btnsSection}>
                     <Icons
