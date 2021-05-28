@@ -8,6 +8,7 @@ import {
   TextInput,
   FlatList,
   ToastAndroid,
+  RefreshControl,
 } from 'react-native';
 
 // ===== Images ===== //
@@ -35,12 +36,25 @@ import LoaderScreen from '../../../controller/LoaderScreen';
 import Icons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
+
 const AddProducts = ({route, navigation}) => {
+  const [refreshing, setRefreshing] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
   const [pantryoInvetory, setPantryoInventory] = React.useState([]);
   const [mainCategoryName, setMainCategoryName] = React.useState([]);
   const [newprice, setNewPrice] = React.useState('');
   const [inventoryId, setInventoryId] = React.useState('');
+  const [partnerCategoryId, setPanterCategoryId] = React.useState('');
+  const [partnerMainCategoryId, setPanterMainCategoryId] = React.useState('');
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchPantryoInventory(partnerCategoryId, partnerMainCategoryId);
+    wait(1000).then(() => setRefreshing(false));
+  }, []);
 
   ///Toast Show//
   const showToast = msg => {
@@ -155,7 +169,7 @@ const AddProducts = ({route, navigation}) => {
             inventory_id: inventory_id,
             product_brand: product_brand,
             product_name: product_name,
-            partner_product_quantity: product_qty,
+            product_quantity: product_qty,
             product_price: price,
           }),
         },
@@ -188,6 +202,8 @@ const AddProducts = ({route, navigation}) => {
     let {partner_category, main_category_id} = route.params;
     if (partner_category) {
       if (main_category_id) {
+        setPanterCategoryId(partner_category);
+        setPanterMainCategoryId(main_category_id);
         fetchPantryoInventory(partner_category, main_category_id);
       }
     }
@@ -265,6 +281,12 @@ const AddProducts = ({route, navigation}) => {
                 showsVerticalScrollIndicator={false}
                 style={{width: '100%'}}
                 data={pantryoInvetory}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
                 renderItem={({item}) => (
                   <View style={styles.productContainer}>
                     <View style={styles.productDiv}>

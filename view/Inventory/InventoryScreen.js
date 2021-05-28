@@ -10,6 +10,7 @@ import {
   Switch,
   ToastAndroid,
   FlatList,
+  RefreshControl,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -22,13 +23,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectCategory from './Product/CreateCategory';
 import AddProducts from './Product/AddProduct';
 
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
+
 const InventoryScreen = ({navigation}) => {
   const [changeCategoryModal, setChangeCategoryModal] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [partnerCategory, setPartnerCategory] = useState('');
   const [partnerProducts, setPartnerProducts] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchAllProductsOfPartnerApi();
+    wait(1000).then(() => setRefreshing(false));
+  }, []);
 
   ///Toast Show//
   const showToast = msg => {
@@ -133,6 +145,9 @@ const InventoryScreen = ({navigation}) => {
           <FlatList
             style={{width: '100%'}}
             data={partnerProducts}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
             renderItem={({item}) => (
               <>
                 <View style={styles.inventoryTab}>
@@ -170,7 +185,7 @@ const InventoryScreen = ({navigation}) => {
                       trackColor={{false: '#767577', true: '#ababab'}}
                       thumbColor={isEnabled ? 'green' : '#f4f3f4'}
                       ios_backgroundColor="#3e3e3e"
-                      onValueChange={toggleSwitch()}
+                      onValueChange={toggleSwitch}
                       value={isEnabled}
                       style={styles.toggle}
                     />

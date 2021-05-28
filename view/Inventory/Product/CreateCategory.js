@@ -7,6 +7,7 @@ import {
   ScrollView,
   FlatList,
   ToastAndroid,
+  RefreshControl,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -14,24 +15,36 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoaderScreen from '../../../controller/LoaderScreen';
 
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
+
 const CreateCategory = ({navigation}) => {
   const [allMainCategory, setAllMainCategory] = React.useState([]);
   const [isLoading, setLoading] = React.useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
 
-  // const showToast = msg => {
-  //   ToastAndroid.showWithGravityAndOffset(
-  //     msg,
-  //     ToastAndroid.SHORT,
-  //     ToastAndroid.BOTTOM,
-  //     25,
-  //     50,
-  //   );
-  // };
+  const showToast = msg => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchPartnerMainCategoryApi();
+    wait(1000).then(() => setRefreshing(false));
+  }, []);
+
   ///Fetch Partner Category
   const fetchPartnerMainCategoryApi = async () => {
     let category_id = await AsyncStorage.getItem('partner_category');
     if (!category_id) {
-      console.log('Partner Category Id not found!');
+      showToast('Partner Category Id not found!');
       return;
     } else {
       setLoading(true);
@@ -55,7 +68,7 @@ const CreateCategory = ({navigation}) => {
           if (result.error == 0) {
             setAllMainCategory(result.AllMainCategory);
           } else {
-            console.log('Something went Wrong!');
+            showToast('Something went Wrong!');
           }
         })
         .catch(error => {
@@ -79,6 +92,9 @@ const CreateCategory = ({navigation}) => {
               showsVerticalScrollIndicator={false}
               style={{width: '100%'}}
               data={allMainCategory}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
               renderItem={({item}) => (
                 <Pressable
                   onPress={() =>
@@ -103,7 +119,7 @@ const CreateCategory = ({navigation}) => {
               }
             />
           ) : (
-            <Text style={styles.tabTxt}>No Main Category Found!!</Text>
+            <Text style={styles.tabTxt}>No Sub Category Found!!</Text>
           )}
         </View>
       )}
