@@ -196,22 +196,6 @@ const InventoryScreen = ({navigation}) => {
           {/* ========== Search Box Section ========== */}
         </View>
         {/* ========== Header Section ========== */}
-        
-
-        {/* ========== Category Selection Section ========== */}
-        <View style={styles.categorySection}>
-          <View style={styles.div}>
-            <Text style={styles.categoryLabel}>Product Category</Text>
-            <Text style={styles.categoryResponse}>{partnerCategory}</Text>
-          </View>
-          <Pressable onPress={() => setChangeCategoryModal(true)}>
-            <Icons name="filter-outline" size={20} style={styles.icon} />
-          </Pressable>
-        </View>
-        {/* ========== Category Selection Section ========== */}
-
-        {/* ========== Selected Inventory Section ========== */}
-
         <FlatList
           style={{width: '100%'}}
           data={partnerProducts}
@@ -220,77 +204,108 @@ const InventoryScreen = ({navigation}) => {
           }
           renderItem={({item}) => (
             <>
-              <View style={styles.inventorySection}>
-                <View style={styles.inventoryTab}>
-                  <View style={styles.inventoryTabDiv}>
-                    <Text style={styles.inventoryBrand}>
-                      {item.partner_product_brand
-                        ? item.partner_product_brand
-                        : ''}
-                    </Text>
-                    <Text style={styles.inventoryProduct}>
-                      {item.partner_product_name
-                        ? item.partner_product_name
-                        : 'No Product Name'}
-                    </Text>
-                    <View style={styles.inventoryRow}>
-                      <Text style={styles.qty}>
-                        {item.partner_product_quantity
-                          ? item.partner_product_quantity
-                          : 'No Quantity'}
-                      </Text>
-                      <Text style={styles.price}>
-                        {item.partner_product_price
-                          ? '₹' + item.partner_product_price
-                          : 'No Price'}
-                      </Text>
-                    </View>
-                    <Pressable
-                      onPress={() => removeProductApi(partner_product_id)}>
-                      <Text
-                        style={{
-                          fontFamily: 'OpenSans-Regular',
-                          color: 'red',
-                        }}>
-                        Remove
-                      </Text>
-                    </Pressable>
-                  </View>
-                  <View style={styles.btnsSection}>
-                    <Icons
-                      name="create-outline"
-                      size={20}
-                      style={styles.icon}
-                    />
-                    <Switch
-                      trackColor={{false: '#767577', true: '#ababab'}}
-                      thumbColor={isEnabled ? 'green' : '#f4f3f4'}
-                      ios_backgroundColor="#3e3e3e"
-                      onValueChange={toggleSwitch}
-                      value={isEnabled}
-                      style={styles.toggle}
-                    />
-                    <Text>
-                      {item.product_status ? item.product_status : null}
-                    </Text>
-                  </View>
+              {/* ========== Category Selection Section ========== */}
+              <View style={styles.categorySection}>
+                <View style={styles.div}>
+                  <Text style={styles.categoryLabel}>Product Category</Text>
+                  <Text style={styles.categoryResponse}>
+                    {item.main_category_name}
+                  </Text>
                 </View>
+                <Pressable onPress={() => setChangeCategoryModal(true)}>
+                  <Icons name="filter-outline" size={20} style={styles.icon} />
+                </Pressable>
               </View>
+              {/* ========== Category Selection Section ========== */}
+
+              {/* ========== Selected Inventory Section ========== */}
+
+              <FlatList
+                style={{width: '100%'}}
+                data={item.Products}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
+                renderItem={({item}) => (
+                  <>
+                    <View style={styles.inventorySection}>
+                      <View style={styles.inventoryTab}>
+                        <View style={styles.inventoryTabDiv}>
+                          <Text style={styles.inventoryBrand}>
+                            {item.product_brand ? item.product_brand : ''}
+                          </Text>
+                          <Text style={styles.inventoryProduct}>
+                            {item.product_name
+                              ? item.product_name
+                              : 'No Product Name'}
+                          </Text>
+                          <View style={styles.inventoryRow}>
+                            <Text style={styles.qty}>
+                              {item.product_qty
+                                ? item.product_qty
+                                : 'No Quantity'}
+                            </Text>
+                            <Text style={styles.price}>
+                              {item.product_price
+                                ? '₹' + item.product_price
+                                : 'No Price'}
+                            </Text>
+                          </View>
+                          <Pressable
+                            onPress={() => removeProductApi(product_id)}>
+                            <Text
+                              style={{
+                                fontFamily: 'OpenSans-Regular',
+                                color: 'red',
+                              }}>
+                              Remove
+                            </Text>
+                          </Pressable>
+                        </View>
+                        <View style={styles.btnsSection}>
+                          <Icons
+                            name="create-outline"
+                            size={20}
+                            style={styles.icon}
+                          />
+                          <Switch
+                            trackColor={{false: '#767577', true: '#ababab'}}
+                            thumbColor={isEnabled ? 'green' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch}
+                            value={isEnabled}
+                            style={styles.toggle}
+                          />
+                          <Text>
+                            {item.product_status ? item.product_status : null}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </>
+                )}
+                keyExtractor={(item, product_id) => String(product_id)}
+              />
+              {/* ========== Selected Inventory Section ========== */}
+
+              {/* ========== No Inventory Found ALert ========== */}
+              {partnerProducts === null ? (
+                <View style={styles.alertSection}>
+                  <Text style={styles.alert}>
+                    You have not selected any products
+                  </Text>
+                </View>
+              ) : null}
+              {/* ========== No Inventory Found ALert ========== */}
             </>
           )}
           keyExtractor={(item, partner_product_id) =>
             String(partner_product_id)
           }
         />
-        {/* ========== Selected Inventory Section ========== */}
-
-        {/* ========== No Inventory Found ALert ========== */}
-        {partnerProducts === null ? (
-          <View style={styles.alertSection}>
-            <Text style={styles.alert}>You have not selected any products</Text>
-          </View>
-        ) : null}
-        {/* ========== No Inventory Found ALert ========== */}
       </View>
 
       {/* ========== Category Modal ========== */}
