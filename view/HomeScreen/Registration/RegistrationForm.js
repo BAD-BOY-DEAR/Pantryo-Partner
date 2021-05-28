@@ -545,6 +545,19 @@ const RegisterScreen = ({navigation, route}) => {
             </View>
           </View>
 
+          <View style={styles.formGroup}>
+            <Text style={styles.formLabel}>UPI ID</Text>
+            <View style={styles.formRow}>
+              <Icons name="business-outline" size={20} color="#5E3360" />
+              <TextInput
+                placeholder=""
+                style={styles.txtInput}
+                selectionColor="#5E3360"
+                keyboardType="default"
+              />
+            </View>
+          </View>
+
           <Pressable onPress={() => registrationApi()} style={styles.btn}>
             <Text style={styles.btnTxt}>CONTINUE</Text>
           </Pressable>
