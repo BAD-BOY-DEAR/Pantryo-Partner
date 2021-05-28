@@ -100,13 +100,13 @@ const LoginScreen = ({navigation}) => {
       {loading == true ? <LoaderScreen /> : null}
       <View style={styles.topContainer}>
         <View>
-          <Text style={styles.topHeading}>Pantryo</Text>
-          <Text style={styles.bottomHeading}>Partner</Text>
+          <Text style={styles.topHeading}>PANTRYO</Text>
+          <Text style={styles.bottomHeading}>PARTNER</Text>
         </View>
         <Image source={coffeeIcon} style={styles.topIcon} />
       </View>
       <View style={styles.loginContainer}>
-        <Text style={styles.loginHeading}>PARTNER LOGIN</Text>
+        {/* <Text style={styles.loginHeading}>PARTNER LOGIN</Text> */}
         <Text style={styles.loginLabel}>
           Enter your mobile number to Login or Register with{' '}
           <Text style={styles.logoFirst}>
@@ -165,13 +165,15 @@ const styles = StyleSheet.create({
   topHeading: {
     fontFamily: 'OpenSans-ExtraBold',
     fontSize: 36,
-    color: '#E6AF88',
+    color: '#fadac3',
+    letterSpacing: -5,
   },
   bottomHeading: {
     fontFamily: 'OpenSans-ExtraBold',
     fontSize: 36,
     marginTop: -15,
-    color: '#E6AF88',
+    color: '#fadac3',
+    letterSpacing: -3.5,
   },
   topIcon: {
     width: 70,
@@ -190,6 +192,7 @@ const styles = StyleSheet.create({
   loginLabel: {
     fontFamily: 'OpenSans-Regular',
     fontSize: 14,
+    color: '#000',
   },
   loginHeading: {
     fontFamily: 'OpenSans-Bold',

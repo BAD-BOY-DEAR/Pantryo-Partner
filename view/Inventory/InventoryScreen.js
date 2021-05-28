@@ -37,6 +37,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Icons from 'react-native-vector-icons/Ionicons';
 import LoaderScreen from '../../controller/LoaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Animatable from 'react-native-animatable';
 
 // ===== Components ===== //
 import SelectCategory from './Product/CreateCategory';
@@ -294,14 +295,14 @@ const InventoryScreen = ({navigation}) => {
 
       {/* ========== Category Modal ========== */}
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={changeCategoryModal}
         onRequestClose={() => {
           setChangeCategoryModal(!changeCategoryModal);
         }}>
         <View style={styles.modalbackground}>
-          <View style={styles.modalCard}>
+          <Animatable.View animation="zoomIn" style={styles.modalCard}>
             <ScrollView>
               <View style={styles.modalHeaderRow}>
                 <Text style={styles.modalHeader}>Change Category</Text>
@@ -353,7 +354,7 @@ const InventoryScreen = ({navigation}) => {
                 </View>
               </View>
             </ScrollView>
-          </View>
+          </Animatable.View>
         </View>
       </Modal>
       {/* ========== Category Modal ========== */}

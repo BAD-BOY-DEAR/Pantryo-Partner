@@ -3,12 +3,26 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
-import {createStackNavigator} from '@react-navigation/stack';
-///// Utils
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '../../controller/Utils';
+import {createStackNavigator} from '@react-navigation/stack';
 
-const SettingsScreen = () => {
+// ===== Components ===== //
+import ProfileScreen from './Components/ProfileScreen';
+import TermsConditions from './Components/TermsConditions';
+
+const SettingsScreen = ({navigation}) => {
+  const [userShopName, getUserShopName] = React.useState('');
   const {signOut} = React.useContext(AuthContext);
+
+  const getUserProfile = async () => {
+    getUserShopName(await AsyncStorage.getItem('partner_shopName'));
+  };
+
+  React.useEffect(() => {
+    getUserProfile();
+  }, []);
+
   return (
     <>
       <View style={styles.container}>
@@ -18,8 +32,8 @@ const SettingsScreen = () => {
           </Pressable>
 
           <View style={styles.headerTxtContainer}>
-            <Text style={styles.headerTopText}>BUSINESS NAME</Text>
-            <Pressable>
+            <Text style={styles.headerTopText}>{userShopName}</Text>
+            <Pressable onPress={() => navigation.navigate('ProfileScreen')}>
               <Text style={styles.headerBottom}>Edit Business Details</Text>
             </Pressable>
           </View>
@@ -27,16 +41,22 @@ const SettingsScreen = () => {
 
         <View style={styles.tabContainer}>
           <View style={styles.tab}>
-            <Icons name="gift-outline" size={30} color="#5E3360" />
-            <Text style={styles.tabTxt}>Refer & Earn</Text>
+            <Icons name="help-circle-outline" size={30} color="#5E3360" />
+            <Text style={styles.tabTxt}>How It Works</Text>
           </View>
           <View style={styles.tab}>
             <Icons name="alert-circle-outline" size={30} color="#5E3360" />
             <Text style={styles.tabTxt}>Support</Text>
           </View>
-          <View style={styles.tab}>
+          <Pressable
+            onPress={() => navigation.navigate('TermsConditions')}
+            style={styles.tab}>
             <Icons name="document-attach-outline" size={30} color="#5E3360" />
             <Text style={styles.tabTxt}>Terms & Conditions</Text>
+          </Pressable>
+          <View style={styles.tab}>
+            <Icons name="finger-print-outline" size={30} color="#5E3360" />
+            <Text style={styles.tabTxt}>Privacy Policy</Text>
           </View>
           <Pressable onPress={() => signOut()} style={styles.tab}>
             <Icons name="log-out-outline" size={30} color="#5E3360" />
@@ -48,16 +68,25 @@ const SettingsScreen = () => {
   );
 };
 
-export default SettingsScreen;
+const Stack = createStackNavigator();
+
+const SettingScreenHolder = () => {
+  return (
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+      <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+      <Stack.Screen name="TermsConditions" component={TermsConditions} />
+    </Stack.Navigator>
+  );
+};
+
+export default SettingScreenHolder;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    backgroundColor: '#FFFFFF',
   },
   header: {
     width: '100%',
@@ -67,6 +96,9 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     borderBottomWidth: 0.5,
     borderBottomColor: '#c7c7c7c7',
+    backgroundColor: '#fff',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   iconBox: {
     width: 100,
@@ -83,20 +115,26 @@ const styles = StyleSheet.create({
   headerTopText: {
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 18,
+    textTransform: 'uppercase',
   },
   headerBottom: {
     fontFamily: 'OpenSans-Regular',
     color: '#5E3360',
   },
   tabContainer: {
-    marginTop: 30,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    width: '100%',
   },
   tab: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 25,
+    borderBottomWidth: 0.5,
+    marginTop: 30,
+    paddingBottom: 30,
+    borderBottomColor: '#c7c7c7c7',
   },
   tabTxt: {
     fontFamily: 'OpenSans-Regular',

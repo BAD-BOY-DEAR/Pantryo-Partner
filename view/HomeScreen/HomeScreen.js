@@ -12,7 +12,6 @@ import {
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
-import LinearGradient from 'react-native-linear-gradient';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -174,8 +173,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   tabHeading: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 16,
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 14,
     color: '#5E3360',
   },
   div: {
@@ -256,6 +255,14 @@ const styles = StyleSheet.create({
     height: 100,
     flex: 1,
     marginHorizontal: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   midTabLabel: {
     fontFamily: 'OpenSans-Regular',

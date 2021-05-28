@@ -1,10 +1,11 @@
 ======== Theme Colors ========
 1. #FFFFFF
 2. #FEF9E5
-3. #E6AF88
-4. #F4AA79
-5. #C6B5C7
-6. #5E3360
+3. #fadac3
+4. #E6AF88
+5. #F4AA79
+6. #C6B5C7
+7. #5E3360
 
 ======== Font Used ========
 1. OpenSans-Regular
