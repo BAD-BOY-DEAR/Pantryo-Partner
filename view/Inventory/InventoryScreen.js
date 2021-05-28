@@ -11,7 +11,26 @@ import {
   ToastAndroid,
   FlatList,
   RefreshControl,
+  Image,
 } from 'react-native';
+
+// ===== Images ===== //
+import masala from '../../assets/productImages/masala.png';
+import edibleOils from '../../assets/productImages/edibleOils.jpg';
+import attaImg from '../../assets/productImages/atta.jpg';
+import besan from '../../assets/productImages/besan.jpg';
+import flour from '../../assets/productImages/flour.jpg';
+import sooji from '../../assets/productImages/sooji.jpg';
+import riceFlour from '../../assets/productImages/riceflour.jpg';
+import otherFlour from '../../assets/productImages/otherFlour.jpg';
+import rice from '../../assets/productImages/rice.jpg';
+import saltSugar from '../../assets/productImages/saltsugar.jpg';
+import pulsesGrains from '../../assets/productImages/pulsesgrains.jpg';
+import baking from '../../assets/productImages/baking.jpg';
+import frozenFood from '../../assets/productImages/frozenFood.jpg';
+import packaged from '../../assets/productImages/packaged.jpg';
+import veg from '../../assets/productImages/veg.jpg';
+import fruits from '../../assets/productImages/fruits.jpg';
 
 // ===== Library ===== //
 import {createStackNavigator} from '@react-navigation/stack';
@@ -289,7 +308,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     paddingHorizontal: 10,
     paddingVertical: 10,
-    backgroundColor: '#E6AF88',
   },
   addBtn: {
     backgroundColor: '#5E3360',
@@ -317,6 +335,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     paddingVertical: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   searchTxtInput: {
     flex: 1,
