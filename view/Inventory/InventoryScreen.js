@@ -55,13 +55,14 @@ const InventoryScreen = ({navigation}) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
+  //======== Pull Down to Refresh Function ========//
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     fetchAllProductsOfPartnerApi();
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
-  ///Toast Show//
+  //======== Show Toast ========//
   const showToast = msg => {
     ToastAndroid.showWithGravityAndOffset(
       msg,
@@ -72,6 +73,7 @@ const InventoryScreen = ({navigation}) => {
     );
   };
 
+  //======== API to fetch all products selected by the partner ========//
   const fetchAllProductsOfPartnerApi = async () => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_id) {
@@ -109,7 +111,6 @@ const InventoryScreen = ({navigation}) => {
     }
   };
 
-  //Set User Category
   const setPartnerCategoryName = async () => {
     setPartnerCategory(await AsyncStorage.getItem('partner_category_name'));
   };
@@ -125,13 +126,16 @@ const InventoryScreen = ({navigation}) => {
       <View style={styles.container}>
         {/* ========== Header Section ========== */}
         <View style={styles.headerSection}>
+          {/* ========== Add Product Section ========== */}
           <Pressable
             onPress={() => navigation.navigate('SelectCategory')}
             style={styles.addBtn}>
             <Text style={styles.addBtnTxt}>Add Products</Text>
             <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
           </Pressable>
+          {/* ========== Add Product Section ========== */}
 
+          {/* ========== Search Box Section ========== */}
           <View style={styles.searchSection}>
             <Icons name="search-outline" size={20} />
             <TextInput
@@ -143,6 +147,7 @@ const InventoryScreen = ({navigation}) => {
               <Icons name="arrow-forward-outline" size={20} color="#fff" />
             </Pressable>
           </View>
+          {/* ========== Search Box Section ========== */}
         </View>
         {/* ========== Header Section ========== */}
 
@@ -259,8 +264,46 @@ const InventoryScreen = ({navigation}) => {
                 </Pressable>
               </View>
               <View style={styles.categoryMain}>
-                <Text style={styles.categoryTxt}>Spices & Masala</Text>
-                <Text style={styles.categoryTxt}>Edible Oils</Text>
+                <View style={styles.modalCatRow}>
+                  {/* {mainCategoryName == 'Spices & Masala' ? (
+                    <Image source={masala} style={styles.catImg} />
+                  ) : mainCategoryName == 'Edible Oils' ? (
+                    <Image source={edibleOils} style={styles.catImg} />
+                  ) : mainCategoryName == 'Wheat Flour' ? (
+                    <Image source={attaImg} style={styles.catImg} />
+                  ) : mainCategoryName == 'Besan' ? (
+                    <Image source={besan} style={styles.catImg} />
+                  ) : mainCategoryName == 'Flour' ? (
+                    <Image source={flour} style={styles.catImg} />
+                  ) : mainCategoryName == 'Sooji' ? (
+                    <Image source={sooji} style={styles.catImg} />
+                  ) : mainCategoryName == 'Rice Flour' ? (
+                    <Image source={riceFlour} style={styles.catImg} />
+                  ) : mainCategoryName == 'Other Flours' ? (
+                    <Image source={otherFlour} style={styles.catImg} />
+                  ) : mainCategoryName == 'Rice' ? (
+                    <Image source={rice} style={styles.catImg} />
+                  ) : mainCategoryName == 'Salt & Sugar' ? (
+                    <Image source={saltSugar} style={styles.catImg} />
+                  ) : mainCategoryName == 'Pulses & Grains' ? (
+                    <Image source={pulsesGrains} style={styles.catImg} />
+                  ) : mainCategoryName == 'Baking Items' ? (
+                    <Image source={baking} style={styles.catImg} />
+                  ) : mainCategoryName == 'Frozen Food' ? (
+                    <Image source={frozenFood} style={styles.catImg} />
+                  ) : mainCategoryName == 'Packaged Products' ? (
+                    <Image source={packaged} style={styles.catImg} />
+                  ) : mainCategoryName == 'Vegetables' ? (
+                    <Image source={veg} style={styles.catImg} />
+                  ) : mainCategoryName == 'Fruits' ? (
+                    <Image source={fruits} style={styles.catImg} />
+                  ) : (
+                    <Icons name="image" size={40} color="#777" />
+                  )} */}
+
+                  <Image source={masala} style={styles.modalCatRowImg} />
+                  <Text style={styles.categoryTxt}>Spices & Masala</Text>
+                </View>
               </View>
             </ScrollView>
           </View>
@@ -460,10 +503,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 20,
   },
+  modalCatRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginBottom: 25,
+  },
+  modalCatRowImg: {
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+  },
   categoryTxt: {
-    marginBottom: 10,
-    paddingBottom: 10,
     fontFamily: 'OpenSans-Regular',
     fontSize: 18,
+    marginLeft: 10,
   },
 });
