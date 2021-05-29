@@ -52,7 +52,7 @@ const InventoryScreen = ({navigation}) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [partnerCategory, setPartnerCategory] = useState('');
-  const [partnerProducts, setPartnerProducts] = useState([]);
+  const [partnerProducts, setPartnerProducts] = useState('');
   const [refreshing, setRefreshing] = React.useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -168,11 +168,11 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner Id not Fouond!');
       return;
     } else if (!searchkey) {
-      showToast('Partner Id not Fouond!');
+      showToast('Enter  brand or product name!');
       return;
     } else {
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=partnerSearchProduct',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=searchPartnerProduct',
         {
           method: 'POST',
           headers: {
@@ -189,13 +189,11 @@ const InventoryScreen = ({navigation}) => {
           return response.json();
         })
         .then(function (result) {
-          console.log(result);
-          //  if (result.error == 0) {
-          //    showToast(result.msg);
-          //    fetchAllProductsOfPartnerApi();
-          //  } else {
-          //    showToast('Something went Wrong!');
-          //  }
+          if (result.error == 0) {
+            setPartnerProducts(result.AllPartnerProduct);
+          } else {
+            showToast('Something went Wrong!');
+          }
         })
         .catch(error => {
           console.error(error);
@@ -211,142 +209,161 @@ const InventoryScreen = ({navigation}) => {
 
   return (
     <>
-      {isLoading == true ? <LoaderScreen /> : null}
-      <View style={styles.container}>
-        {/* ========== Header Section ========== */}
-        <View style={styles.headerSection}>
-          {/* ========== Add Product Section ========== */}
-          <Pressable
-            onPress={() => setChangeCategoryModal(true)}
-            style={styles.addBtn}>
-            <Text style={styles.addBtnTxt}>Filter Product Cateory</Text>
-            <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
-          </Pressable>
-          <Pressable
-            onPress={() => navigation.navigate('SelectCategory')}
-            style={styles.addBtn}>
-            <Text style={styles.addBtnTxt}>Add Products</Text>
-            <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
-          </Pressable>
-          {/* ========== Add Product Section ========== */}
-        </View>
-        {/* ========== Header Section ========== */}
-
-        {/* ========== Search Box Section ========== */}
-        <View style={styles.searchSection}>
-          <View style={styles.searchBox}>
-            <Icons name="search-outline" size={20} />
-            <TextInput
-              placeholder="Search through brand, product or category"
-              style={styles.searchTxtInput}
-              autoCapitalize="words"
-            />
-            <Pressable style={styles.searchBtn}>
-              <Icons name="arrow-forward-outline" size={20} color="#fff" />
+      {isLoading == true ? (
+        <LoaderScreen />
+      ) : (
+        <View style={styles.container}>
+          {/* ========== Header Section ========== */}
+          <View style={styles.headerSection}>
+            {/* ========== Add Product Section ========== */}
+            <Pressable
+              onPress={() => setChangeCategoryModal(true)}
+              style={styles.addBtn}>
+              <Text style={styles.addBtnTxt}>Filter Product Cateory</Text>
+              <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
             </Pressable>
+            <Pressable
+              onPress={() => navigation.navigate('SelectCategory')}
+              style={styles.addBtn}>
+              <Text style={styles.addBtnTxt}>Add Products</Text>
+              <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
+            </Pressable>
+            {/* ========== Add Product Section ========== */}
           </View>
-        </View>
-        {/* ========== Search Box Section ========== */}
+          {/* ========== Header Section ========== */}
 
-        <FlatList
-          style={{width: '100%'}}
-          data={partnerProducts}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          renderItem={({item}) => (
-            <>
-              {/* ========== Category Selection Section ========== */}
-              <View style={styles.categorySection}>
-                <View style={styles.div}>
-                  <Text style={styles.categoryLabel}>Product Category</Text>
-                  <Text style={styles.categoryResponse}>
-                    {item.main_category_name}
-                  </Text>
-                </View>
-              </View>
-              {/* ========== Category Selection Section ========== */}
-
-              {/* ========== Selected Inventory Section ========== */}
-              <FlatList
-                style={{width: '100%'}}
-                data={item.Products}
-                renderItem={({item}) => (
-                  <>
-                    <View style={styles.inventorySection}>
-                      <View style={styles.inventoryTab}>
-                        <View style={styles.inventoryTabDiv}>
-                          <Text style={styles.inventoryBrand}>
-                            {item.product_brand ? item.product_brand : ''}
-                          </Text>
-                          <Text style={styles.inventoryProduct}>
-                            {item.product_name
-                              ? item.product_name
-                              : 'No Product Name'}
-                          </Text>
-                          <View style={styles.inventoryRow}>
-                            <Text style={styles.qty}>
-                              {item.product_qty
-                                ? item.product_qty
-                                : 'No Quantity'}
-                            </Text>
-                            <Text style={styles.price}>
-                              {item.product_price
-                                ? '₹' + item.product_price
-                                : 'No Price'}
-                            </Text>
-                          </View>
-                          <Pressable
-                            onPress={() => removeProductApi(item.product_id)}>
-                            <Text
-                              style={{
-                                fontFamily: 'OpenSans-Regular',
-                                color: 'red',
-                              }}>
-                              Remove
-                            </Text>
-                          </Pressable>
-                        </View>
-                        <View style={styles.btnsSection}>
-                          <Icons
-                            name="create-outline"
-                            size={20}
-                            style={styles.icon}
-                          />
-                          <Switch
-                            trackColor={{false: '#767577', true: '#ababab'}}
-                            thumbColor={isEnabled ? 'green' : '#f4f3f4'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={toggleSwitch}
-                            value={isEnabled}
-                            style={styles.toggle}
-                          />
-                          <Text>
-                            {item.product_status ? item.product_status : null}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  </>
-                )}
-                keyExtractor={(item, product_id) => String(product_id)}
+          {/* ========== Search Box Section ========== */}
+          <View style={styles.searchSection}>
+            <View style={styles.searchBox}>
+              <Icons name="search-outline" size={20} />
+              <TextInput
+                placeholder="Search through brand, product or category"
+                placeholderTextColor="#777"
+                style={styles.searchTxtInput}
+                color="#000"
+                autoCapitalize="words"
+                onChangeText={txt => searchProducts(txt)}
               />
-              {/* ========== Selected Inventory Section ========== */}
+              <Pressable style={styles.searchBtn}>
+                <Icons name="arrow-forward-outline" size={20} color="#fff" />
+              </Pressable>
+            </View>
+          </View>
+          {/* ========== Search Box Section ========== */}
 
+          {partnerProducts == '' ? (
+            <ScrollView
+              style={{flex: 1, paddingVertical: '50%'}}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }>
               {/* ========== No Inventory Found ALert ========== */}
-              {partnerProducts === null ? (
-                <View style={styles.alertSection}>
-                  <Text style={styles.alert}>
-                    You have not selected any products
-                  </Text>
-                </View>
-              ) : null}
+              <View style={styles.alertSection}>
+                <Text style={styles.alert}>
+                  You have not selected any products
+                </Text>
+              </View>
               {/* ========== No Inventory Found ALert ========== */}
-            </>
+            </ScrollView>
+          ) : (
+            <FlatList
+              style={{width: '100%'}}
+              data={partnerProducts}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              renderItem={({item}) => (
+                <>
+                  {/* ========== Category Selection Section ========== */}
+                  <View style={styles.categorySection}>
+                    <View style={styles.div}>
+                      <Text style={styles.categoryLabel}>Product Category</Text>
+                      <Text style={styles.categoryResponse}>
+                        {item.main_category_name}
+                      </Text>
+                    </View>
+                  </View>
+                  {/* ========== Category Selection Section ========== */}
+
+                  {/* ========== Selected Inventory Section ========== */}
+                  <FlatList
+                    style={{width: '100%'}}
+                    data={item.Products}
+                    renderItem={({item}) => (
+                      <>
+                        <View style={styles.inventorySection}>
+                          <View style={styles.inventoryTab}>
+                            <View style={styles.inventoryTabDiv}>
+                              <Text style={styles.inventoryBrand}>
+                                {item.product_brand ? item.product_brand : ''}
+                              </Text>
+                              <Text style={styles.inventoryProduct}>
+                                {item.product_name
+                                  ? item.product_name
+                                  : 'No Product Name'}
+                              </Text>
+                              <View style={styles.inventoryRow}>
+                                <Text style={styles.qty}>
+                                  {item.product_qty
+                                    ? item.product_qty
+                                    : 'No Quantity'}
+                                </Text>
+                                <Text style={styles.price}>
+                                  {item.product_price
+                                    ? '₹' + item.product_price
+                                    : 'No Price'}
+                                </Text>
+                              </View>
+                              <Pressable
+                                onPress={() =>
+                                  removeProductApi(item.product_id)
+                                }>
+                                <Text
+                                  style={{
+                                    fontFamily: 'OpenSans-Regular',
+                                    color: 'red',
+                                  }}>
+                                  Remove
+                                </Text>
+                              </Pressable>
+                            </View>
+                            <View style={styles.btnsSection}>
+                              <Icons
+                                name="create-outline"
+                                size={20}
+                                style={styles.icon}
+                              />
+                              <Switch
+                                trackColor={{
+                                  false: '#767577',
+                                  true: '#ababab',
+                                }}
+                                thumbColor={isEnabled ? 'green' : '#f4f3f4'}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={toggleSwitch}
+                                value={isEnabled}
+                                style={styles.toggle}
+                              />
+                              <Text>
+                                {item.product_status
+                                  ? item.product_status
+                                  : null}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </>
+                    )}
+                    keyExtractor={(item, product_id) => String(product_id)}
+                  />
+                  {/* ========== Selected Inventory Section ========== */}
+                </>
+              )}
+              keyExtractor={(item, product_id) => String(product_id)}
+            />
           )}
-          keyExtractor={(item, product_id) => String(product_id)}
-        />
-      </View>
+        </View>
+      )}
 
       {/* ========== Category Modal ========== */}
       <Modal
