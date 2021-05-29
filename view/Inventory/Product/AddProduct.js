@@ -56,7 +56,7 @@ const AddProducts = ({route, navigation}) => {
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
-  ///Toast Show//
+  // =========== Toast Function =========== //
   const showToast = msg => {
     ToastAndroid.showWithGravityAndOffset(
       msg,

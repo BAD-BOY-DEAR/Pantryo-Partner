@@ -118,7 +118,7 @@ const InventoryScreen = ({navigation}) => {
     setPartnerCategory(await AsyncStorage.getItem('partner_category_name'));
   };
 
-  ////========Remove Products========////
+  //======== API to Remove Products in the inventory of the partner ========//
   const removeProductApi = async partner_product_id => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_id) {
@@ -148,7 +148,8 @@ const InventoryScreen = ({navigation}) => {
         })
         .then(function (result) {
           if (result.error == 0) {
-            showToast(result.msg);
+            // showToast(result.msg);
+            showToast('Product Removed ');
             fetchAllProductsOfPartnerApi();
           } else {
             showToast('Something went Wrong!');
@@ -298,7 +299,7 @@ const InventoryScreen = ({navigation}) => {
               {/* ========== Selected Inventory Section ========== */}
 
               {/* ========== No Inventory Found ALert ========== */}
-              {partnerProducts === null ? (
+              {partnerProducts == null ? (
                 <View style={styles.alertSection}>
                   <Text style={styles.alert}>
                     You have not selected any products
@@ -411,6 +412,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 16,
     textAlign: 'center',
+    color: '#000',
   },
   headerSection: {
     width: '100%',
@@ -499,6 +501,7 @@ const styles = StyleSheet.create({
   },
   inventorySection: {
     flex: 1,
+    marginTop: 10,
     marginBottom: 30,
     width: '100%',
   },
