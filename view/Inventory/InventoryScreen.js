@@ -102,6 +102,7 @@ const InventoryScreen = ({navigation}) => {
           // console.log(result);
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
+            onRefresh();
           } else {
             showToast('Something went Wrong!');
           }
@@ -168,7 +169,7 @@ const InventoryScreen = ({navigation}) => {
 
   return (
     <>
-      {isLoading == true ? <LoaderScreen /> : null}
+      {/* {isLoading == true ? <LoaderScreen /> : null} */}
       <View style={styles.container}>
         {/* ========== Header Section ========== */}
         <View style={styles.headerSection}>
@@ -208,11 +209,12 @@ const InventoryScreen = ({navigation}) => {
         <FlatList
           style={{width: '100%'}}
           data={partnerProducts}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          // }
           renderItem={({item}) => (
             <>
+<<<<<<< HEAD
               {item.Products !== null ? (
                 <>
                   {/* ========== Category Selection Section ========== */}
@@ -227,16 +229,29 @@ const InventoryScreen = ({navigation}) => {
                   {/* ========== Category Selection Section ========== */}
                 </>
               ) : null}
+=======
+              {/* ========== Category Selection Section ========== */}
+              <View style={styles.categorySection}>
+                <View style={styles.div}>
+                  <Text style={styles.categoryLabel}>Product Category</Text>
+                  <Text style={styles.categoryResponse}>
+                    {item.main_category_name}
+                  </Text>
+                </View>
+              </View>
+              {/* ========== Category Selection Section ========== */}
+
+>>>>>>> e1a7da5bbceb8416860bf1931c49d7dd646295c2
               {/* ========== Selected Inventory Section ========== */}
               <FlatList
                 style={{width: '100%'}}
                 data={item.Products}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                  />
-                }
+                // refreshControl={
+                //   <RefreshControl
+                //     refreshing={refreshing}
+                //     onRefresh={onRefresh}
+                //   />
+                // }
                 renderItem={({item}) => (
                   <>
                     <View style={styles.inventorySection}>
@@ -515,7 +530,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 20,
   },
   inventoryTabDiv: {
     flex: 1,
