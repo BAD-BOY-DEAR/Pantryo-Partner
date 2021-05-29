@@ -102,6 +102,7 @@ const InventoryScreen = ({navigation}) => {
           // console.log(result);
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
+            onRefresh();
           } else {
             showToast('Something went Wrong!');
           }
@@ -168,7 +169,7 @@ const InventoryScreen = ({navigation}) => {
 
   return (
     <>
-      {isLoading == true ? <LoaderScreen /> : null}
+      {/* {isLoading == true ? <LoaderScreen /> : null} */}
       <View style={styles.container}>
         {/* ========== Header Section ========== */}
         <View style={styles.headerSection}>
@@ -208,9 +209,9 @@ const InventoryScreen = ({navigation}) => {
         <FlatList
           style={{width: '100%'}}
           data={partnerProducts}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          // }
           renderItem={({item}) => (
             <>
               {/* ========== Category Selection Section ========== */}
@@ -221,9 +222,6 @@ const InventoryScreen = ({navigation}) => {
                     {item.main_category_name}
                   </Text>
                 </View>
-                {/* <Pressable>
-                  <Icons name="filter-outline" size={20} style={styles.icon} />
-                </Pressable> */}
               </View>
               {/* ========== Category Selection Section ========== */}
 
@@ -232,12 +230,12 @@ const InventoryScreen = ({navigation}) => {
               <FlatList
                 style={{width: '100%'}}
                 data={item.Products}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                  />
-                }
+                // refreshControl={
+                //   <RefreshControl
+                //     refreshing={refreshing}
+                //     onRefresh={onRefresh}
+                //   />
+                // }
                 renderItem={({item}) => (
                   <>
                     <View style={styles.inventorySection}>
@@ -516,7 +514,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 20,
   },
   inventoryTabDiv: {
     flex: 1,
