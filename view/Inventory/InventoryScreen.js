@@ -102,7 +102,6 @@ const InventoryScreen = ({navigation}) => {
           // console.log(result);
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
-            onRefresh();
           } else {
             showToast('Something went Wrong!');
           }
@@ -162,6 +161,49 @@ const InventoryScreen = ({navigation}) => {
   };
   ////========Remove Products========////
 
+  ///========Search Product=========//
+  const searchProducts = async searchkey => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    if (!partner_id) {
+      showToast('Partner Id not Fouond!');
+      return;
+    } else if (!searchkey) {
+      showToast('Partner Id not Fouond!');
+      return;
+    } else {
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=partnerSearchProduct',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_id: partner_id,
+            searchkey: searchkey,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          console.log(result);
+          //  if (result.error == 0) {
+          //    showToast(result.msg);
+          //    fetchAllProductsOfPartnerApi();
+          //  } else {
+          //    showToast('Something went Wrong!');
+          //  }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  };
+  ///========Search Product=========//
+
   React.useEffect(() => {
     setPartnerCategoryName();
     fetchAllProductsOfPartnerApi();
@@ -169,7 +211,7 @@ const InventoryScreen = ({navigation}) => {
 
   return (
     <>
-      {/* {isLoading == true ? <LoaderScreen /> : null} */}
+      {isLoading == true ? <LoaderScreen /> : null}
       <View style={styles.container}>
         {/* ========== Header Section ========== */}
         <View style={styles.headerSection}>
@@ -209,9 +251,9 @@ const InventoryScreen = ({navigation}) => {
         <FlatList
           style={{width: '100%'}}
           data={partnerProducts}
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          // }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           renderItem={({item}) => (
             <>
               {/* ========== Category Selection Section ========== */}
@@ -229,12 +271,6 @@ const InventoryScreen = ({navigation}) => {
               <FlatList
                 style={{width: '100%'}}
                 data={item.Products}
-                // refreshControl={
-                //   <RefreshControl
-                //     refreshing={refreshing}
-                //     onRefresh={onRefresh}
-                //   />
-                // }
                 renderItem={({item}) => (
                   <>
                     <View style={styles.inventorySection}>
