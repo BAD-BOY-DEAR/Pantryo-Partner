@@ -47,6 +47,7 @@
     visible in the form, user can only select one category
     e) Address should be picked up from GPS, but the user should be able to edit the
     address if the location is not correct
+    f) User has to upload the documents to start receiving customer orders
 
 4. Verification Screen -
     a) SMS should be auto read 
