@@ -81,7 +81,7 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner ID not found!');
       return;
     } else {
-      setLoading(true);
+      // setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getProductOfPartner',
         {
@@ -168,8 +168,7 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner Id not Fouond!');
       return;
     } else if (!searchkey) {
-      showToast('Enter  brand or product name!');
-      return;
+      fetchAllProductsOfPartnerApi();
     } else {
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=searchPartnerProduct',
