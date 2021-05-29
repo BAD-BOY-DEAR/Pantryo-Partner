@@ -213,22 +213,21 @@ const InventoryScreen = ({navigation}) => {
           }
           renderItem={({item}) => (
             <>
-              {/* ========== Category Selection Section ========== */}
-              <View style={styles.categorySection}>
-                <View style={styles.div}>
-                  <Text style={styles.categoryLabel}>Product Category</Text>
-                  <Text style={styles.categoryResponse}>
-                    {item.main_category_name}
-                  </Text>
-                </View>
-                {/* <Pressable>
-                  <Icons name="filter-outline" size={20} style={styles.icon} />
-                </Pressable> */}
-              </View>
-              {/* ========== Category Selection Section ========== */}
-
+              {item.Products !== null ? (
+                <>
+                  {/* ========== Category Selection Section ========== */}
+                  <View style={styles.categorySection}>
+                    <View style={styles.div}>
+                      <Text style={styles.categoryLabel}>Product Category</Text>
+                      <Text style={styles.categoryResponse}>
+                        {item.main_category_name}
+                      </Text>
+                    </View>
+                  </View>
+                  {/* ========== Category Selection Section ========== */}
+                </>
+              ) : null}
               {/* ========== Selected Inventory Section ========== */}
-
               <FlatList
                 style={{width: '100%'}}
                 data={item.Products}
@@ -264,7 +263,7 @@ const InventoryScreen = ({navigation}) => {
                             </Text>
                           </View>
                           <Pressable
-                            onPress={() => removeProductApi(product_id)}>
+                            onPress={() => removeProductApi(item.product_id)}>
                             <Text
                               style={{
                                 fontFamily: 'OpenSans-Regular',
