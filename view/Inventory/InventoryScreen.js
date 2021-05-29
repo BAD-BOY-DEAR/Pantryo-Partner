@@ -202,7 +202,7 @@ const InventoryScreen = ({navigation}) => {
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
           } else {
-            showToast('Something went Wrong!');
+            // showToast('Something went Wrong!');
           }
         })
         .catch(error => {
@@ -248,7 +248,7 @@ const InventoryScreen = ({navigation}) => {
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
           } else {
-            showToast('Something went Wrong!');
+            // showToast('Something went Wrong!');
           }
         })
         .catch(error => {
