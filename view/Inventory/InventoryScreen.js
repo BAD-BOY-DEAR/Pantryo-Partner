@@ -174,15 +174,24 @@ const InventoryScreen = ({navigation}) => {
         <View style={styles.headerSection}>
           {/* ========== Add Product Section ========== */}
           <Pressable
+            onPress={() => setChangeCategoryModal(true)}
+            style={styles.addBtn}>
+            <Text style={styles.addBtnTxt}>Filter Product Cateory</Text>
+            <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
+          </Pressable>
+          <Pressable
             onPress={() => navigation.navigate('SelectCategory')}
             style={styles.addBtn}>
             <Text style={styles.addBtnTxt}>Add Products</Text>
             <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
           </Pressable>
           {/* ========== Add Product Section ========== */}
+        </View>
+        {/* ========== Header Section ========== */}
 
-          {/* ========== Search Box Section ========== */}
-          <View style={styles.searchSection}>
+        {/* ========== Search Box Section ========== */}
+        <View style={styles.searchSection}>
+          <View style={styles.searchBox}>
             <Icons name="search-outline" size={20} />
             <TextInput
               placeholder="Search through brand, product or category"
@@ -193,9 +202,9 @@ const InventoryScreen = ({navigation}) => {
               <Icons name="arrow-forward-outline" size={20} color="#fff" />
             </Pressable>
           </View>
-          {/* ========== Search Box Section ========== */}
         </View>
-        {/* ========== Header Section ========== */}
+        {/* ========== Search Box Section ========== */}
+
         <FlatList
           style={{width: '100%'}}
           data={partnerProducts}
@@ -212,9 +221,9 @@ const InventoryScreen = ({navigation}) => {
                     {item.main_category_name}
                   </Text>
                 </View>
-                <Pressable onPress={() => setChangeCategoryModal(true)}>
+                {/* <Pressable>
                   <Icons name="filter-outline" size={20} style={styles.icon} />
-                </Pressable>
+                </Pressable> */}
               </View>
               {/* ========== Category Selection Section ========== */}
 
@@ -414,16 +423,20 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     paddingHorizontal: 10,
     paddingVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   addBtn: {
     backgroundColor: '#5E3360',
     flexDirection: 'row',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
+    marginHorizontal: 3,
   },
   addBtnTxt: {
     fontFamily: 'OpenSans-SemiBold',
@@ -434,11 +447,10 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 30,
     marginBottom: 20,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+
     paddingHorizontal: 10,
+  },
+  searchBox: {
     borderRadius: 5,
     paddingVertical: 5,
     shadowColor: '#000',
@@ -449,6 +461,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
   },
   searchTxtInput: {
     flex: 1,
