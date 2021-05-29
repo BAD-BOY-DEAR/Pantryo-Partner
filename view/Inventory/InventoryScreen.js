@@ -60,7 +60,7 @@ const InventoryScreen = ({navigation}) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     fetchAllProductsOfPartnerApi();
-    wait(1000).then(() => setRefreshing(false));
+    wait(2000).then(() => setRefreshing(false));
   }, []);
 
   //======== Show Toast ========//
@@ -214,22 +214,6 @@ const InventoryScreen = ({navigation}) => {
           // }
           renderItem={({item}) => (
             <>
-<<<<<<< HEAD
-              {item.Products !== null ? (
-                <>
-                  {/* ========== Category Selection Section ========== */}
-                  <View style={styles.categorySection}>
-                    <View style={styles.div}>
-                      <Text style={styles.categoryLabel}>Product Category</Text>
-                      <Text style={styles.categoryResponse}>
-                        {item.main_category_name}
-                      </Text>
-                    </View>
-                  </View>
-                  {/* ========== Category Selection Section ========== */}
-                </>
-              ) : null}
-=======
               {/* ========== Category Selection Section ========== */}
               <View style={styles.categorySection}>
                 <View style={styles.div}>
@@ -241,7 +225,6 @@ const InventoryScreen = ({navigation}) => {
               </View>
               {/* ========== Category Selection Section ========== */}
 
->>>>>>> e1a7da5bbceb8416860bf1931c49d7dd646295c2
               {/* ========== Selected Inventory Section ========== */}
               <FlatList
                 style={{width: '100%'}}
@@ -325,9 +308,7 @@ const InventoryScreen = ({navigation}) => {
               {/* ========== No Inventory Found ALert ========== */}
             </>
           )}
-          keyExtractor={(item, partner_product_id) =>
-            String(partner_product_id)
-          }
+          keyExtractor={(item, product_id) => String(product_id)}
         />
       </View>
 
