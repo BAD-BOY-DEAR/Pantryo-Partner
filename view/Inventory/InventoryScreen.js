@@ -52,7 +52,8 @@ const InventoryScreen = ({navigation}) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [partnerCategory, setPartnerCategory] = useState('');
-  const [partnerProducts, setPartnerProducts] = useState([]);
+  const [partnerProducts, setPartnerProducts] = useState('');
+  const [partnerMainCategory, setPartnerMainCategory] = useState('');
   const [refreshing, setRefreshing] = React.useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -73,15 +74,20 @@ const InventoryScreen = ({navigation}) => {
       50,
     );
   };
+  //======== Show Toast ========//
 
   //======== API to fetch all products selected by the partner ========//
   const fetchAllProductsOfPartnerApi = async () => {
     let partner_id = await AsyncStorage.getItem('partner_id');
+    let partner_category = await AsyncStorage.getItem('partner_category');
     if (!partner_id) {
       showToast('Partner ID not found!');
       return;
+    } else if (!partner_category) {
+      showToast('Partner Category not found!');
+      return;
     } else {
-      setLoading(true);
+      // setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getProductOfPartner',
         {
@@ -92,6 +98,7 @@ const InventoryScreen = ({navigation}) => {
           },
           body: JSON.stringify({
             partner_id: partner_id,
+            partner_category: partner_category,
           }),
         },
       )
@@ -102,7 +109,7 @@ const InventoryScreen = ({navigation}) => {
           // console.log(result);
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
-            onRefresh();
+            setPartnerMainCategory(result.MainCategory);
           } else {
             showToast('Something went Wrong!');
           }
@@ -113,10 +120,13 @@ const InventoryScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
+  //======== API to fetch all products selected by the partner ========//
 
+  //======== Partner Category ========//
   const setPartnerCategoryName = async () => {
     setPartnerCategory(await AsyncStorage.getItem('partner_category_name'));
   };
+  //======== Partner  Category========//
 
   //======== API to Remove Products in the inventory of the partner ========//
   const removeProductApi = async partner_product_id => {
@@ -163,6 +173,92 @@ const InventoryScreen = ({navigation}) => {
   };
   ////========Remove Products========////
 
+  ///========Search Product=========//
+  const searchProducts = async searchkey => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    if (!partner_id) {
+      showToast('Partner Id not Fouond!');
+      return;
+    } else if (!searchkey) {
+      fetchAllProductsOfPartnerApi();
+    } else {
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=searchPartnerProduct',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_id: partner_id,
+            searchkey: searchkey,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          if (result.error == 0) {
+            setPartnerProducts(result.AllPartnerProduct);
+          } else {
+            // showToast('Something went Wrong!');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  };
+  ///========Search Product=========//
+
+  ///========Search Product=========//
+  const searchByCategory = async main_category_id => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    let partner_category = await AsyncStorage.getItem('partner_category');
+    if (!partner_id) {
+      showToast('Partner Id not Fouond!');
+      return;
+    } else if (!main_category_id) {
+      showToast('Partner Main Category Id not Fouond!');
+      return;
+    } else if (!partner_category) {
+      showToast('Partner Category Id not Fouond!');
+      return;
+    } else {
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=searchPartnerProductByCategory',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_id: partner_id,
+            partner_category: partner_category,
+            main_category_id: main_category_id,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          if (result.error == 0) {
+            setPartnerProducts(result.AllPartnerProduct);
+          } else {
+            // showToast('Something went Wrong!');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  };
+  ///========Search Product=========//
+
   React.useEffect(() => {
     setPartnerCategoryName();
     fetchAllProductsOfPartnerApi();
@@ -170,7 +266,7 @@ const InventoryScreen = ({navigation}) => {
 
   return (
     <>
-      {/* {isLoading == true ? <LoaderScreen /> : null} */}
+      {isLoading == true ? <LoaderScreen /> : null}
       <View style={styles.container}>
         {/* ========== Header Section ========== */}
         <View style={styles.headerSection}>
@@ -197,8 +293,11 @@ const InventoryScreen = ({navigation}) => {
             <Icons name="search-outline" size={20} />
             <TextInput
               placeholder="Search through brand, product or category"
+              placeholderTextColor="#777"
               style={styles.searchTxtInput}
+              color="#000"
               autoCapitalize="words"
+              onChangeText={txt => searchProducts(txt)}
             />
             <Pressable style={styles.searchBtn}>
               <Icons name="arrow-forward-outline" size={20} color="#fff" />
@@ -207,110 +306,117 @@ const InventoryScreen = ({navigation}) => {
         </View>
         {/* ========== Search Box Section ========== */}
 
-        <FlatList
-          style={{width: '100%'}}
-          data={partnerProducts}
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          // }
-          renderItem={({item}) => (
-            <>
-              {/* ========== Category Selection Section ========== */}
-              <View style={styles.categorySection}>
-                <View style={styles.div}>
-                  <Text style={styles.categoryLabel}>Product Category</Text>
-                  <Text style={styles.categoryResponse}>
-                    {item.main_category_name}
-                  </Text>
-                </View>
-              </View>
-              {/* ========== Category Selection Section ========== */}
-
-              {/* ========== Selected Inventory Section ========== */}
-              <FlatList
-                style={{width: '100%'}}
-                data={item.Products}
-                // refreshControl={
-                //   <RefreshControl
-                //     refreshing={refreshing}
-                //     onRefresh={onRefresh}
-                //   />
-                // }
-                renderItem={({item}) => (
-                  <>
-                    <View style={styles.inventorySection}>
-                      <View style={styles.inventoryTab}>
-                        <View style={styles.inventoryTabDiv}>
-                          <Text style={styles.inventoryBrand}>
-                            {item.product_brand ? item.product_brand : ''}
-                          </Text>
-                          <Text style={styles.inventoryProduct}>
-                            {item.product_name
-                              ? item.product_name
-                              : 'No Product Name'}
-                          </Text>
-                          <View style={styles.inventoryRow}>
-                            <Text style={styles.qty}>
-                              {item.product_qty
-                                ? item.product_qty
-                                : 'No Quantity'}
-                            </Text>
-                            <Text style={styles.price}>
-                              {item.product_price
-                                ? '₹' + item.product_price
-                                : 'No Price'}
-                            </Text>
-                          </View>
-                          <Pressable
-                            onPress={() => removeProductApi(item.product_id)}>
-                            <Text
-                              style={{
-                                fontFamily: 'OpenSans-Regular',
-                                color: 'red',
-                              }}>
-                              Remove
-                            </Text>
-                          </Pressable>
-                        </View>
-                        <View style={styles.btnsSection}>
-                          <Icons
-                            name="create-outline"
-                            size={20}
-                            style={styles.icon}
-                          />
-                          <Switch
-                            trackColor={{false: '#767577', true: '#ababab'}}
-                            thumbColor={isEnabled ? 'green' : '#f4f3f4'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={toggleSwitch}
-                            value={isEnabled}
-                            style={styles.toggle}
-                          />
-                          <Text>
-                            {item.product_status ? item.product_status : null}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  </>
-                )}
-                keyExtractor={(item, product_id) => String(product_id)}
-              />
-              {/* ========== Selected Inventory Section ========== */}
-
-              {/* ========== No Inventory Found ALert ========== */}
-              {partnerProducts == null ? (
+        {partnerProducts == '' ? (
+          <ScrollView
+            style={{flex: 1, paddingVertical: '50%'}}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
+            {isLoading == false ? (
+              <>
+                {/* ========== No Inventory Found ALert ========== */}
                 <View style={styles.alertSection}>
                   <Text style={styles.alert}>
                     You have not selected any products
                   </Text>
                 </View>
-              ) : null}
-              {/* ========== No Inventory Found ALert ========== */}
-            </>
-          )}
-          keyExtractor={(item, product_id) => String(product_id)}
-        />
+                {/* ========== No Inventory Found ALert ========== */}
+              </>
+            ) : null}
+          </ScrollView>
+        ) : (
+          <FlatList
+            style={{width: '100%'}}
+            data={partnerProducts}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            renderItem={({item}) => (
+              <>
+                {/* ========== Category Selection Section ========== */}
+                <View style={styles.categorySection}>
+                  <View style={styles.div}>
+                    <Text style={styles.categoryLabel}>Product Category</Text>
+                    <Text style={styles.categoryResponse}>
+                      {item.main_category_name}
+                    </Text>
+                  </View>
+                </View>
+                {/* ========== Category Selection Section ========== */}
+
+                {/* ========== Selected Inventory Section ========== */}
+                <FlatList
+                  style={{width: '100%'}}
+                  data={item.Products}
+                  renderItem={({item}) => (
+                    <>
+                      <View style={styles.inventorySection}>
+                        <View style={styles.inventoryTab}>
+                          <View style={styles.inventoryTabDiv}>
+                            <Text style={styles.inventoryBrand}>
+                              {item.product_brand ? item.product_brand : ''}
+                            </Text>
+                            <Text style={styles.inventoryProduct}>
+                              {item.product_name
+                                ? item.product_name
+                                : 'No Product Name'}
+                            </Text>
+                            <View style={styles.inventoryRow}>
+                              <Text style={styles.qty}>
+                                {item.product_qty
+                                  ? item.product_qty
+                                  : 'No Quantity'}
+                              </Text>
+                              <Text style={styles.price}>
+                                {item.product_price
+                                  ? '₹' + item.product_price
+                                  : 'No Price'}
+                              </Text>
+                            </View>
+                            <Pressable
+                              onPress={() => removeProductApi(item.product_id)}>
+                              <Text
+                                style={{
+                                  fontFamily: 'OpenSans-Regular',
+                                  color: 'red',
+                                }}>
+                                Remove
+                              </Text>
+                            </Pressable>
+                          </View>
+                          <View style={styles.btnsSection}>
+                            <Icons
+                              name="create-outline"
+                              size={20}
+                              style={styles.icon}
+                            />
+                            <Switch
+                              trackColor={{
+                                false: '#767577',
+                                true: '#ababab',
+                              }}
+                              thumbColor={isEnabled ? 'green' : '#f4f3f4'}
+                              ios_backgroundColor="#3e3e3e"
+                              onValueChange={toggleSwitch}
+                              value={isEnabled}
+                              style={styles.toggle}
+                            />
+                            <Text>
+                              {item.product_status ? item.product_status : null}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </>
+                  )}
+                  keyExtractor={(item, product_id) => String(product_id)}
+                />
+                {/* ========== Selected Inventory Section ========== */}
+              </>
+            )}
+            keyExtractor={(item, product_id) => String(product_id)}
+          />
+        )}
       </View>
 
       {/* ========== Category Modal ========== */}
@@ -323,57 +429,109 @@ const InventoryScreen = ({navigation}) => {
         }}>
         <View style={styles.modalbackground}>
           <Animatable.View animation="zoomIn" style={styles.modalCard}>
-            <ScrollView>
-              <View style={styles.modalHeaderRow}>
-                <Text style={styles.modalHeader}>Change Category</Text>
-                <Pressable
-                  onPress={() => setChangeCategoryModal(!changeCategoryModal)}>
-                  <Icons name="close-circle-outline" size={20} color="#000" />
-                </Pressable>
-              </View>
-              <View style={styles.categoryMain}>
-                <View style={styles.modalCatRow}>
-                  {/* {mainCategoryName == 'Spices & Masala' ? (
-                    <Image source={masala} style={styles.catImg} />
-                  ) : mainCategoryName == 'Edible Oils' ? (
-                    <Image source={edibleOils} style={styles.catImg} />
-                  ) : mainCategoryName == 'Wheat Flour' ? (
-                    <Image source={attaImg} style={styles.catImg} />
-                  ) : mainCategoryName == 'Besan' ? (
-                    <Image source={besan} style={styles.catImg} />
-                  ) : mainCategoryName == 'Flour' ? (
-                    <Image source={flour} style={styles.catImg} />
-                  ) : mainCategoryName == 'Sooji' ? (
-                    <Image source={sooji} style={styles.catImg} />
-                  ) : mainCategoryName == 'Rice Flour' ? (
-                    <Image source={riceFlour} style={styles.catImg} />
-                  ) : mainCategoryName == 'Other Flours' ? (
-                    <Image source={otherFlour} style={styles.catImg} />
-                  ) : mainCategoryName == 'Rice' ? (
-                    <Image source={rice} style={styles.catImg} />
-                  ) : mainCategoryName == 'Salt & Sugar' ? (
-                    <Image source={saltSugar} style={styles.catImg} />
-                  ) : mainCategoryName == 'Pulses & Grains' ? (
-                    <Image source={pulsesGrains} style={styles.catImg} />
-                  ) : mainCategoryName == 'Baking Items' ? (
-                    <Image source={baking} style={styles.catImg} />
-                  ) : mainCategoryName == 'Frozen Food' ? (
-                    <Image source={frozenFood} style={styles.catImg} />
-                  ) : mainCategoryName == 'Packaged Products' ? (
-                    <Image source={packaged} style={styles.catImg} />
-                  ) : mainCategoryName == 'Vegetables' ? (
-                    <Image source={veg} style={styles.catImg} />
-                  ) : mainCategoryName == 'Fruits' ? (
-                    <Image source={fruits} style={styles.catImg} />
-                  ) : (
-                    <Icons name="image" size={40} color="#777" />
-                  )} */}
+            <View style={styles.modalHeaderRow}>
+              <Text style={styles.modalHeader}>Change Category</Text>
+              <Pressable
+                onPress={() => setChangeCategoryModal(!changeCategoryModal)}>
+                <Icons name="close-circle-outline" size={20} color="#000" />
+              </Pressable>
+            </View>
 
-                  <Image source={masala} style={styles.modalCatRowImg} />
-                  <Text style={styles.categoryTxt}>Spices & Masala</Text>
-                </View>
-              </View>
-            </ScrollView>
+            <View style={styles.categoryMain}>
+              {partnerMainCategory !== '' ? (
+                <FlatList
+                  style={{width: '100%'}}
+                  data={partnerMainCategory}
+                  renderItem={({item}) => (
+                    <>
+                      <Pressable
+                        onPress={() => {
+                          searchByCategory(item.main_category_id);
+                          setChangeCategoryModal(!changeCategoryModal);
+                        }}
+                        style={styles.modalCatRow}>
+                        {item.main_category_name == 'Spices & Masala' ? (
+                          <Image
+                            source={masala}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Edible Oils' ? (
+                          <Image
+                            source={edibleOils}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Wheat Flour' ? (
+                          <Image
+                            source={attaImg}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Besan' ? (
+                          <Image source={besan} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Flour' ? (
+                          <Image source={flour} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Sooji' ? (
+                          <Image source={sooji} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Rice Flour' ? (
+                          <Image
+                            source={riceFlour}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Other Flours' ? (
+                          <Image
+                            source={otherFlour}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Rice' ? (
+                          <Image source={rice} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Salt & Sugar' ? (
+                          <Image
+                            source={saltSugar}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Pulses & Grains' ? (
+                          <Image
+                            source={pulsesGrains}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Baking Items' ? (
+                          <Image
+                            source={baking}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Frozen Food' ? (
+                          <Image
+                            source={frozenFood}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Packaged Products' ? (
+                          <Image
+                            source={packaged}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Vegetables' ? (
+                          <Image source={veg} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Fruits' ? (
+                          <Image
+                            source={fruits}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : (
+                          <Icons name="image" size={40} color="#777" />
+                        )}
+
+                        {/* <Image source={masala} style={styles.modalCatRowImg} /> */}
+                        <Text style={styles.categoryTxt}>
+                          {item.main_category_name}
+                        </Text>
+                      </Pressable>
+                    </>
+                  )}
+                  keyExtractor={(item, product_id) => String(product_id)}
+                />
+              ) : (
+                <Text>No Category Found!</Text>
+              )}
+            </View>
           </Animatable.View>
         </View>
       </Modal>
