@@ -35,6 +35,7 @@ import LoaderScreen from '../../../controller/LoaderScreen';
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Picker} from '@react-native-picker/picker';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -49,6 +50,7 @@ const AddProducts = ({route, navigation}) => {
   const [inventoryId, setInventoryId] = React.useState('');
   const [partnerCategoryId, setPanterCategoryId] = React.useState('');
   const [partnerMainCategoryId, setPanterMainCategoryId] = React.useState('');
+  const [selectedUnit, setSelectedUnit] = React.useState();
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -272,7 +274,7 @@ const AddProducts = ({route, navigation}) => {
               <View style={styles.noticeTab}>
                 <Text style={styles.noticeTxt}>
                   Select all the items that you sell from your store. You can
-                  also edit the price of the items accordingly
+                  also edit the price & the Qty of the items accordingly
                 </Text>
               </View>
             </View>
@@ -298,27 +300,70 @@ const AddProducts = ({route, navigation}) => {
                           ? item.pantryo_item_name
                           : 'item name not found!'}
                       </Text>
-                      <Text style={styles.prodQty}>
-                        {item.pantryo_item_qty
-                          ? item.pantryo_item_qty
-                          : 'no quantity'}
-                      </Text>
                     </View>
-                    <TextInput
-                      placeholder="Price in ₹"
-                      placeholderTextColor="#000"
-                      keyboardType="number-pad"
-                      value={
-                        item.pantryo_inventory_id === inventoryId
-                          ? newprice
-                          : item.pantryo_item_price
-                      }
-                      style={styles.prodTxtInput}
-                      onChangeText={text => {
-                        setNewPrice(text);
-                        setInventoryId(item.pantryo_inventory_id);
-                      }}
-                    />
+
+                    <View
+                      style={{
+                        flex: 1,
+                        marginRight: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text>Qty</Text>
+                      <TextInput
+                        placeholder="Qty"
+                        placeholderTextColor="#000"
+                        keyboardType="number-pad"
+                        value={
+                          item.pantryo_inventory_id === inventoryId
+                            ? newprice
+                            : item.pantryo_item_qty
+                        }
+                        style={styles.prodTxtInput}
+                        onChangeText={text => {
+                          // setNewPrice(text);
+                          setInventoryId(item.pantryo_inventory_id);
+                        }}
+                      />
+                    </View>
+
+                    <View
+                      style={{
+                        flex: 1,
+                        marginRight: 30,
+                      }}>
+                      <Text>Unit</Text>
+                      <Picker
+                        selectedValue={selectedUnit}
+                        onValueChange={(itemValue, itemIndex) =>
+                          setSelectedUnit(itemValue)
+                        }>
+                        <Picker.Item label="gm" value="gm" />
+                        <Picker.Item label="kg" value="kg" />
+                        <Picker.Item label="ml" value="ml" />
+                        <Picker.Item label="ltr" value="ltr" />
+                        <Picker.Item label="pcs" value="pcs" />
+                      </Picker>
+                    </View>
+
+                    <View>
+                      <Text>Price</Text>
+                      <TextInput
+                        placeholder="Price in ₹"
+                        placeholderTextColor="#000"
+                        keyboardType="number-pad"
+                        value={
+                          item.pantryo_inventory_id === inventoryId
+                            ? newprice
+                            : item.pantryo_item_price
+                        }
+                        style={styles.prodTxtInput}
+                        onChangeText={text => {
+                          setNewPrice(text);
+                          setInventoryId(item.pantryo_inventory_id);
+                        }}
+                      />
+                    </View>
                     {item.product_assign_status == 'not added' ? (
                       <Pressable
                         onPress={() =>
@@ -460,8 +505,8 @@ const styles = StyleSheet.create({
   },
   prodTxtInput: {
     fontFamily: 'OpenSans-Regular',
-    marginRight: 25,
-    flex: 1,
+    // marginRight: 25,
+    // flex: 1,
     borderBottomWidth: 0.5,
     borderBottomColor: '#c7c7c7c7',
     color: '#000',
