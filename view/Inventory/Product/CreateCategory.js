@@ -8,7 +8,27 @@ import {
   FlatList,
   ToastAndroid,
   RefreshControl,
+  Image,
 } from 'react-native';
+
+// ===== Images ===== //
+import masala from '../../../assets//productImages/masala.png';
+import edibleOils from '../../../assets/productImages/edibleOils.jpg';
+import attaImg from '../../../assets/productImages/atta.jpg';
+import besan from '../../../assets/productImages/besan.jpg';
+import flour from '../../../assets/productImages/flour.jpg';
+import sooji from '../../../assets/productImages/sooji.jpg';
+import riceFlour from '../../../assets/productImages/riceflour.jpg';
+import otherFlour from '../../../assets/productImages/otherFlour.jpg';
+import rice from '../../../assets/productImages/rice.jpg';
+import saltSugar from '../../../assets/productImages/saltsugar.jpg';
+import pulsesGrains from '../../../assets/productImages/pulsesgrains.jpg';
+import baking from '../../../assets/productImages/baking.jpg';
+import frozenFood from '../../../assets/productImages/frozenFood.jpg';
+import packaged from '../../../assets/productImages/packaged.jpg';
+import veg from '../../../assets/productImages/veg.jpg';
+import fruits from '../../../assets/productImages/fruits.jpg';
+import coffeetea from '../../../assets/productImages/coffeetea.jpg';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
@@ -104,6 +124,44 @@ const CreateCategory = ({navigation}) => {
                     })
                   }
                   style={styles.tab}>
+                  {item.pantryo_main_category_name == 'Spices & Masala' ? (
+                    <Image source={masala} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Edible Oils' ? (
+                    <Image source={edibleOils} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Wheat Flour' ? (
+                    <Image source={attaImg} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Besan' ? (
+                    <Image source={besan} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Flour' ? (
+                    <Image source={flour} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Sooji' ? (
+                    <Image source={sooji} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Rice Flour' ? (
+                    <Image source={riceFlour} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Other Flours' ? (
+                    <Image source={otherFlour} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Rice' ? (
+                    <Image source={rice} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Salt & Sugar' ? (
+                    <Image source={saltSugar} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Pulses & Grains' ? (
+                    <Image source={pulsesGrains} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Baking Items' ? (
+                    <Image source={baking} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Frozen Food' ? (
+                    <Image source={frozenFood} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Packaged Products' ? (
+                    <Image source={packaged} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Vegetables' ? (
+                    <Image source={veg} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name == 'Fruits' ? (
+                    <Image source={fruits} style={styles.catImg} />
+                  ) : item.pantryo_main_category_name ==
+                    'Coffee, Tea & Beverages' ? (
+                    <Image source={coffeetea} style={styles.catImg} />
+                  ) : (
+                    <Icons name="image" size={40} color="#777" />
+                  )}
                   <Text style={styles.tabTxt}>
                     {item.pantryo_main_category_name}
                   </Text>
@@ -156,5 +214,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#000',
     flex: 1,
+    marginLeft: 20,
+  },
+  catImg: {
+    width: 50,
+    height: 50,
+    borderRadius: 100,
   },
 });
