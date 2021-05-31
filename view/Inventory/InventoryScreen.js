@@ -59,6 +59,12 @@ const InventoryScreen = ({navigation}) => {
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
   const [editModal, setEditModal] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState();
+  const [partnerItemId, setPartnerItemId] = useState('');
+  const [partnerItemBrand, setPartnerItemBrand] = useState('');
+  const [partnerItemName, setPartnerItemName] = useState('');
+  const [partnerItemQty, setPartnerItemQty] = useState('');
+  const [partnerItemPrice, setPartnerItemPrice] = useState('');
+  const [partnerItemUnit, setPartnerItemUnit] = useState('');
 
   //======== Pull Down to Refresh Function ========//
   const onRefresh = React.useCallback(() => {
