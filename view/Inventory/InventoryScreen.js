@@ -593,6 +593,7 @@ const InventoryScreen = ({navigation}) => {
             <View style={styles.editModalRow}>
               <Text style={styles.editModalLabel}>Qty</Text>
               <TextInput
+                keyboardType="number-pad"
                 placeholder="New Qty"
                 style={styles.editModalTxtInput}
               />
@@ -626,6 +627,7 @@ const InventoryScreen = ({navigation}) => {
               <TextInput
                 placeholder="New Price"
                 style={styles.editModalTxtInput}
+                keyboardType="number-pad"
               />
             </View>
 
@@ -886,7 +888,7 @@ const styles = StyleSheet.create({
   editModalCard: {
     backgroundColor: '#fff',
     width: '100%',
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     paddingVertical: 10,
     borderTopStartRadius: 10,
     borderTopEndRadius: 10,
