@@ -9,8 +9,6 @@ import {
   FlatList,
   ToastAndroid,
   RefreshControl,
-  ScrollView,
-  LogBox,
 } from 'react-native';
 
 // ===== Images ===== //
@@ -204,7 +202,7 @@ const AddProducts = ({route, navigation}) => {
           return response.json();
         })
         .then(function (result) {
-          console.log(result);
+          // console.log(result);
           if (result.error == 0) {
             showToast(result.msg);
             fetchPantryoInventory(
@@ -225,7 +223,7 @@ const AddProducts = ({route, navigation}) => {
   ///======Add Product =======//
 
   React.useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    // LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     let {partner_category, main_category_id} = route.params;
     if (partner_category) {
       if (main_category_id) {
@@ -241,253 +239,91 @@ const AddProducts = ({route, navigation}) => {
       {isLoading == true ? (
         <LoaderScreen />
       ) : (
-<<<<<<< HEAD
-        <ScrollView
-          ref={ref}
-          nestedScrollEnabled={true}
-          keyboardShouldPersistTaps="always">
-          <View style={styles.container}>
-            <View style={styles.searchSection}>
-              <View style={styles.searchBox}>
-                <Icons name="search-outline" size={20} color="#777" />
-                <TextInput
-                  placeholder="Search by Brand or Product"
-                  autoCapitalize="words"
-                  style={styles.searchTxtInput}
-                />
-                <Pressable style={styles.searchBtn}>
-                  <Icons name="arrow-forward-outline" size={25} color="#fff" />
-                </Pressable>
-              </View>
-=======
         <View style={styles.container}>
           <View style={styles.searchSection}>
             <View style={styles.searchBox}>
               <Icons name="search-outline" size={20} color="#777" />
               <TextInput
                 placeholder="Search by Brand or Product"
+                placeholderTextColor="#777"
                 autoCapitalize="words"
                 style={styles.searchTxtInput}
               />
               <Pressable style={styles.searchBtn}>
                 <Icons name="arrow-forward-outline" size={25} color="#fff" />
               </Pressable>
->>>>>>> c6e55cc795e5726ac1f5c58224f9a3b7ca301bff
             </View>
           </View>
-          <ScrollView
-            ref={ref}
-            style={{
-              width: '100%',
-            }}>
-            <View style={styles.catSection}>
-              <View style={styles.catContainer}>
-                {mainCategoryName == 'Spices & Masala' ? (
-                  <Image source={masala} style={styles.catImg} />
-                ) : mainCategoryName == 'Edible Oils' ? (
-                  <Image source={edibleOils} style={styles.catImg} />
-                ) : mainCategoryName == 'Wheat Flour' ? (
-                  <Image source={attaImg} style={styles.catImg} />
-                ) : mainCategoryName == 'Besan' ? (
-                  <Image source={besan} style={styles.catImg} />
-                ) : mainCategoryName == 'Flour' ? (
-                  <Image source={flour} style={styles.catImg} />
-                ) : mainCategoryName == 'Sooji' ? (
-                  <Image source={sooji} style={styles.catImg} />
-                ) : mainCategoryName == 'Rice Flour' ? (
-                  <Image source={riceFlour} style={styles.catImg} />
-                ) : mainCategoryName == 'Other Flours' ? (
-                  <Image source={otherFlour} style={styles.catImg} />
-                ) : mainCategoryName == 'Rice' ? (
-                  <Image source={rice} style={styles.catImg} />
-                ) : mainCategoryName == 'Salt & Sugar' ? (
-                  <Image source={saltSugar} style={styles.catImg} />
-                ) : mainCategoryName == 'Pulses & Grains' ? (
-                  <Image source={pulsesGrains} style={styles.catImg} />
-                ) : mainCategoryName == 'Baking Items' ? (
-                  <Image source={baking} style={styles.catImg} />
-                ) : mainCategoryName == 'Frozen Food' ? (
-                  <Image source={frozenFood} style={styles.catImg} />
-                ) : mainCategoryName == 'Packaged Products' ? (
-                  <Image source={packaged} style={styles.catImg} />
-                ) : mainCategoryName == 'Vegetables' ? (
-                  <Image source={veg} style={styles.catImg} />
-                ) : mainCategoryName == 'Fruits' ? (
-                  <Image source={fruits} style={styles.catImg} />
-                ) : (
-                  <Icons name="image" size={40} color="#777" />
+          <View style={styles.catSection}>
+            {pantryoInvetory !== '' ? (
+              <FlatList
+                ref={ref}
+                showsVerticalScrollIndicator={false}
+                ListHeaderComponent={() => (
+                  <View style={styles.catContainer}>
+                    {mainCategoryName == 'Spices & Masala' ? (
+                      <Image source={masala} style={styles.catImg} />
+                    ) : mainCategoryName == 'Edible Oils' ? (
+                      <Image source={edibleOils} style={styles.catImg} />
+                    ) : mainCategoryName == 'Wheat Flour' ? (
+                      <Image source={attaImg} style={styles.catImg} />
+                    ) : mainCategoryName == 'Besan' ? (
+                      <Image source={besan} style={styles.catImg} />
+                    ) : mainCategoryName == 'Flour' ? (
+                      <Image source={flour} style={styles.catImg} />
+                    ) : mainCategoryName == 'Sooji' ? (
+                      <Image source={sooji} style={styles.catImg} />
+                    ) : mainCategoryName == 'Rice Flour' ? (
+                      <Image source={riceFlour} style={styles.catImg} />
+                    ) : mainCategoryName == 'Other Flours' ? (
+                      <Image source={otherFlour} style={styles.catImg} />
+                    ) : mainCategoryName == 'Rice' ? (
+                      <Image source={rice} style={styles.catImg} />
+                    ) : mainCategoryName == 'Salt & Sugar' ? (
+                      <Image source={saltSugar} style={styles.catImg} />
+                    ) : mainCategoryName == 'Pulses & Grains' ? (
+                      <Image source={pulsesGrains} style={styles.catImg} />
+                    ) : mainCategoryName == 'Baking Items' ? (
+                      <Image source={baking} style={styles.catImg} />
+                    ) : mainCategoryName == 'Frozen Food' ? (
+                      <Image source={frozenFood} style={styles.catImg} />
+                    ) : mainCategoryName == 'Packaged Products' ? (
+                      <Image source={packaged} style={styles.catImg} />
+                    ) : mainCategoryName == 'Vegetables' ? (
+                      <Image source={veg} style={styles.catImg} />
+                    ) : mainCategoryName == 'Fruits' ? (
+                      <Image source={fruits} style={styles.catImg} />
+                    ) : (
+                      <Icons name="image" size={40} color="#777" />
+                    )}
+                    <View
+                      style={{
+                        flex: 1,
+                        marginLeft: 20,
+                      }}>
+                      <Text style={styles.catName}>{mainCategoryName}</Text>
+                      <Text style={styles.noticeTxt}>
+                        Select all the items that you sell from your store. You
+                        can also edit the price & the Qty of the items
+                        accordingly
+                      </Text>
+                    </View>
+                  </View>
                 )}
-                <View
-                  style={{
-                    flex: 1,
-                    marginLeft: 20,
-                  }}>
-                  <Text style={styles.catName}>{mainCategoryName}</Text>
-                  <Text style={styles.noticeTxt}>
-                    Select all the items that you sell from your store. You can
-                    also edit the price & the Qty of the items accordingly
-                  </Text>
-                </View>
-              </View>
-
-              {/* <View style={styles.noticeSection}>
-                <View style={styles.noticeTab}>
-                  <Text style={styles.noticeTxt}>
-                    Select all the items that you sell from your store. You can
-                    also edit the price & the Qty of the items accordingly
-                  </Text>
-                </View>
-              </View> */}
-              {pantryoInvetory !== '' ? (
-                <FlatList
-                  ref={ref}
-                  showsVerticalScrollIndicator={false}
-                  nestedScrollEnabled={true}
-                  style={{width: '100%'}}
-                  data={pantryoInvetory}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={onRefresh}
-                    />
-                  }
-                  renderItem={({item}) => (
-                    <>
-                      {item.product_assign_status == 'not added' ? (
-                        <View style={styles.prodTab}>
-                          <View style={styles.productContainer}>
-                            <View style={styles.productDiv}>
-                              <Text style={styles.prodBrandName}>
-                                {item.pantryo_brand_name
-                                  ? item.pantryo_brand_name
-                                  : ''}
-                              </Text>
-                              <Text style={styles.prodName}>
-                                {item.pantryo_item_name
-                                  ? item.pantryo_item_name
-                                  : 'item name not found!'}
-                              </Text>
-                            </View>
-
-                            {item.product_assign_status == 'not added' ? (
-                              <Pressable
-                                onPress={() =>
-                                  addProductApi(
-                                    item.partner_category_id,
-                                    item.pantryo_main_category_id,
-                                    item.pantryo_inventory_id,
-                                    item.pantryo_item_name,
-                                    item.pantryo_brand_name,
-                                    item.pantryo_item_qty,
-                                    item.pantryo_item_price,
-                                    item.pantryo_item_unit,
-                                  )
-                                }
-                                style={styles.addBtn}>
-                                <Icons
-                                  name="add-outline"
-                                  size={15}
-                                  color="green"
-                                />
-                              </Pressable>
-                            ) : (
-                              <Pressable
-                                style={[
-                                  styles.addBtn,
-                                  {backgroundColor: 'green'},
-                                ]}>
-                                <Icons
-                                  name="checkmark-outline"
-                                  size={20}
-                                  color="white"
-                                />
-                              </Pressable>
-                            )}
-                          </View>
-
-                          <View style={styles.prodInnerRow}>
-                            <Text style={{flex: 1}}>Qty</Text>
-                            <TextInput
-                              placeholderTextColor="#000"
-                              placeholder="Qty"
-                              keyboardType="number-pad"
-                              value={
-                                item.pantryo_inventory_id === inventoryId
-                                  ? inventoryQty
-                                  : item.pantryo_item_qty
-                              }
-                              style={styles.prodTxtInput}
-                              onChangeText={text => {
-                                setInventoryQty(text);
-                              }}
-                            />
-                          </View>
-
-                          <View style={styles.prodInnerRow}>
-                            <Text style={{flex: 1}}>Unit</Text>
-                            <View
-                              style={{
-                                justifyContent: 'flex-end',
-                                alignItems: 'center',
-                                borderWidth: 0.5,
-                                borderColor: '#c7c7c7c7',
-                                width: '30%',
-                              }}>
-                              <Picker
-                                mode="dropdown"
-                                style={{
-                                  width: '100%',
-                                  justifyContent: 'flex-end',
-                                }}
-                                selectedValue={
-                                  selectedUnit !== ''
-                                    ? selectedUnit
-                                    : item.pantryo_item_unit
-                                }
-                                onValueChange={(itemValue, itemIndex) => {
-                                  setSelectedUnit(itemValue);
-                                  setInventoryId(item.pantryo_inventory_id);
-                                }}>
-                                <Picker.Item label="gm" value="gm" />
-                                <Picker.Item label="kg" value="kg" />
-                                <Picker.Item label="ml" value="ml" />
-                                <Picker.Item label="ltr" value="ltr" />
-                                <Picker.Item label="pcs" value="pcs" />
-                                <Picker.Item label="crate" value="crate" />
-                                <Picker.Item label="Dozen" value="Dozen" />
-                              </Picker>
-                            </View>
-                          </View>
-
-                          <View style={styles.prodInnerRow}>
-                            <Text style={{flex: 1}}>Price</Text>
-                            <TextInput
-                              placeholder="₹"
-                              placeholderTextColor="#777"
-                              keyboardType="number-pad"
-                              value={
-                                item.pantryo_inventory_id === inventoryId
-                                  ? newprice
-                                  : item.pantryo_item_price
-                              }
-                              style={styles.prodTxtInput}
-                              onChangeText={text => {
-                                setNewPrice(text);
-                                setInventoryId(item.pantryo_inventory_id);
-                              }}
-                            />
-                          </View>
-                        </View>
-                      ) : (
-                        <View
-                          style={[
-                            styles.productContainer,
-                            {
-                              borderBottomWidth: 0.5,
-                              borderBottomColor: '#c7c7c7c7',
-                              paddingBottom: 20,
-                            },
-                          ]}>
+                nestedScrollEnabled={true}
+                style={{width: '100%'}}
+                data={pantryoInvetory}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
+                renderItem={({item}) => (
+                  <>
+                    {item.product_assign_status == 'not added' ? (
+                      <View style={styles.prodTab}>
+                        <View style={styles.productContainer}>
                           <View style={styles.productDiv}>
                             <Text style={styles.prodBrandName}>
                               {item.pantryo_brand_name
@@ -500,6 +336,7 @@ const AddProducts = ({route, navigation}) => {
                                 : 'item name not found!'}
                             </Text>
                           </View>
+
                           {item.product_assign_status == 'not added' ? (
                             <Pressable
                               onPress={() =>
@@ -511,6 +348,7 @@ const AddProducts = ({route, navigation}) => {
                                   item.pantryo_brand_name,
                                   item.pantryo_item_qty,
                                   item.pantryo_item_price,
+                                  item.pantryo_item_unit,
                                 )
                               }
                               style={styles.addBtn}>
@@ -534,18 +372,140 @@ const AddProducts = ({route, navigation}) => {
                             </Pressable>
                           )}
                         </View>
-                      )}
-                    </>
-                  )}
-                  keyExtractor={(item, pantryo_inventory_id) =>
-                    String(pantryo_inventory_id)
-                  }
-                />
-              ) : (
-                <Text style={styles.prodName}>No Inventory Found!!</Text>
-              )}
-            </View>
-          </ScrollView>
+
+                        <View style={styles.prodInnerRow}>
+                          <Text style={{flex: 1}}>Qty</Text>
+                          <TextInput
+                            placeholderTextColor="#000"
+                            placeholder="Qty"
+                            keyboardType="number-pad"
+                            value={
+                              item.pantryo_inventory_id === inventoryId
+                                ? inventoryQty
+                                : item.pantryo_item_qty
+                            }
+                            style={styles.prodTxtInput}
+                            onChangeText={text => {
+                              setInventoryQty(text);
+                            }}
+                          />
+                        </View>
+
+                        <View style={styles.prodInnerRow}>
+                          <Text style={{flex: 1}}>Unit</Text>
+                          <View
+                            style={{
+                              justifyContent: 'flex-end',
+                              alignItems: 'center',
+                              borderWidth: 0.5,
+                              borderColor: '#c7c7c7c7',
+                              width: '30%',
+                            }}>
+                            <Picker
+                              mode="dropdown"
+                              style={{
+                                width: '100%',
+                                justifyContent: 'flex-end',
+                              }}
+                              selectedValue={
+                                selectedUnit !== ''
+                                  ? selectedUnit
+                                  : item.pantryo_item_unit
+                              }
+                              onValueChange={(itemValue, itemIndex) => {
+                                setSelectedUnit(itemValue);
+                                setInventoryId(item.pantryo_inventory_id);
+                              }}>
+                              <Picker.Item label="gm" value="gm" />
+                              <Picker.Item label="kg" value="kg" />
+                              <Picker.Item label="ml" value="ml" />
+                              <Picker.Item label="ltr" value="ltr" />
+                              <Picker.Item label="pcs" value="pcs" />
+                              <Picker.Item label="crate" value="crate" />
+                              <Picker.Item label="Dozen" value="Dozen" />
+                            </Picker>
+                          </View>
+                        </View>
+
+                        <View style={styles.prodInnerRow}>
+                          <Text style={{flex: 1}}>Price</Text>
+                          <TextInput
+                            placeholder="₹"
+                            placeholderTextColor="#777"
+                            keyboardType="number-pad"
+                            value={
+                              item.pantryo_inventory_id === inventoryId
+                                ? newprice
+                                : item.pantryo_item_price
+                            }
+                            style={styles.prodTxtInput}
+                            onChangeText={text => {
+                              setNewPrice(text);
+                              setInventoryId(item.pantryo_inventory_id);
+                            }}
+                          />
+                        </View>
+                      </View>
+                    ) : (
+                      <View
+                        style={[
+                          styles.productContainer,
+                          {
+                            borderBottomWidth: 0.5,
+                            borderBottomColor: '#c7c7c7c7',
+                            paddingBottom: 20,
+                          },
+                        ]}>
+                        <View style={styles.productDiv}>
+                          <Text style={styles.prodBrandName}>
+                            {item.pantryo_brand_name
+                              ? item.pantryo_brand_name
+                              : ''}
+                          </Text>
+                          <Text style={styles.prodName}>
+                            {item.pantryo_item_name
+                              ? item.pantryo_item_name
+                              : 'item name not found!'}
+                          </Text>
+                        </View>
+                        {item.product_assign_status == 'not added' ? (
+                          <Pressable
+                            onPress={() =>
+                              addProductApi(
+                                item.partner_category_id,
+                                item.pantryo_main_category_id,
+                                item.pantryo_inventory_id,
+                                item.pantryo_item_name,
+                                item.pantryo_brand_name,
+                                item.pantryo_item_qty,
+                                item.pantryo_item_price,
+                              )
+                            }
+                            style={styles.addBtn}>
+                            <Icons name="add-outline" size={15} color="green" />
+                          </Pressable>
+                        ) : (
+                          <Pressable
+                            style={[styles.addBtn, {backgroundColor: 'green'}]}>
+                            <Icons
+                              name="checkmark-outline"
+                              size={20}
+                              color="white"
+                            />
+                          </Pressable>
+                        )}
+                      </View>
+                    )}
+                  </>
+                )}
+                keyExtractor={(item, pantryo_inventory_id) =>
+                  String(pantryo_inventory_id)
+                }
+              />
+            ) : (
+              <Text style={styles.prodName}>No Inventory Found!!</Text>
+            )}
+          </View>
         </View>
       )}
     </>
@@ -580,6 +540,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontFamily: 'OpenSans-Regular',
+    color: '#000',
   },
   searchBtn: {
     backgroundColor: '#5E3360',
