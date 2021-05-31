@@ -51,6 +51,7 @@ const AddProducts = ({route, navigation}) => {
   const [partnerCategoryId, setPanterCategoryId] = React.useState('');
   const [partnerMainCategoryId, setPanterMainCategoryId] = React.useState('');
   const [selectedUnit, setSelectedUnit] = React.useState();
+  const [inventoryQty, setInventoryQty] = React.useState('');
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -315,14 +316,14 @@ const AddProducts = ({route, navigation}) => {
                         placeholderTextColor="#000"
                         keyboardType="number-pad"
                         value={
-                          item.pantryo_inventory_id === inventoryId
+                          item.pantryo_inventory_id === inventoryQty
                             ? newprice
                             : item.pantryo_item_qty
                         }
                         style={styles.prodTxtInput}
                         onChangeText={text => {
                           // setNewPrice(text);
-                          setInventoryId(item.pantryo_inventory_id);
+                          setInventoryQty(item.pantryo_inventory_id);
                         }}
                       />
                     </View>
@@ -343,13 +344,15 @@ const AddProducts = ({route, navigation}) => {
                         <Picker.Item label="ml" value="ml" />
                         <Picker.Item label="ltr" value="ltr" />
                         <Picker.Item label="pcs" value="pcs" />
+                        <Picker.Item label="crate" value="crate" />
+                        <Picker.Item label="Dozen" value="Dozen" />
                       </Picker>
                     </View>
 
-                    <View>
+                    <View style={{flex: 1, marginRight: 30}}>
                       <Text>Price</Text>
                       <TextInput
-                        placeholder="Price in ₹"
+                        placeholder="₹"
                         placeholderTextColor="#000"
                         keyboardType="number-pad"
                         value={

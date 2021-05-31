@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -54,7 +54,7 @@ const InventoryScreen = ({navigation}) => {
   const [partnerCategory, setPartnerCategory] = useState('');
   const [partnerProducts, setPartnerProducts] = useState('');
   const [partnerMainCategory, setPartnerMainCategory] = useState('');
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   //======== Pull Down to Refresh Function ========//
@@ -120,13 +120,13 @@ const InventoryScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
+
   //======== API to fetch all products selected by the partner ========//
 
   //======== Partner Category ========//
   const setPartnerCategoryName = async () => {
     setPartnerCategory(await AsyncStorage.getItem('partner_category_name'));
   };
-  //======== Partner  Category========//
 
   //======== API to Remove Products in the inventory of the partner ========//
   const removeProductApi = async partner_product_id => {
@@ -171,9 +171,8 @@ const InventoryScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-  ////========Remove Products========////
 
-  ///========Search Product=========//
+  //========Search Product=========//
   const searchProducts = async searchkey => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_id) {
@@ -211,9 +210,8 @@ const InventoryScreen = ({navigation}) => {
         });
     }
   };
-  ///========Search Product=========//
 
-  ///========Search Product=========//
+  //========Search Product=========//
   const searchByCategory = async main_category_id => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
@@ -257,9 +255,8 @@ const InventoryScreen = ({navigation}) => {
         });
     }
   };
-  ///========Search Product=========//
 
-  React.useEffect(() => {
+  useEffect(() => {
     setPartnerCategoryName();
     fetchAllProductsOfPartnerApi();
   }, []);
@@ -319,6 +316,11 @@ const InventoryScreen = ({navigation}) => {
                   <Text style={styles.alert}>
                     You have not selected any products
                   </Text>
+                  <Pressable
+                    onPress={() => navigation.navigate('SelectCategory')}
+                    style={styles.btnPrompt}>
+                    <Text style={styles.btnPromptTxt}>ADD PRODUCTS</Text>
+                  </Pressable>
                 </View>
                 {/* ========== No Inventory Found ALert ========== */}
               </>
@@ -361,35 +363,53 @@ const InventoryScreen = ({navigation}) => {
                                 ? item.product_name
                                 : 'No Product Name'}
                             </Text>
-                            <View style={styles.inventoryRow}>
-                              <Text style={styles.qty}>
-                                {item.product_qty
-                                  ? item.product_qty
-                                  : 'No Quantity'}
-                              </Text>
-                              <Text style={styles.price}>
-                                {item.product_price
-                                  ? '₹' + item.product_price
-                                  : 'No Price'}
-                              </Text>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                marginTop: 5,
+                              }}>
+                              <Pressable
+                                onPress={() =>
+                                  removeProductApi(item.product_id)
+                                }>
+                                <Text
+                                  style={{
+                                    fontFamily: 'OpenSans-SemiBold',
+                                    marginRight: 30,
+                                    color: 'red',
+                                  }}>
+                                  Remove
+                                </Text>
+                              </Pressable>
+
+                              <Pressable>
+                                <Text
+                                  style={{
+                                    fontFamily: 'OpenSans-SemiBold',
+                                    color: '#444444',
+                                  }}>
+                                  Edit
+                                </Text>
+                              </Pressable>
                             </View>
-                            <Pressable
-                              onPress={() => removeProductApi(item.product_id)}>
-                              <Text
-                                style={{
-                                  fontFamily: 'OpenSans-Regular',
-                                  color: 'red',
-                                }}>
-                                Remove
-                              </Text>
-                            </Pressable>
+                          </View>
+                          <View style={styles.inventoryRow}>
+                            <Text style={styles.qty}>
+                              {item.product_qty
+                                ? item.product_qty
+                                : 'No Quantity'}
+                            </Text>
+                          </View>
+                          <View style={{flex: 1}}>
+                            <Text style={styles.price}>
+                              {item.product_price
+                                ? '₹' + item.product_price
+                                : 'No Price'}
+                            </Text>
                           </View>
                           <View style={styles.btnsSection}>
-                            <Icons
-                              name="create-outline"
-                              size={20}
-                              style={styles.icon}
-                            />
                             <Switch
                               trackColor={{
                                 false: '#767577',
@@ -427,113 +447,127 @@ const InventoryScreen = ({navigation}) => {
         onRequestClose={() => {
           setChangeCategoryModal(!changeCategoryModal);
         }}>
-        <View style={styles.modalbackground}>
-          <Animatable.View animation="zoomIn" style={styles.modalCard}>
-            <View style={styles.modalHeaderRow}>
-              <Text style={styles.modalHeader}>Change Category</Text>
-              <Pressable
-                onPress={() => setChangeCategoryModal(!changeCategoryModal)}>
-                <Icons name="close-circle-outline" size={20} color="#000" />
-              </Pressable>
-            </View>
+        <ScrollView>
+          <View style={styles.modalbackground}>
+            <Animatable.View animation="zoomIn" style={styles.modalCard}>
+              <View style={styles.modalHeaderRow}>
+                <Text style={styles.modalHeader}>Change Category</Text>
+                <Pressable
+                  onPress={() => setChangeCategoryModal(!changeCategoryModal)}>
+                  <Icons name="close-circle-outline" size={20} color="#000" />
+                </Pressable>
+              </View>
 
-            <View style={styles.categoryMain}>
-              {partnerMainCategory !== '' ? (
-                <FlatList
-                  style={{width: '100%'}}
-                  data={partnerMainCategory}
-                  renderItem={({item}) => (
-                    <>
-                      <Pressable
-                        onPress={() => {
-                          searchByCategory(item.main_category_id);
-                          setChangeCategoryModal(!changeCategoryModal);
-                        }}
-                        style={styles.modalCatRow}>
-                        {item.main_category_name == 'Spices & Masala' ? (
-                          <Image
-                            source={masala}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Edible Oils' ? (
-                          <Image
-                            source={edibleOils}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Wheat Flour' ? (
-                          <Image
-                            source={attaImg}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Besan' ? (
-                          <Image source={besan} style={styles.modalCatRowImg} />
-                        ) : item.main_category_name == 'Flour' ? (
-                          <Image source={flour} style={styles.modalCatRowImg} />
-                        ) : item.main_category_name == 'Sooji' ? (
-                          <Image source={sooji} style={styles.modalCatRowImg} />
-                        ) : item.main_category_name == 'Rice Flour' ? (
-                          <Image
-                            source={riceFlour}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Other Flours' ? (
-                          <Image
-                            source={otherFlour}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Rice' ? (
-                          <Image source={rice} style={styles.modalCatRowImg} />
-                        ) : item.main_category_name == 'Salt & Sugar' ? (
-                          <Image
-                            source={saltSugar}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Pulses & Grains' ? (
-                          <Image
-                            source={pulsesGrains}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Baking Items' ? (
-                          <Image
-                            source={baking}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Frozen Food' ? (
-                          <Image
-                            source={frozenFood}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Packaged Products' ? (
-                          <Image
-                            source={packaged}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : item.main_category_name == 'Vegetables' ? (
-                          <Image source={veg} style={styles.modalCatRowImg} />
-                        ) : item.main_category_name == 'Fruits' ? (
-                          <Image
-                            source={fruits}
-                            style={styles.modalCatRowImg}
-                          />
-                        ) : (
-                          <Icons name="image" size={40} color="#777" />
-                        )}
+              <View style={styles.categoryMain}>
+                {partnerMainCategory !== '' ? (
+                  <FlatList
+                    style={{width: '100%'}}
+                    data={partnerMainCategory}
+                    renderItem={({item}) => (
+                      <>
+                        <Pressable
+                          onPress={() => {
+                            searchByCategory(item.main_category_id);
+                            setChangeCategoryModal(!changeCategoryModal);
+                          }}
+                          style={styles.modalCatRow}>
+                          {item.main_category_name == 'Spices & Masala' ? (
+                            <Image
+                              source={masala}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Edible Oils' ? (
+                            <Image
+                              source={edibleOils}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Wheat Flour' ? (
+                            <Image
+                              source={attaImg}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Besan' ? (
+                            <Image
+                              source={besan}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Flour' ? (
+                            <Image
+                              source={flour}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Sooji' ? (
+                            <Image
+                              source={sooji}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Rice Flour' ? (
+                            <Image
+                              source={riceFlour}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Other Flours' ? (
+                            <Image
+                              source={otherFlour}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Rice' ? (
+                            <Image
+                              source={rice}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Salt & Sugar' ? (
+                            <Image
+                              source={saltSugar}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Pulses & Grains' ? (
+                            <Image
+                              source={pulsesGrains}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Baking Items' ? (
+                            <Image
+                              source={baking}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Frozen Food' ? (
+                            <Image
+                              source={frozenFood}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Packaged Products' ? (
+                            <Image
+                              source={packaged}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : item.main_category_name == 'Vegetables' ? (
+                            <Image source={veg} style={styles.modalCatRowImg} />
+                          ) : item.main_category_name == 'Fruits' ? (
+                            <Image
+                              source={fruits}
+                              style={styles.modalCatRowImg}
+                            />
+                          ) : (
+                            <Icons name="image" size={40} color="#777" />
+                          )}
 
-                        {/* <Image source={masala} style={styles.modalCatRowImg} /> */}
-                        <Text style={styles.categoryTxt}>
-                          {item.main_category_name}
-                        </Text>
-                      </Pressable>
-                    </>
-                  )}
-                  keyExtractor={(item, product_id) => String(product_id)}
-                />
-              ) : (
-                <Text>No Category Found!</Text>
-              )}
-            </View>
-          </Animatable.View>
-        </View>
+                          {/* <Image source={masala} style={styles.modalCatRowImg} /> */}
+                          <Text style={styles.categoryTxt}>
+                            {item.main_category_name}
+                          </Text>
+                        </Pressable>
+                      </>
+                    )}
+                    keyExtractor={(item, product_id) => String(product_id)}
+                  />
+                ) : (
+                  <Text>No Category Found!</Text>
+                )}
+              </View>
+            </Animatable.View>
+          </View>
+        </ScrollView>
       </Modal>
       {/* ========== Category Modal ========== */}
     </>
@@ -570,6 +604,20 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 16,
     textAlign: 'center',
+    color: '#000',
+  },
+  btnPrompt: {
+    marginTop: 20,
+    width: '100%',
+    backgroundColor: '#F4AA79',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderRadius: 5,
+  },
+  btnPromptTxt: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 16,
     color: '#000',
   },
   headerSection: {
@@ -674,7 +722,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   inventoryTabDiv: {
-    flex: 1,
+    flex: 2,
   },
   inventoryBrand: {
     fontFamily: 'OpenSans-Regular',
@@ -689,14 +737,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    flex: 1,
   },
   qty: {
     fontFamily: 'OpenSans-Regular',
-    fontSize: 16,
+    fontSize: 18,
   },
   price: {
     fontFamily: 'OpenSans-Bold',
-    fontSize: 16,
+    fontSize: 18,
     color: 'green',
     marginLeft: 5,
   },
