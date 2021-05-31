@@ -10,6 +10,7 @@ import {
   ToastAndroid,
   RefreshControl,
   ScrollView,
+  LogBox,
 } from 'react-native';
 
 // ===== Images ===== //
@@ -65,7 +66,7 @@ const AddProducts = ({route, navigation}) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     fetchPantryoInventory(partnerCategoryId, partnerMainCategoryId);
-    wait(1000).then(() => setRefreshing(false));
+    wait(500).then(() => setRefreshing(false));
   }, []);
 
   // =========== Toast Function =========== //
@@ -135,13 +136,26 @@ const AddProducts = ({route, navigation}) => {
     product_brand,
     product_qty,
     product_price,
+    product_unit,
   ) => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let price = null;
+    let qty = null;
+    let unit = null;
     if (newprice) {
       price = newprice;
     } else {
       price = product_price;
+    }
+    if (inventoryQty) {
+      qty = inventoryQty;
+    } else {
+      qty = product_qty;
+    }
+    if (selectedUnit) {
+      unit = selectedUnit;
+    } else {
+      unit = product_unit;
     }
     if (!partner_category_id) {
       showToast('Partner Category ID not found!');
@@ -158,11 +172,14 @@ const AddProducts = ({route, navigation}) => {
     } else if (!product_name) {
       showToast('Enter Product Name!');
       return;
-    } else if (!product_qty) {
-      showToast('Enter Product Brand Name!');
+    } else if (!qty) {
+      showToast('Please Enter Product Quantity Name!');
       return;
     } else if (!price) {
       showToast('Enter Product Price!');
+      return;
+    } else if (!unit) {
+      showToast('Please Product Unit!');
       return;
     } else {
       setLoading(true);
@@ -181,7 +198,8 @@ const AddProducts = ({route, navigation}) => {
             inventory_id: inventory_id,
             product_brand: product_brand,
             product_name: product_name,
-            product_quantity: product_qty,
+            product_quantity: qty,
+            product_unit: unit,
             product_price: price,
           }),
         },
@@ -211,6 +229,7 @@ const AddProducts = ({route, navigation}) => {
   ///======Add Product =======//
 
   React.useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     let {partner_category, main_category_id} = route.params;
     if (partner_category) {
       if (main_category_id) {
@@ -226,7 +245,10 @@ const AddProducts = ({route, navigation}) => {
       {isLoading == true ? (
         <LoaderScreen />
       ) : (
-        <ScrollView ref={ref}>
+        <ScrollView
+          ref={ref}
+          nestedScrollEnabled={true}
+          keyboardShouldPersistTaps="always">
           <View style={styles.container}>
             <View style={styles.searchSection}>
               <View style={styles.searchBox}>
@@ -292,6 +314,7 @@ const AddProducts = ({route, navigation}) => {
               {pantryoInvetory !== '' ? (
                 <FlatList
                   showsVerticalScrollIndicator={false}
+                  nestedScrollEnabled={true}
                   style={{width: '100%'}}
                   data={pantryoInvetory}
                   refreshControl={
@@ -329,6 +352,7 @@ const AddProducts = ({route, navigation}) => {
                                     item.pantryo_brand_name,
                                     item.pantryo_item_qty,
                                     item.pantryo_item_price,
+                                    item.pantryo_item_unit,
                                   )
                                 }
                                 style={styles.addBtn}>
@@ -360,14 +384,13 @@ const AddProducts = ({route, navigation}) => {
                               placeholder="Qty"
                               keyboardType="number-pad"
                               value={
-                                item.pantryo_inventory_id === inventoryQty
-                                  ? newprice
+                                item.pantryo_inventory_id === inventoryId
+                                  ? inventoryQty
                                   : item.pantryo_item_qty
                               }
                               style={styles.prodTxtInput}
                               onChangeText={text => {
-                                // setNewPrice(text);
-                                setInventoryQty(item.pantryo_inventory_id);
+                                setInventoryQty(text);
                               }}
                             />
                           </View>
@@ -388,10 +411,15 @@ const AddProducts = ({route, navigation}) => {
                                   width: '100%',
                                   justifyContent: 'flex-end',
                                 }}
-                                selectedValue={selectedUnit}
-                                onValueChange={(itemValue, itemIndex) =>
-                                  setSelectedUnit(itemValue)
-                                }>
+                                selectedValue={
+                                  selectedUnit !== ''
+                                    ? selectedUnit
+                                    : item.pantryo_item_unit
+                                }
+                                onValueChange={(itemValue, itemIndex) => {
+                                  setSelectedUnit(itemValue);
+                                  setInventoryId(item.pantryo_inventory_id);
+                                }}>
                                 <Picker.Item label="gm" value="gm" />
                                 <Picker.Item label="kg" value="kg" />
                                 <Picker.Item label="ml" value="ml" />
@@ -407,7 +435,7 @@ const AddProducts = ({route, navigation}) => {
                             <Text style={{flex: 1}}>Price</Text>
                             <TextInput
                               placeholder="₹"
-                              placeholderTextColor="#000"
+                              placeholderTextColor="#777"
                               keyboardType="number-pad"
                               value={
                                 item.pantryo_inventory_id === inventoryId
@@ -607,6 +635,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Regular',
     borderWidth: 0.5,
     borderColor: '#c7c7c7c7',
+    color: '#000',
   },
   addBtn: {
     flexDirection: 'row',
