@@ -57,11 +57,7 @@ const AddProducts = ({route, navigation}) => {
   const [inventoryQty, setInventoryQty] = React.useState('');
 
   const ref = React.useRef(null);
-  useScrollToTop(
-    React.useRef({
-      scrollToTop: () => ref.current?.scrollToOffset({offset: -10}),
-    }),
-  );
+  useScrollToTop(ref);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -245,6 +241,7 @@ const AddProducts = ({route, navigation}) => {
       {isLoading == true ? (
         <LoaderScreen />
       ) : (
+<<<<<<< HEAD
         <ScrollView
           ref={ref}
           nestedScrollEnabled={true}
@@ -262,7 +259,27 @@ const AddProducts = ({route, navigation}) => {
                   <Icons name="arrow-forward-outline" size={25} color="#fff" />
                 </Pressable>
               </View>
+=======
+        <View style={styles.container}>
+          <View style={styles.searchSection}>
+            <View style={styles.searchBox}>
+              <Icons name="search-outline" size={20} color="#777" />
+              <TextInput
+                placeholder="Search by Brand or Product"
+                autoCapitalize="words"
+                style={styles.searchTxtInput}
+              />
+              <Pressable style={styles.searchBtn}>
+                <Icons name="arrow-forward-outline" size={25} color="#fff" />
+              </Pressable>
+>>>>>>> c6e55cc795e5726ac1f5c58224f9a3b7ca301bff
             </View>
+          </View>
+          <ScrollView
+            ref={ref}
+            style={{
+              width: '100%',
+            }}>
             <View style={styles.catSection}>
               <View style={styles.catContainer}>
                 {mainCategoryName == 'Spices & Masala' ? (
@@ -300,19 +317,30 @@ const AddProducts = ({route, navigation}) => {
                 ) : (
                   <Icons name="image" size={40} color="#777" />
                 )}
-                <Text style={styles.catName}>{mainCategoryName}</Text>
-              </View>
-
-              <View style={styles.noticeSection}>
-                <View style={styles.noticeTab}>
+                <View
+                  style={{
+                    flex: 1,
+                    marginLeft: 20,
+                  }}>
+                  <Text style={styles.catName}>{mainCategoryName}</Text>
                   <Text style={styles.noticeTxt}>
                     Select all the items that you sell from your store. You can
                     also edit the price & the Qty of the items accordingly
                   </Text>
                 </View>
               </View>
+
+              {/* <View style={styles.noticeSection}>
+                <View style={styles.noticeTab}>
+                  <Text style={styles.noticeTxt}>
+                    Select all the items that you sell from your store. You can
+                    also edit the price & the Qty of the items accordingly
+                  </Text>
+                </View>
+              </View> */}
               {pantryoInvetory !== '' ? (
                 <FlatList
+                  ref={ref}
                   showsVerticalScrollIndicator={false}
                   nestedScrollEnabled={true}
                   style={{width: '100%'}}
@@ -517,8 +545,8 @@ const AddProducts = ({route, navigation}) => {
                 <Text style={styles.prodName}>No Inventory Found!!</Text>
               )}
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
       )}
     </>
   );
@@ -578,7 +606,6 @@ const styles = StyleSheet.create({
   },
   catName: {
     fontFamily: 'OpenSans-SemiBold',
-    marginLeft: 20,
     fontSize: 20,
     flex: 1,
   },
