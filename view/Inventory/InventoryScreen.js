@@ -38,6 +38,7 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import LoaderScreen from '../../controller/LoaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Animatable from 'react-native-animatable';
+import {Picker} from '@react-native-picker/picker';
 
 // ===== Components ===== //
 import SelectCategory from './Product/CreateCategory';
@@ -56,6 +57,8 @@ const InventoryScreen = ({navigation}) => {
   const [partnerMainCategory, setPartnerMainCategory] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const [editModal, setEditModal] = useState(false);
+  const [selectedUnit, setSelectedUnit] = useState();
 
   //======== Pull Down to Refresh Function ========//
   const onRefresh = React.useCallback(() => {
@@ -384,7 +387,7 @@ const InventoryScreen = ({navigation}) => {
                                 </Text>
                               </Pressable>
 
-                              <Pressable>
+                              <Pressable onPress={() => setEditModal(true)}>
                                 <Text
                                   style={{
                                     fontFamily: 'OpenSans-SemiBold',
@@ -570,6 +573,76 @@ const InventoryScreen = ({navigation}) => {
         </ScrollView>
       </Modal>
       {/* ========== Category Modal ========== */}
+
+      {/* ========== Edit Modal ========== */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={editModal}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setEditModal(!editModal);
+        }}>
+        <View style={styles.editModal}>
+          <Animatable.View animation="slideInUp" style={styles.editModalCard}>
+            <View style={styles.editModalMainTxt}>
+              <Text style={styles.editModalBrandName}>Brand Name</Text>
+              <Text style={styles.editModalProductName}>Product Name</Text>
+            </View>
+
+            <View style={styles.editModalRow}>
+              <Text style={styles.editModalLabel}>Qty</Text>
+              <TextInput
+                placeholder="New Qty"
+                style={styles.editModalTxtInput}
+              />
+            </View>
+
+            <View style={styles.editModalRow}>
+              <Text style={styles.editModalLabel}>Unit</Text>
+              <Picker
+                mode="dropdown"
+                style={{
+                  borderBottomWidth: 0.5,
+                  textAlign: 'right',
+                  width: '30%',
+                }}
+                selectedValue={selectedUnit}
+                onValueChange={(itemValue, itemIndex) =>
+                  setSelectedUnit(itemValue)
+                }>
+                <Picker.Item label="gm" value="gm" />
+                <Picker.Item label="kg" value="kg" />
+                <Picker.Item label="ml" value="ml" />
+                <Picker.Item label="ltr" value="ltr" />
+                <Picker.Item label="crate" value="crate" />
+                <Picker.Item label="dozen" value="dozen" />
+                <Picker.Item label="Pcs" value="Pcs" />
+              </Picker>
+            </View>
+
+            <View style={styles.editModalRow}>
+              <Text style={styles.editModalLabel}>Price</Text>
+              <TextInput
+                placeholder="New Price"
+                style={styles.editModalTxtInput}
+              />
+            </View>
+
+            <View style={styles.editModalBtnContainer}>
+              <Pressable
+                style={styles.editModalCancelBtn}
+                onPress={() => setEditModal(!editModal)}>
+                <Text style={styles.editModalBtnTxt}>Cancel</Text>
+              </Pressable>
+              <Pressable style={styles.editModalConfirmBtn}>
+                <Text style={styles.editModalBtnTxt}>Confirm</Text>
+              </Pressable>
+            </View>
+          </Animatable.View>
+        </View>
+      </Modal>
+      {/* ========== Edit Modal ========== */}
     </>
   );
 };
@@ -803,5 +876,78 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Regular',
     fontSize: 18,
     marginLeft: 10,
+  },
+  editModal: {
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  editModalCard: {
+    backgroundColor: '#fff',
+    width: '100%',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderTopStartRadius: 10,
+    borderTopEndRadius: 10,
+  },
+  editModalMainTxt: {
+    marginBottom: 15,
+    marginTop: 20,
+  },
+  editModalBrandName: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 16,
+  },
+  editModalProductName: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 22,
+  },
+  editModalRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 15,
+  },
+  editModalLabel: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 16,
+    flex: 1,
+  },
+  editModalTxtInput: {
+    borderBottomColor: '#c7c7c7c7',
+    borderBottomWidth: 0.5,
+    marginRight: 20,
+    fontFamily: 'OpenSans-Regular',
+    width: '30%',
+    textAlign: 'center',
+  },
+  editModalBtnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginTop: 20,
+  },
+  editModalCancelBtn: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F4AA79',
+    paddingVertical: 15,
+    marginHorizontal: 3,
+  },
+  editModalConfirmBtn: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#C6B5C7',
+    paddingVertical: 15,
+    marginHorizontal: 3,
+  },
+  editModalBtnTxt: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 16,
   },
 });
