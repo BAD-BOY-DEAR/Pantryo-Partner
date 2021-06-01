@@ -95,7 +95,7 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner Category not found!');
       return;
     } else {
-      // setLoading(true);
+      setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getProductOfPartner',
         {
@@ -114,7 +114,6 @@ const InventoryScreen = ({navigation}) => {
           return response.json();
         })
         .then(function (result) {
-          console.log(result);
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
             setPartnerMainCategory(result.MainCategory);
@@ -308,12 +307,20 @@ const InventoryScreen = ({navigation}) => {
           return response.json();
         })
         .then(function (result) {
-          console.log(result);
+          if (result.error == 0) {
+            showToast('Product Details Updated ');
+            fetchAllProductsOfPartnerApi();
+          } else {
+            showToast('Something went Wrong!');
+          }
         })
         .catch(error => {
           console.error(error);
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          // setLoading(false)
+          setEditModal(false);
+        });
     }
   };
   ///======Edit Product and Update =======//

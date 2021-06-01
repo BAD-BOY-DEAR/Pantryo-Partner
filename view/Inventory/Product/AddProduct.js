@@ -87,7 +87,7 @@ const AddProducts = ({route, navigation}) => {
       showToast('Partner ID not found!');
       return;
     } else {
-      setLoading(true);
+      // setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getPantryoInventoryData',
         {
@@ -222,6 +222,54 @@ const AddProducts = ({route, navigation}) => {
     }
   };
 
+  // ====== Search Product ======= //
+  const searchInventoryProduct = async searchkey => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    if (!partner_id) {
+      showToast('Product Id not Found!');
+      return;
+    } else if (!partnerMainCategoryId) {
+      showToast('Partner Product Main Category not Found!');
+      return;
+    } else if (!partnerCategoryId) {
+      showToast('Partner Category Not Found!');
+      return;
+    } else if (!searchkey) {
+      fetchPantryoInventory(partnerCategoryId, partnerMainCategoryId);
+    } else {
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=searchInventoryProducts',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_id: partner_id,
+            partner_category_id: partnerCategoryId,
+            main_category_id: partnerMainCategoryId,
+            searchkey: searchkey,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          if (result.error == 0) {
+            setPantryoInventory(result.PantryoInventoryData);
+          } else {
+            showToast(result.msg);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+
   React.useEffect(() => {
     let {partner_category, main_category_id} = route.params;
     if (partner_category) {
@@ -247,6 +295,7 @@ const AddProducts = ({route, navigation}) => {
                 placeholderTextColor="#777"
                 autoCapitalize="words"
                 style={styles.searchTxtInput}
+                onChangeText={text => searchInventoryProduct(text)}
               />
               <Pressable style={styles.searchBtn}>
                 <Icons name="arrow-forward-outline" size={25} color="#fff" />
