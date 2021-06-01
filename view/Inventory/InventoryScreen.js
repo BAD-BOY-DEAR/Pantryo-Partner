@@ -365,9 +365,9 @@ const InventoryScreen = ({navigation}) => {
               autoCapitalize="words"
               onChangeText={txt => searchProducts(txt)}
             />
-            <Pressable style={styles.searchBtn}>
+            {/* <Pressable style={styles.searchBtn}>
               <Icons name="arrow-forward-outline" size={20} color="#fff" />
-            </Pressable>
+            </Pressable> */}
           </View>
         </View>
         {/* ========== Search Box Section ========== */}
@@ -884,8 +884,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inventoryProduct: {
-    fontFamily: 'OpenSans-Bold',
-    fontSize: 20,
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 18,
     marginTop: 3,
   },
   inventoryRow: {
@@ -948,7 +948,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginBottom: 25,
+    marginBottom: 10,
+    marginTop: 20,
   },
   modalCatRowImg: {
     width: 50,
