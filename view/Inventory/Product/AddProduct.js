@@ -302,9 +302,9 @@ const AddProducts = ({route, navigation}) => {
                 style={styles.searchTxtInput}
                 onChangeText={text => searchInventoryProduct(text)}
               />
-              <Pressable style={styles.searchBtn}>
+              {/* <Pressable style={styles.searchBtn}>
                 <Icons name="arrow-forward-outline" size={25} color="#fff" />
-              </Pressable>
+              </Pressable> */}
             </View>
           </View>
           <View style={styles.catSection}>
