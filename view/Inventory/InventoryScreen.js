@@ -95,7 +95,7 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner Category not found!');
       return;
     } else {
-      setLoading(true);
+      // setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getProductOfPartner',
         {
