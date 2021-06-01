@@ -129,13 +129,13 @@ const InventoryScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-
   //======== API to fetch all products selected by the partner ========//
 
   //======== Partner Category ========//
   const setPartnerCategoryName = async () => {
     setPartnerCategory(await AsyncStorage.getItem('partner_category_name'));
   };
+  //======== Partner Category ========//
 
   //======== API to Remove Products in the inventory of the partner ========//
   const removeProductApi = async partner_product_id => {
@@ -180,6 +180,7 @@ const InventoryScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
+  //======== API to Remove Products in the inventory of the partner ========//
 
   //========Search Product=========//
   const searchProducts = async searchkey => {
@@ -219,8 +220,9 @@ const InventoryScreen = ({navigation}) => {
         });
     }
   };
-
   //========Search Product=========//
+
+  //========Search Product by Category=========//
   const searchByCategory = async main_category_id => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
@@ -264,6 +266,58 @@ const InventoryScreen = ({navigation}) => {
         });
     }
   };
+  //========Search Product by Category=========//
+
+  ///======Edit Product abd Update =======//
+  const updatePartnerProduct = async () => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    if (!partnerItemId) {
+      showToast('Partner Product ID not found!');
+      return;
+    } else if (!partner_id) {
+      showToast('Partner ID not found!');
+      return;
+    } else if (!partnerItemPrice) {
+      showToast('Enter product pricee!');
+      return;
+    } else if (!partnerItemUnit) {
+      showToast('Partner product unit not selected!');
+      return;
+    } else if (!partnerItemQty) {
+      showToast('Enter Partner Product Qty!');
+      return;
+    } else {
+      setLoading(true);
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=updatePartnerProduct',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_id: partner_id,
+            product_id: partnerItemId,
+            product_price: partnerItemPrice,
+            product_unit: partnerItemUnit,
+            product_qyt: partnerItemQty,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          console.log(result);
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+  ///======Edit Product and Update =======//
 
   useEffect(() => {
     setPartnerCategoryName();
@@ -393,7 +447,16 @@ const InventoryScreen = ({navigation}) => {
                                 </Text>
                               </Pressable>
 
-                              <Pressable onPress={() => setEditModal(true)}>
+                              <Pressable
+                                onPress={() => {
+                                  setPartnerItemBrand(item.product_brand);
+                                  setPartnerItemId(item.product_id);
+                                  setPartnerItemName(item.product_name);
+                                  setPartnerItemQty(item.product_qty);
+                                  setPartnerItemPrice(item.product_price);
+                                  setPartnerItemUnit(item.product_unit);
+                                  setEditModal(true);
+                                }}>
                                 <Text
                                   style={{
                                     fontFamily: 'OpenSans-SemiBold',
@@ -592,16 +655,19 @@ const InventoryScreen = ({navigation}) => {
         <View style={styles.editModal}>
           <Animatable.View animation="slideInUp" style={styles.editModalCard}>
             <View style={styles.editModalMainTxt}>
-              <Text style={styles.editModalBrandName}>Brand Name</Text>
-              <Text style={styles.editModalProductName}>Product Name</Text>
+              <Text style={styles.editModalBrandName}>{partnerItemBrand}</Text>
+              <Text style={styles.editModalProductName}>{partnerItemName}</Text>
             </View>
 
             <View style={styles.editModalRow}>
               <Text style={styles.editModalLabel}>Qty</Text>
               <TextInput
                 keyboardType="number-pad"
+                value={partnerItemQty}
                 placeholder="New Qty"
+                placeholderTextColor="#777"
                 style={styles.editModalTxtInput}
+                onChangeText={text => setPartnerItemQty(text)}
               />
             </View>
 
@@ -614,9 +680,9 @@ const InventoryScreen = ({navigation}) => {
                   textAlign: 'right',
                   width: '30%',
                 }}
-                selectedValue={selectedUnit}
+                selectedValue={partnerItemUnit}
                 onValueChange={(itemValue, itemIndex) =>
-                  setSelectedUnit(itemValue)
+                  setPartnerItemUnit(itemValue)
                 }>
                 <Picker.Item label="gm" value="gm" />
                 <Picker.Item label="kg" value="kg" />
@@ -629,11 +695,15 @@ const InventoryScreen = ({navigation}) => {
             </View>
 
             <View style={styles.editModalRow}>
-              <Text style={styles.editModalLabel}>Price</Text>
+              <Text style={styles.editModalLabel}>Price </Text>
+              <Text style={{paddingLeft: 20}}>₹ </Text>
               <TextInput
                 placeholder="New Price"
+                placeholderTextColor="#777"
                 style={styles.editModalTxtInput}
                 keyboardType="number-pad"
+                value={partnerItemPrice}
+                onChangeText={text => setPartnerItemPrice(text)}
               />
             </View>
 
@@ -643,7 +713,9 @@ const InventoryScreen = ({navigation}) => {
                 onPress={() => setEditModal(!editModal)}>
                 <Text style={styles.editModalBtnTxt}>Cancel</Text>
               </Pressable>
-              <Pressable style={styles.editModalConfirmBtn}>
+              <Pressable
+                onPress={() => updatePartnerProduct()}
+                style={styles.editModalConfirmBtn}>
                 <Text style={styles.editModalBtnTxt}>Confirm</Text>
               </Pressable>
             </View>
@@ -930,6 +1002,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Regular',
     width: '30%',
     textAlign: 'center',
+    color: '#000',
   },
   editModalBtnContainer: {
     flexDirection: 'row',

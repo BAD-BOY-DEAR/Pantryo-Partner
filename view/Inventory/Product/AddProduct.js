@@ -223,7 +223,6 @@ const AddProducts = ({route, navigation}) => {
   ///======Add Product =======//
 
   React.useEffect(() => {
-    // LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     let {partner_category, main_category_id} = route.params;
     if (partner_category) {
       if (main_category_id) {
