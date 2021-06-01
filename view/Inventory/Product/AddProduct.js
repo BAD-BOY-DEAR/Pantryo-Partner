@@ -433,13 +433,14 @@ const AddProducts = ({route, navigation}) => {
                             placeholder="Qty"
                             keyboardType="number-pad"
                             value={
-                              item.pantryo_inventory_id === inventoryId
+                              item.pantryo_inventory_id == inventoryId
                                 ? inventoryQty
                                 : item.pantryo_item_qty
                             }
                             style={styles.prodTxtInput}
                             onChangeText={text => {
                               setInventoryQty(text);
+                              setInventoryId(item.pantryo_inventory_id);
                             }}
                           />
                         </View>
