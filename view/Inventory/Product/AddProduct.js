@@ -74,6 +74,7 @@ const AddProducts = ({route, navigation}) => {
     );
   };
 
+  //=========== API to Fetch Category according to User Type =========== //
   const fetchPantryoInventory = async (partner_category, main_category_id) => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_category) {
@@ -121,7 +122,7 @@ const AddProducts = ({route, navigation}) => {
     }
   };
 
-  ///======Add Product =======//
+  // ====== Add Product ======= //
   const addProductApi = async (
     partner_category_id,
     main_category_id,
@@ -220,7 +221,6 @@ const AddProducts = ({route, navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-  ///======Add Product =======//
 
   React.useEffect(() => {
     let {partner_category, main_category_id} = route.params;
