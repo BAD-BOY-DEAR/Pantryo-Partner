@@ -477,7 +477,8 @@ const InventoryScreen = ({navigation}) => {
                             <Text style={styles.qty}>
                               {item.product_qty
                                 ? item.product_qty
-                                : 'No Quantity'}{' ' +item.product_unit}
+                                : 'No Quantity'}
+                              {' ' + item.product_unit}
                             </Text>
                           </View>
                           <View style={{flex: 1}}>
