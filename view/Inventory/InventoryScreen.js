@@ -901,6 +901,7 @@ const styles = StyleSheet.create({
   qty: {
     fontFamily: 'OpenSans-Regular',
     fontSize: 18,
+    marginLeft: 10,
   },
   price: {
     fontFamily: 'OpenSans-Bold',
