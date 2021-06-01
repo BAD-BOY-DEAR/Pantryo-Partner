@@ -211,31 +211,36 @@ const AddProducts = ({route, navigation}) => {
               result.main_category_id,
             );
           } else {
-            // showToast('Something went Wrong! Please try Again!');
             showToast(result.msg);
           }
         })
         .catch(error => {
           console.error(error);
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setLoading(false);
+          setInventoryQty('');
+          setSelectedUnit('');
+          setNewPrice('');
+        });
     }
   };
 
   // ====== Search Product ======= //
   const searchInventoryProduct = async searchkey => {
     let partner_id = await AsyncStorage.getItem('partner_id');
+    let partner_category = await AsyncStorage.getItem('partner_category');
     if (!partner_id) {
       showToast('Product Id not Found!');
       return;
     } else if (!partnerMainCategoryId) {
       showToast('Partner Product Main Category not Found!');
       return;
-    } else if (!partnerCategoryId) {
+    } else if (!partner_category) {
       showToast('Partner Category Not Found!');
       return;
     } else if (!searchkey) {
-      fetchPantryoInventory(partnerCategoryId, partnerMainCategoryId);
+      fetchPantryoInventory(partner_category, partnerMainCategoryId);
     } else {
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=searchInventoryProducts',
@@ -247,7 +252,7 @@ const AddProducts = ({route, navigation}) => {
           },
           body: JSON.stringify({
             partner_id: partner_id,
-            partner_category_id: partnerCategoryId,
+            partner_category_id: partner_category,
             main_category_id: partnerMainCategoryId,
             searchkey: searchkey,
           }),
