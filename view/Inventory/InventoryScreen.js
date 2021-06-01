@@ -128,10 +128,7 @@ const InventoryScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-<<<<<<< HEAD
   //======== API to fetch all products selected by the partner ========//
-=======
->>>>>>> 2eb3fcfad05946b93b313717f8c5761bde5db248
 
   //======== Partner Category ========//
   const setPartnerCategoryName = async () => {
@@ -222,14 +219,9 @@ const InventoryScreen = ({navigation}) => {
         });
     }
   };
-<<<<<<< HEAD
   //========Search Product=========//
 
   //========Search Product by Category=========//
-=======
-
-  //======== Search Product by Category =========//
->>>>>>> 2eb3fcfad05946b93b313717f8c5761bde5db248
   const searchByCategory = async main_category_id => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
