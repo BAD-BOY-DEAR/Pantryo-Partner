@@ -83,7 +83,6 @@ const InventoryScreen = ({navigation}) => {
       50,
     );
   };
-  //======== Show Toast ========//
 
   //======== API to fetch all products selected by the partner ========//
   const fetchAllProductsOfPartnerApi = async () => {
@@ -115,7 +114,7 @@ const InventoryScreen = ({navigation}) => {
           return response.json();
         })
         .then(function (result) {
-          // console.log(result);
+          console.log(result);
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
             setPartnerMainCategory(result.MainCategory);
@@ -129,8 +128,6 @@ const InventoryScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-
-  //======== API to fetch all products selected by the partner ========//
 
   //======== Partner Category ========//
   const setPartnerCategoryName = async () => {
@@ -181,7 +178,7 @@ const InventoryScreen = ({navigation}) => {
     }
   };
 
-  //========Search Product=========//
+  //======== Search Product =========//
   const searchProducts = async searchkey => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_id) {
@@ -220,7 +217,7 @@ const InventoryScreen = ({navigation}) => {
     }
   };
 
-  //========Search Product=========//
+  //======== Search Product by Category =========//
   const searchByCategory = async main_category_id => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
