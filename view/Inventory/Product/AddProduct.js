@@ -660,7 +660,7 @@ const styles = StyleSheet.create({
     flex: 3,
   },
   prodBrandName: {
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'OpenSans-Bold',
     fontSize: 16,
   },
   prodName: {
