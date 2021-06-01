@@ -477,7 +477,7 @@ const InventoryScreen = ({navigation}) => {
                             <Text style={styles.qty}>
                               {item.product_qty
                                 ? item.product_qty
-                                : 'No Quantity'}
+                                : 'No Quantity'}{' ' +item.product_unit}
                             </Text>
                           </View>
                           <View style={{flex: 1}}>
@@ -525,127 +525,122 @@ const InventoryScreen = ({navigation}) => {
         onRequestClose={() => {
           setChangeCategoryModal(!changeCategoryModal);
         }}>
-        <ScrollView>
-          <View style={styles.modalbackground}>
-            <Animatable.View animation="zoomIn" style={styles.modalCard}>
-              <View style={styles.modalHeaderRow}>
-                <Text style={styles.modalHeader}>Change Category</Text>
-                <Pressable
-                  onPress={() => setChangeCategoryModal(!changeCategoryModal)}>
-                  <Icons name="close-circle-outline" size={20} color="#000" />
-                </Pressable>
-              </View>
+        {/* <ScrollView> */}
+        <View style={styles.modalbackground}>
+          <Animatable.View animation="zoomIn" style={styles.modalCard}>
+            <View style={styles.categoryMain}>
+              {partnerMainCategory !== '' ? (
+                <FlatList
+                  style={{width: '100%'}}
+                  data={partnerMainCategory}
+                  ListHeaderComponent={() => (
+                    <View style={styles.modalHeaderRow}>
+                      <Text style={styles.modalHeader}>Change Category</Text>
+                      <Pressable
+                        onPress={() =>
+                          setChangeCategoryModal(!changeCategoryModal)
+                        }>
+                        <Icons
+                          name="close-circle-outline"
+                          size={20}
+                          color="#000"
+                        />
+                      </Pressable>
+                    </View>
+                  )}
+                  renderItem={({item}) => (
+                    <>
+                      <Pressable
+                        onPress={() => {
+                          searchByCategory(item.main_category_id);
+                          setChangeCategoryModal(!changeCategoryModal);
+                        }}
+                        style={styles.modalCatRow}>
+                        {item.main_category_name == 'Spices & Masala' ? (
+                          <Image
+                            source={masala}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Edible Oils' ? (
+                          <Image
+                            source={edibleOils}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Wheat Flour' ? (
+                          <Image
+                            source={attaImg}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Besan' ? (
+                          <Image source={besan} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Flour' ? (
+                          <Image source={flour} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Sooji' ? (
+                          <Image source={sooji} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Rice Flour' ? (
+                          <Image
+                            source={riceFlour}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Other Flours' ? (
+                          <Image
+                            source={otherFlour}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Rice' ? (
+                          <Image source={rice} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Salt & Sugar' ? (
+                          <Image
+                            source={saltSugar}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Pulses & Grains' ? (
+                          <Image
+                            source={pulsesGrains}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Baking Items' ? (
+                          <Image
+                            source={baking}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Frozen Food' ? (
+                          <Image
+                            source={frozenFood}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Packaged Products' ? (
+                          <Image
+                            source={packaged}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : item.main_category_name == 'Vegetables' ? (
+                          <Image source={veg} style={styles.modalCatRowImg} />
+                        ) : item.main_category_name == 'Fruits' ? (
+                          <Image
+                            source={fruits}
+                            style={styles.modalCatRowImg}
+                          />
+                        ) : (
+                          <Icons name="image" size={40} color="#777" />
+                        )}
 
-              <View style={styles.categoryMain}>
-                {partnerMainCategory !== '' ? (
-                  <FlatList
-                    style={{width: '100%'}}
-                    data={partnerMainCategory}
-                    renderItem={({item}) => (
-                      <>
-                        <Pressable
-                          onPress={() => {
-                            searchByCategory(item.main_category_id);
-                            setChangeCategoryModal(!changeCategoryModal);
-                          }}
-                          style={styles.modalCatRow}>
-                          {item.main_category_name == 'Spices & Masala' ? (
-                            <Image
-                              source={masala}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Edible Oils' ? (
-                            <Image
-                              source={edibleOils}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Wheat Flour' ? (
-                            <Image
-                              source={attaImg}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Besan' ? (
-                            <Image
-                              source={besan}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Flour' ? (
-                            <Image
-                              source={flour}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Sooji' ? (
-                            <Image
-                              source={sooji}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Rice Flour' ? (
-                            <Image
-                              source={riceFlour}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Other Flours' ? (
-                            <Image
-                              source={otherFlour}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Rice' ? (
-                            <Image
-                              source={rice}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Salt & Sugar' ? (
-                            <Image
-                              source={saltSugar}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Pulses & Grains' ? (
-                            <Image
-                              source={pulsesGrains}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Baking Items' ? (
-                            <Image
-                              source={baking}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Frozen Food' ? (
-                            <Image
-                              source={frozenFood}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Packaged Products' ? (
-                            <Image
-                              source={packaged}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : item.main_category_name == 'Vegetables' ? (
-                            <Image source={veg} style={styles.modalCatRowImg} />
-                          ) : item.main_category_name == 'Fruits' ? (
-                            <Image
-                              source={fruits}
-                              style={styles.modalCatRowImg}
-                            />
-                          ) : (
-                            <Icons name="image" size={40} color="#777" />
-                          )}
-
-                          {/* <Image source={masala} style={styles.modalCatRowImg} /> */}
-                          <Text style={styles.categoryTxt}>
-                            {item.main_category_name}
-                          </Text>
-                        </Pressable>
-                      </>
-                    )}
-                    keyExtractor={(item, product_id) => String(product_id)}
-                  />
-                ) : (
-                  <Text>No Category Found!</Text>
-                )}
-              </View>
-            </Animatable.View>
-          </View>
-        </ScrollView>
+                        {/* <Image source={masala} style={styles.modalCatRowImg} /> */}
+                        <Text style={styles.categoryTxt}>
+                          {item.main_category_name}
+                        </Text>
+                      </Pressable>
+                    </>
+                  )}
+                  keyExtractor={(item, product_id) => String(product_id)}
+                />
+              ) : (
+                <Text>No Category Found!</Text>
+              )}
+            </View>
+          </Animatable.View>
+        </View>
+        {/* </ScrollView> */}
       </Modal>
       {/* ========== Category Modal ========== */}
 
