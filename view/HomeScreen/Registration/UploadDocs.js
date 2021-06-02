@@ -1,9 +1,18 @@
 import React from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ToastAndroid,
+  PermissionsAndroid,
+} from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import DropDownPicker from 'react-native-dropdown-picker';
+import * as ImagePicker from 'react-native-image-picker';
+import {RNCamera} from 'react-native-camera';
 
 const UploadDocs = ({navigation}) => {
   const [open, setOpen] = React.useState(false);
@@ -14,6 +23,68 @@ const UploadDocs = ({navigation}) => {
     {label: 'Ration Card', value: 'Ration Card'},
     {label: 'Voter ID', value: 'Voter ID'},
   ]);
+  const [docFrontImage, SetDocFrontImage] = React.useState('');
+  const [docFrontImagePath, SetDocFrontImagePath] = React.useState('');
+  const [docBackImage, SetDocBackImage] = React.useState('');
+  const [docBackImagePath, SetDocBackImagePath] = React.useState('');
+
+  ///Take Image
+  const requestGalleryPermission = async selectForImage => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Pantryo Partner Camera Permission',
+          message: 'Pantryo Partner  needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        let SelectFor = selectForImage;
+        let options = {
+          storageOptions: {
+            skipBackup: true,
+            path: 'images',
+          },
+          maxWidth: 900,
+          maxHeight: 900,
+          quality: 1,
+          videoQuality: 'medium',
+          durationLimit: 30,
+          includeBase64: true,
+        };
+        await ImagePicker.launchImageLibrary(options, res => {
+          if (res) {
+            if (res.errorCode == 'permission') {
+              alert('Permission not granted');
+              return;
+            } else if (res.errorCode == 'others') {
+              alert(res.errorMessage);
+              return;
+            } else if (res.didCancel) {
+              console.log('User cancelled image picker');
+            } else {
+              let temp = {name: res.fileName, uri: res.uri, type: res.type};
+              if (SelectFor == 'Front') {
+                SetDocFrontImagePath(res.uri);
+                SetDocFrontImage(temp);
+              }
+              if (SelectFor == 'Back') {
+                SetDocBackImagePath(res.uri);
+                SetDocBackImage(temp);
+              }
+            }
+          }
+        });
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
   return (
     <>
@@ -60,8 +131,7 @@ const UploadDocs = ({navigation}) => {
 
         <Pressable
           style={styles.btn}
-          onPress={() => navigation.navigate('PostUploadStatus')}
-          >
+          onPress={() => navigation.navigate('PostUploadStatus')}>
           <Text style={styles.btnTxt}>SUBMIT</Text>
         </Pressable>
       </View>

@@ -56,6 +56,7 @@ const RegisterScreen = ({navigation, route}) => {
   const [bankAccountNumber, setBankAccountNumber] = React.useState('');
   const [bankISFCCode, setBankISFCCode] = React.useState('');
   const [addressPlaceHolder, setAddressPlaceHolder] = React.useState('');
+  const [upiId, setUPIID] = React.useState('');
 
   ///Take Image
   const requestGalleryPermission = async () => {
@@ -146,6 +147,9 @@ const RegisterScreen = ({navigation, route}) => {
     } else if (!bankISFCCode) {
       showToast('Please Enter Your Bank ISFC Code');
       return;
+    } else if (!upiId) {
+      showToast('Please Enter Your UPI ID');
+      return;
     } else {
       const data = new FormData();
       data.append('partner_shopName', shopName);
@@ -159,6 +163,7 @@ const RegisterScreen = ({navigation, route}) => {
       data.append('partner_bankAccountHolderName', bankHolderName);
       data.append('partner_bankName', bankName);
       data.append('partner_bankISFCCode', bankISFCCode);
+      data.append('partner_upiId', upiId);
       data.append('partner_storeImage', storeImage);
       setLoading(true);
       fetch(
@@ -178,19 +183,20 @@ const RegisterScreen = ({navigation, route}) => {
         .then(function (result) {
           if (result.error == 0) {
             let partner_id = result.partner_id;
-            let partner_contactNumber = result.partner_contactNumber;
-            let partner_shopName = result.partner_shopName;
-            let partner_category = result.partner_category;
-            let partner_categoryName = result.partner_category_name;
-            signIn({
-              partner_id,
-              partner_contactNumber,
-              partner_shopName,
-              partner_category,
-              partner_categoryName,
-            });
-          } else if (result.error == 2) {
-            showToast(result.msg);
+            // let partner_contactNumber = result.partner_contactNumber;
+            // let partner_shopName = result.partner_shopName;
+            // let partner_category = result.partner_category;
+            // let partner_categoryName = result.partner_category_name;
+            // signIn({
+            //   partner_id,
+            //   partner_contactNumber,
+            //   partner_shopName,
+            //   partner_category,
+            //   partner_categoryName,
+            // });
+            // } else if (result.error == 2) {
+            // showToast(result.msg);
+            showToast('Registred Successfully!');
             navigation.navigate('UploadDocs');
           } else {
             showToast('Something went wrong');
@@ -258,7 +264,7 @@ const RegisterScreen = ({navigation, route}) => {
     );
   };
 
-  ///Fetch Partner Category
+  ///Fetch Partner Category///
   const fetchPartnerCategoryApi = () => {
     setLoading(true);
     fetch(
@@ -554,6 +560,7 @@ const RegisterScreen = ({navigation, route}) => {
                 style={styles.txtInput}
                 selectionColor="#5E3360"
                 keyboardType="default"
+                onChangeText={text => setUPIID(text)}
               />
             </View>
           </View>

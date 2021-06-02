@@ -21,6 +21,7 @@ import {AuthContext} from './Utils';
 import VerificationScreen from './OtpVerification';
 import Navigation from './Navigation';
 import RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
+import UploadDocs from '../view/HomeScreen/Registration/UploadDocs';
 import LoaderScreen from '../controller/LoaderScreen';
 
 const LoginScreen = ({navigation}) => {
@@ -145,6 +146,7 @@ function Login() {
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="VerificationScreen" component={VerificationScreen} />
       <Stack.Screen name="RegistrationForm" component={RegistrationForm} />
+      <Stack.Screen name="UploadDocs" component={UploadDocs} />
       <Stack.Screen name="Navigation" component={Navigation} />
     </Stack.Navigator>
   );
