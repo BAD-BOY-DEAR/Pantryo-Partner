@@ -377,7 +377,8 @@ const InventoryScreen = ({navigation}) => {
                 {/* ========== No Inventory Found ALert ========== */}
                 <View style={styles.alertSection}>
                   <Text style={styles.alert}>
-                    You have not selected any products
+                    You have not added any products in your inventory. Please
+                    add products to take customer orders
                   </Text>
                   <Pressable
                     onPress={() => navigation.navigate('SelectCategory')}
@@ -748,6 +749,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 40,
   },
   alert: {
     fontFamily: 'OpenSans-SemiBold',

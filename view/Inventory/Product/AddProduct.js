@@ -458,8 +458,9 @@ const AddProducts = ({route, navigation}) => {
                             <Picker
                               mode="dropdown"
                               style={{
-                                width: '100%',
+                                width: '80%',
                                 justifyContent: 'flex-end',
+                                textAlign: 'center',
                               }}
                               selectedValue={
                                 selectedUnit !== ''
@@ -612,7 +613,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     backgroundColor: '#FEF9E5',
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 20,
   },
   catImg: {
     width: 40,
@@ -621,7 +622,7 @@ const styles = StyleSheet.create({
   },
   catName: {
     fontFamily: 'OpenSans-SemiBold',
-    fontSize: 20,
+    fontSize: 24,
     flex: 1,
   },
   noticeSection: {
@@ -638,7 +639,7 @@ const styles = StyleSheet.create({
   },
   noticeTxt: {
     fontFamily: 'OpenSans-Regular',
-    fontSize: 14,
+    fontSize: 18,
   },
   prodTab: {
     borderBottomWidth: 0.5,
