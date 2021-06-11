@@ -15,12 +15,14 @@ const SettingsScreen = ({navigation}) => {
   const [userShopName, getUserShopName] = React.useState('');
   const [userCategoryName, setUserCategoryName] = React.useState('');
   const [userMobile, setUserMobile] = React.useState('');
+  const [pincode, setPincode] = React.useState('');
   const {signOut} = React.useContext(AuthContext);
 
   const getUserProfile = async () => {
     getUserShopName(await AsyncStorage.getItem('partner_shopName'));
     setUserCategoryName(await AsyncStorage.getItem('partner_category_name'));
     setUserMobile(await AsyncStorage.getItem('partner_contactNumber'));
+    setPincode(await AsyncStorage.getItem('partner_pincode'));
   };
 
   React.useEffect(() => {
