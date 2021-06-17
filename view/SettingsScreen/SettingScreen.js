@@ -49,8 +49,16 @@ const SettingsScreen = ({navigation}) => {
             <Text
               style={{
                 fontFamily: 'OpenSans-SemiBold',
+                fontSize: 12,
+                color: '#000',
+              }}>
+              {pincode}
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'OpenSans-SemiBold',
                 fontSize: 16,
-                marginTop: 10,
+                marginTop: 15,
                 color: '#777',
               }}>
               {userMobile}
@@ -110,6 +118,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    backgroundColor: '#fff',
   },
   header: {
     width: '100%',
