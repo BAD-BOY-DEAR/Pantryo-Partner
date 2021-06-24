@@ -16,6 +16,7 @@ const SettingsScreen = ({navigation}) => {
   const [userCategoryName, setUserCategoryName] = React.useState('');
   const [userMobile, setUserMobile] = React.useState('');
   const [pincode, setPincode] = React.useState('');
+  const [shopAddress, setShopAddress] = React.useState('');
   const {signOut} = React.useContext(AuthContext);
 
   const getUserProfile = async () => {
@@ -23,6 +24,7 @@ const SettingsScreen = ({navigation}) => {
     setUserCategoryName(await AsyncStorage.getItem('partner_category_name'));
     setUserMobile(await AsyncStorage.getItem('partner_contactNumber'));
     setPincode(await AsyncStorage.getItem('partner_pincode'));
+    setShopAddress(await AsyncStorage.getItem('partner_shopaddress'));
   };
 
   React.useEffect(() => {
@@ -42,15 +44,16 @@ const SettingsScreen = ({navigation}) => {
             <Text
               style={{
                 fontFamily: 'OpenSans-Regular',
-                fontSize: 12,
+                fontSize: 14,
               }}>
               {userCategoryName}
             </Text>
             <Text
               style={{
                 fontFamily: 'OpenSans-SemiBold',
-                fontSize: 12,
+                fontSize: 14,
                 color: '#000',
+                marginTop: 5,
               }}>
               {pincode}
             </Text>

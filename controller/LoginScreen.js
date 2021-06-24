@@ -95,7 +95,6 @@ const LoginScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-  ///==========Login End================///
 
   return (
     <>
