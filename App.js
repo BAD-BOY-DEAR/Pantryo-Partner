@@ -84,12 +84,16 @@ const App = () => {
           partner_shopName,
           partner_category,
           partner_categoryName,
+          partner_shopaddress,
+          partner_pincode,
         } = data;
         AsyncStorage.setItem('partner_id', partner_id);
         AsyncStorage.setItem('partner_shopName', partner_shopName);
         AsyncStorage.setItem('partner_category', partner_category);
         AsyncStorage.setItem('partner_category_name', partner_categoryName);
         AsyncStorage.setItem('partner_contactNumber', partner_contactNumber);
+        AsyncStorage.setItem('partner_pincode', partner_pincode);
+        AsyncStorage.setItem('partner_shopaddress', partner_shopaddress);
         dispatch({type: 'SIGN_IN', token: 'userToken'});
         AsyncStorage.setItem('userToken', '1');
         showToast('Welcome');

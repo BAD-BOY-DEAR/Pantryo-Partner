@@ -72,12 +72,14 @@ const LoginScreen = ({navigation}) => {
             let partner_shopName = result.partner_shopName;
             let partner_category = result.partner_category;
             let partner_categoryName = result.partner_category_name;
+            let partner_pincode = result.partner_pincode;
             signIn({
               partner_id,
               partner_contactNumber,
               partner_shopName,
               partner_category,
               partner_categoryName,
+              partner_pincode,
             });
           } else if (result.error == 1) {
             navigation.navigate('VerificationScreen', {
@@ -94,7 +96,6 @@ const LoginScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-  ///==========Login End================///
 
   return (
     <>

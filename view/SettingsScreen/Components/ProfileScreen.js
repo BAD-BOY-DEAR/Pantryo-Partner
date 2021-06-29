@@ -9,11 +9,15 @@ const ProfileScreen = () => {
   const [userShopName, setUserShopName] = React.useState('');
   const [userCategoryName, setUserCategoryName] = React.useState('');
   const [userMobile, setUserMobile] = React.useState('');
+  const [shopAddress, setShopAddress] = React.useState('');
+  const [pincode, setPincode] = React.useState('');
 
   const getUserProfile = async () => {
     setUserShopName(await AsyncStorage.getItem('partner_shopName'));
     setUserCategoryName(await AsyncStorage.getItem('partner_category_name'));
     setUserMobile(await AsyncStorage.getItem('partner_contactNumber'));
+    setShopAddress(await AsyncStorage.getItem('partner_shopaddress'));
+    setPincode(await AsyncStorage.getItem('partner_pincode'));
   };
 
   React.useEffect(() => {
@@ -57,6 +61,22 @@ const ProfileScreen = () => {
           <View style={styles.rowDiv}>
             <Text style={styles.label}>Registered Mobile Number</Text>
             <Text style={styles.response}>{userMobile}</Text>
+          </View>
+        </View>
+
+        <View style={styles.row}>
+          <Icons name="locate-outline" size={20} color="#5E3360" />
+          <View style={styles.rowDiv}>
+            <Text style={styles.label}>Shop Address</Text>
+            <Text style={styles.response}>{shopAddress}</Text>
+          </View>
+        </View>
+
+        <View style={styles.row}>
+          <Icons name="location-outline" size={20} color="#5E3360" />
+          <View style={styles.rowDiv}>
+            <Text style={styles.label}>Pincode</Text>
+            <Text style={styles.response}>{pincode}</Text>
           </View>
         </View>
 

@@ -17,13 +17,14 @@ import {
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
-import CheckBox from '@react-native-community/checkbox';
 import Geolocation from '@react-native-community/geolocation';
-import * as Animatable from 'react-native-animatable';
-import DropDownPicker from 'react-native-dropdown-picker';
 import * as ImagePicker from 'react-native-image-picker';
 import {RNCamera} from 'react-native-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Animatable from 'react-native-animatable';
+import DropDownPicker from 'react-native-dropdown-picker';
+import CheckBox from '@react-native-community/checkbox';
+
 ///========Screen Loader==========///
 import LoaderScreen from '../../../controller/LoaderScreen';
 import {event, onChange, set} from 'react-native-reanimated';
@@ -51,6 +52,7 @@ const RegisterScreen = ({navigation, route}) => {
   const [partnerContactNumber, setPartnerContactNumber] = React.useState();
   const [partnerAddress, setPartnerAddress] = React.useState('');
   const [partnerShopAddress, setPartnerShopAddress] = React.useState('');
+  const [partnerPinCode, setPartnerPinCode] = React.useState('');
   const [bankHolderName, setBankHolderName] = React.useState('');
   const [bankName, setBankName] = React.useState('');
   const [bankAccountNumber, setBankAccountNumber] = React.useState('');
@@ -135,6 +137,9 @@ const RegisterScreen = ({navigation, route}) => {
     } else if (!partnerShopAddress) {
       showToast('Please Enter Your  Full Shop Address');
       return;
+    } else if (!partnerPinCode) {
+      showToast('Please Enter Your  Pincode');
+      return;
     } else if (!bankHolderName) {
       showToast('Please Enter Your Bank Account Holder Name');
       return;
@@ -157,6 +162,7 @@ const RegisterScreen = ({navigation, route}) => {
       data.append('partner_gstStatus', gstStatus);
       data.append('partner_gstNumber', gstNumber);
       data.append('partner_shopaddress', partnerShopAddress);
+      data.append('partner_pincode', partnerPinCode);
       data.append('partner_shopgpslocation', partnerAddress);
       data.append('partner_contactNumber', partnerContactNumber);
       data.append('partner_accountNumber', bankAccountNumber);
@@ -183,21 +189,23 @@ const RegisterScreen = ({navigation, route}) => {
         .then(function (result) {
           if (result.error == 0) {
             let partner_id = result.partner_id;
-            // let partner_contactNumber = result.partner_contactNumber;
-            // let partner_shopName = result.partner_shopName;
-            // let partner_category = result.partner_category;
-            // let partner_categoryName = result.partner_category_name;
-            // signIn({
-            //   partner_id,
-            //   partner_contactNumber,
-            //   partner_shopName,
-            //   partner_category,
-            //   partner_categoryName,
-            // });
-            // } else if (result.error == 2) {
-            // showToast(result.msg);
-            showToast('Registred Successfully!');
-            navigation.navigate('UploadDocs');
+            let partner_contactNumber = result.partner_contactNumber;
+            let partner_shopName = result.partner_shopName;
+            let partner_category = result.partner_category;
+            let partner_categoryName = result.partner_category_name;
+            let partner_pincode = result.partner_pincode;
+            signIn({
+              partner_id,
+              partner_contactNumber,
+              partner_shopName,
+              partner_category,
+              partner_categoryName,
+              partner_pincode,
+            });
+          } else if (result.error == 2) {
+            showToast(result.msg);
+            // navigation.navigate('UploadDocs');
+            navigation.navigate('HomeScreen');
           } else {
             showToast('Something went wrong');
           }
@@ -490,6 +498,22 @@ const RegisterScreen = ({navigation, route}) => {
                 autoCapitalize="words"
                 value={partnerShopAddress}
                 onChangeText={txt => setPartnerShopAddress(txt)}
+              />
+            </View>
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.formLabel}>PINCODE</Text>
+            <View style={styles.formRow}>
+              <Icons name="locate-outline" size={20} color="#5E3360" />
+              <TextInput
+                placeholder=""
+                placeholderTextColor="#777"
+                style={styles.txtInput}
+                selectionColor="#5E3360"
+                keyboardType="number-pad"
+                value={partnerPinCode}
+                onChangeText={txt => setPartnerPinCode(txt)}
               />
             </View>
           </View>

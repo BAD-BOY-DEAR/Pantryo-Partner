@@ -13,10 +13,18 @@ import TermsConditions from './Components/TermsConditions';
 
 const SettingsScreen = ({navigation}) => {
   const [userShopName, getUserShopName] = React.useState('');
+  const [userCategoryName, setUserCategoryName] = React.useState('');
+  const [userMobile, setUserMobile] = React.useState('');
+  const [pincode, setPincode] = React.useState('');
+  const [shopAddress, setShopAddress] = React.useState('');
   const {signOut} = React.useContext(AuthContext);
 
   const getUserProfile = async () => {
     getUserShopName(await AsyncStorage.getItem('partner_shopName'));
+    setUserCategoryName(await AsyncStorage.getItem('partner_category_name'));
+    setUserMobile(await AsyncStorage.getItem('partner_contactNumber'));
+    setPincode(await AsyncStorage.getItem('partner_pincode'));
+    setShopAddress(await AsyncStorage.getItem('partner_shopaddress'));
   };
 
   React.useEffect(() => {
@@ -27,14 +35,40 @@ const SettingsScreen = ({navigation}) => {
     <>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Pressable style={styles.iconBox}>
+          {/* <Pressable style={styles.iconBox}>
             <Icons name="business-outline" size={30} color="#777" />
-          </Pressable>
+          </Pressable> */}
 
           <View style={styles.headerTxtContainer}>
             <Text style={styles.headerTopText}>{userShopName}</Text>
+            <Text
+              style={{
+                fontFamily: 'OpenSans-Regular',
+                fontSize: 14,
+              }}>
+              {userCategoryName}
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'OpenSans-SemiBold',
+                fontSize: 14,
+                color: '#000',
+                marginTop: 5,
+              }}>
+              {pincode}
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'OpenSans-SemiBold',
+                fontSize: 16,
+                marginTop: 15,
+                color: '#777',
+              }}>
+              {userMobile}
+            </Text>
+
             <Pressable onPress={() => navigation.navigate('ProfileScreen')}>
-              <Text style={styles.headerBottom}>Edit Business Details</Text>
+              <Text style={styles.headerBottom}>Edit Profile</Text>
             </Pressable>
           </View>
         </View>
@@ -87,6 +121,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    backgroundColor: '#fff',
   },
   header: {
     width: '100%',
@@ -113,13 +148,15 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   headerTopText: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 18,
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 24,
     textTransform: 'uppercase',
+    color: '#5E3360',
   },
   headerBottom: {
     fontFamily: 'OpenSans-Regular',
     color: '#5E3360',
+    marginTop: 5,
   },
   tabContainer: {
     paddingHorizontal: 10,

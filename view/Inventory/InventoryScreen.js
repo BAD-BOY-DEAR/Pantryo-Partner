@@ -127,13 +127,11 @@ const InventoryScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-  //======== API to fetch all products selected by the partner ========//
 
   //======== Partner Category ========//
   const setPartnerCategoryName = async () => {
     setPartnerCategory(await AsyncStorage.getItem('partner_category_name'));
   };
-  //======== Partner Category ========//
 
   //======== API to Remove Products in the inventory of the partner ========//
   const removeProductApi = async partner_product_id => {
@@ -178,9 +176,8 @@ const InventoryScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-  //======== API to Remove Products in the inventory of the partner ========//
 
-  //======== Search Product =========//
+  // ======== Search Product ========= //
   const searchProducts = async searchkey => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_id) {
@@ -218,9 +215,8 @@ const InventoryScreen = ({navigation}) => {
         });
     }
   };
-  //========Search Product=========//
 
-  //========Search Product by Category=========//
+  // ======== Search Product by Category ========= //
   const searchByCategory = async main_category_id => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
@@ -264,9 +260,8 @@ const InventoryScreen = ({navigation}) => {
         });
     }
   };
-  //========Search Product by Category=========//
 
-  ///======Edit Product abd Update =======//
+  // ======Edit Product abd Update ======= //
   const updatePartnerProduct = async () => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partnerItemId) {
@@ -323,7 +318,6 @@ const InventoryScreen = ({navigation}) => {
         });
     }
   };
-  ///======Edit Product and Update =======//
 
   useEffect(() => {
     setPartnerCategoryName();
@@ -383,7 +377,8 @@ const InventoryScreen = ({navigation}) => {
                 {/* ========== No Inventory Found ALert ========== */}
                 <View style={styles.alertSection}>
                   <Text style={styles.alert}>
-                    You have not selected any products
+                    You have not added any products in your inventory. Please
+                    add products to take customer orders
                   </Text>
                   <Pressable
                     onPress={() => navigation.navigate('SelectCategory')}
@@ -754,6 +749,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 40,
   },
   alert: {
     fontFamily: 'OpenSans-SemiBold',
