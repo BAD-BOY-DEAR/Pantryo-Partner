@@ -12,6 +12,8 @@ import {
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
+import LottieView from 'lottie-react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 // ===== Images ===== //
 import productIcon from '../../assets/icons/productIcon.png';
