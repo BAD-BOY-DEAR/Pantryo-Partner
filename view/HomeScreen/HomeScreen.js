@@ -7,11 +7,14 @@ import {
   ScrollView,
   Image,
   Switch,
+  TouchableOpacity,
 } from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
+import LottieView from 'lottie-react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -43,7 +46,13 @@ const HomeScreen = ({navigation}) => {
                 marginLeft: 20,
                 marginRight: 20,
               }}>
-              <Text>Go Live</Text>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans-SemiBold',
+                  fontSize: 18,
+                }}>
+                Go Live
+              </Text>
               <Switch
                 trackColor={{false: '#767577', true: '#5E3360'}}
                 thumbColor={isEnabled ? 'green' : '#f4f3f4'}
@@ -58,19 +67,19 @@ const HomeScreen = ({navigation}) => {
 
           {/* ========== Overview Section ========== */}
           <View style={styles.middleSection}>
-            <Text style={styles.tabHeading}>Overview</Text>
             <View style={styles.row}>
-              <Pressable
-                onPress={() => navigation.navigate('OrdersList')}
-                style={styles.tab}>
-                <Text styles={styles.midTabLabel}>ORDERS</Text>
-                <Text style={styles.midTabText}>50</Text>
-              </Pressable>
-
-              <Pressable style={styles.tab}>
-                <Text styles={styles.midTabLabel}>TOTAL SALE </Text>
-                <Text style={styles.midTabText}>₹651.8</Text>
-              </Pressable>
+              <View
+                // colors={['#e4c4f2', '#c79adb']}
+                style={styles.cardOne}>
+                <Text style={styles.cardOneLabel}>Orders Today</Text>
+                <Text style={styles.cardOneResponse}>10</Text>
+              </View>
+              <View
+                // colors={['#e4c4f2', '#c79adb']}
+                style={styles.cardOne}>
+                <Text style={styles.cardOneLabel}>Total Orders Received</Text>
+                <Text style={styles.cardOneResponse}>100</Text>
+              </View>
             </View>
           </View>
           {/* ========== Overview Section ========== */}
@@ -83,11 +92,14 @@ const HomeScreen = ({navigation}) => {
               style={styles.details}>
               <View style={styles.divOne}>
                 <Text style={styles.detailsTxt}>Syed John Goswami</Text>
-                <Text style={styles.detailsDate}>15 May 2021 12:15 PM</Text>
-              </View>
-              <View style={styles.divTwo}>
-                <Text style={styles.detailsPrice}>₹651.8</Text>
-                <Text style={styles.detailsStatus}>Received (Online)</Text>
+                <Text style={styles.detailsAddressLabel}>Address:</Text>
+                <Text style={styles.detailsAddress}>
+                  A-23, Sector J, Aliganj Lucknow
+                </Text>
+                <View style={styles.detailsInnerRow}>
+                  <Text style={styles.detailsDate}>15 May 2021 12:15 PM</Text>
+                  <Text style={styles.btnDetails}>View Order Details</Text>
+                </View>
               </View>
             </Pressable>
           </View>
@@ -135,10 +147,11 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
+    marginBottom: 20,
   },
   screenName: {
     fontFamily: 'OpenSans-SemiBold',
-    fontSize: 16,
+    fontSize: 20,
     flex: 1,
     color: '#000000',
   },
@@ -174,8 +187,9 @@ const styles = StyleSheet.create({
   },
   tabHeading: {
     fontFamily: 'OpenSans-Regular',
-    fontSize: 14,
+    fontSize: 16,
     color: '#5E3360',
+    marginBottom: 15,
   },
   div: {
     justifyContent: 'center',
@@ -189,7 +203,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   details: {
-    borderRadius: 10,
+    borderRadius: 5,
     paddingHorizontal: 20,
     paddingVertical: 25,
     backgroundColor: '#FFFFFF',
@@ -209,14 +223,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   detailsTxt: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 18,
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 22,
     flex: 1,
+    color: '#5E3360',
   },
   detailsDate: {
     fontFamily: 'OpenSans-Regular',
     marginTop: 5,
-    fontSize: 12,
+    fontSize: 16,
+    flex: 1,
   },
   divOne: {
     flex: 1,
@@ -225,51 +241,67 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
-  detailsPrice: {
-    fontFamily: 'OpenSans-Bold',
-    fontSize: 20,
-    color: 'green',
-  },
-  detailsStatus: {
-    fontFamily: 'OpenSans-Regular',
-  },
+
   middleSection: {
     width: '100%',
     paddingHorizontal: 20,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   row: {
-    flexDirection: 'row',
     width: '100%',
-    flex: 1,
-  },
-  tab: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    backgroundColor: '#FFFFFF',
-    marginTop: 10,
-    borderRadius: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    width: 150,
-    height: 100,
+    alignItems: 'center',
+  },
+  cardOne: {
     flex: 1,
-    marginHorizontal: 5,
+    borderRadius: 5,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+    backgroundColor: '#fff',
+    marginHorizontal: 5,
   },
-  midTabLabel: {
+  cardOneLabel: {
     fontFamily: 'OpenSans-Regular',
+    fontSize: 16,
+    color: '#000000',
+  },
+  cardOneResponse: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 30,
+    color: '#000000',
+  },
+  detailsAddressLabel: {
+    fontFamily: 'OpenSans-Regular',
+    marginTop: 15,
+    fontSize: 16,
+  },
+  detailsAddress: {
+    fontFamily: 'OpenSans-Bold',
+    marginBottom: 15,
     fontSize: 18,
   },
-  midTabText: {
+  detailsInnerRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 10,
+  },
+  btnDetails: {
     fontFamily: 'OpenSans-SemiBold',
-    fontSize: 24,
+    fontSize: 16,
+    marginRight: 5,
+    color: 'blue',
   },
 });

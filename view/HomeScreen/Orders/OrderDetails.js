@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   ScrollView,
   StyleSheet,
   Image,
+  Modal,
+  TextInput,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -15,92 +17,116 @@ import CheckBox from '@react-native-community/checkbox';
 import deliveryBoy from '../../../assets/icons/delivery.gif';
 
 const OrderDetails = () => {
-  const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
+  const [statusOne, setStatusOne] = useState(false);
+  const [statusTwo, setStatusTwo] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-          <View style={styles.slidingCard}>
-            <Text style={styles.custName}>Syed John Goswami</Text>
+      <ScrollView style={styles.scroll}>
+        <View style={styles.card}>
+          <View style={styles.div}>
+            <Text style={styles.heading}>Order Details</Text>
 
-            <View style={styles.jobDetailsSection}>
-              <View style={[styles.heading, {marginRight: 20}]}>
-                <Text style={styles.headingTxt}>Product</Text>
-                <Text style={styles.details}>Boneless Chicken</Text>
-                <Text style={styles.details}>Rohu Fish</Text>
-                <Text style={styles.details}>Curry Cuty Chicken</Text>
-              </View>
-              <View style={styles.heading}>
-                <Text style={styles.headingTxt}>Qty</Text>
-                <Text style={styles.details}>1 </Text>
-                <Text style={styles.details}>1/2 </Text>
-                <Text style={styles.details}>1</Text>
-              </View>
-              <View style={styles.heading}>
-                <Text style={styles.headingTxt}>Unit</Text>
-                <Text style={styles.details}>kg</Text>
-                <Text style={styles.details}>kg</Text>
-                <Text style={styles.details}>kg</Text>
-              </View>
-
-              <View style={styles.heading}>
-                <Text style={styles.headingTxt}>Price</Text>
-                <Text style={styles.details}>₹ 170</Text>
-                <Text style={styles.details}>₹ 220</Text>
-                <Text style={styles.details}>₹ 120</Text>
-              </View>
+            <View style={styles.tabRow}>
+              <Text style={styles.label}>OrderID: </Text>
+              <Text style={styles.response}>123456789</Text>
             </View>
-          </View>
 
-          <View style={styles.sectionTwo}>
-            <View style={styles.secondCard}>
-              <View style={styles.secondCardDiv}>
-                <Text style={styles.secondHeading}>Payment Mode</Text>
-                <Text style={styles.secondCardResponse}>Online</Text>
-              </View>
-              <View style={styles.secondCardDiv}>
-                <Text style={styles.secondHeading}>Reference No.</Text>
-                <Text style={styles.secondCardResponse}>123456XHYtuuiii</Text>
-              </View>
+            <View style={styles.tabRow}>
+              <Text style={styles.label}>Customer: </Text>
+              <Text style={styles.response}>Syed John Goswami</Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.sectionThree}>
-          <View style={styles.thirdCard}>
-            <View style={styles.thirdCardRow}>
-              <Text style={styles.thirdCardTxt}>Confirm Order</Text>
+        <View style={styles.card}>
+          <View style={styles.div}>
+            <Text style={styles.heading}>Products to be packed</Text>
+            <View style={styles.tabRow}>
+              <View style={styles.section}>
+                <Text style={styles.brandName}>Amul</Text>
+                <Text style={styles.product}>Butter</Text>
+              </View>
+              <Text style={styles.weight}>500gm</Text>
+              <Text style={styles.qty}>X 2</Text>
+              <Text style={styles.cost}>₹100</Text>
+            </View>
+
+            <View style={styles.tabRow}>
+              <View style={styles.section}>
+                <Text style={styles.brandName}>Amul</Text>
+                <Text style={styles.product}>Spice Garlic Cheese Spread</Text>
+              </View>
+              <Text style={styles.weight}>500gm</Text>
+              <Text style={styles.qty}>X 1</Text>
+              <Text style={styles.cost}>₹300</Text>
+            </View>
+
+            <View style={styles.tabRow}>
+              <View style={styles.section}>
+                <Text style={styles.brandName}>MDH</Text>
+                <Text style={styles.product}>Chunky Chat Masala</Text>
+              </View>
+              <Text style={styles.weight}>40gm</Text>
+              <Text style={styles.qty}>X 1</Text>
+              <Text style={styles.cost}>₹60</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.card}>
+          <View style={[styles.div]}>
+            <Text style={styles.heading}>Action</Text>
+
+            <View style={styles.tabRow}>
+              <Text style={styles.statusName}>Confirm Order</Text>
               <CheckBox
                 disabled={false}
-                value={toggleCheckBox}
-                onValueChange={newValue => setToggleCheckBox(newValue)}
+                value={statusOne}
+                onValueChange={newValue => setStatusOne(newValue)}
+                style={styles.statusOne}
               />
             </View>
-            <View style={styles.thirdCardRow}>
-              <Text style={styles.thirdCardTxt}>Order Packed</Text>
+
+            <View style={styles.tabRow}>
+              <Text style={styles.statusName}>Order Ready</Text>
               <CheckBox
                 disabled={false}
-                value={toggleCheckBox}
-                onValueChange={newValue => setToggleCheckBox(newValue)}
-              />
-            </View>
-            <View style={styles.thirdCardRow}>
-              <Text style={styles.thirdCardTxt}>Order Picked Up</Text>
-              <CheckBox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={newValue => setToggleCheckBox(newValue)}
+                value={statusTwo}
+                onValueChange={newValue => setStatusTwo(newValue)}
+                style={styles.statusOne}
+                onChange={() => setModalVisible(true)}
               />
             </View>
           </View>
         </View>
 
-        <View style={styles.fourthSection}>
-          <Image source={deliveryBoy} style={styles.fourthSectionImg} />
-          <Text style={styles.fourthSectionTxt}>
-            Pantryo Delivery Partner is on his way to deliver the order{' '}
-          </Text>
-        </View>
+        {/* ======= Modal ======= */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalCard}>
+              <Text style={styles.modalText}>
+                Enter hand over code provided by Delivery Partner to confirm
+                code
+              </Text>
+              <TextInput
+                placeholder="Enter 6 Digit Code"
+                style={styles.modalInput}
+                keyboardType="number-pad"
+              />
+              <View style={styles.modalBtn}>
+                <Text style={styles.modalBtnTxt}>SUBMIT</Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        {/* ======= Modal ======= */}
       </ScrollView>
     </>
   );
@@ -109,116 +135,114 @@ const OrderDetails = () => {
 export default OrderDetails;
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: '#ffffff',
+  scroll: {
+    paddingVertical: 10,
   },
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#C6B5C7',
-  },
-  slidingCard: {
-    width: '100%',
-    backgroundColor: '#5E3360',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    borderBottomStartRadius: 20,
-    borderBottomEndRadius: 20,
-  },
-  custName: {
-    fontFamily: 'OpenSans-ExtraBold',
-    fontSize: 20,
-    color: '#C6B5C7',
-  },
-  jobDetailsSection: {
-    flexDirection: 'row',
-    marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-  },
-  heading: {
-    flex: 1,
-    marginBottom: 10,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-start',
-  },
-  headingTxt: {
-    fontFamily: 'OpenSans-Regular',
-    color: '#FFFFFF',
-  },
-  details: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 16,
-    color: '#FFFFFF',
-    marginTop: 20,
-    flex: 1,
-  },
-  sectionTwo: {
-    backgroundColor: '#FEF9E5',
-    width: '100%',
-  },
-  secondCard: {
-    backgroundColor: '#C6B5C7',
-    borderBottomStartRadius: 20,
-    borderBottomEndRadius: 20,
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    flexDirection: 'row',
-  },
-  secondCardDiv: {
-    flex: 1,
-  },
-  secondHeading: {
-    fontFamily: 'OpenSans-Regular',
-    fontSize: 12,
-    color: '#000000',
-  },
-  secondCardResponse: {
-    fontFamily: 'OpenSans-Bold',
-    fontSize: 18,
-    color: '#000000',
-  },
-  sectionThree: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  thirdCard: {
-    width: '100%',
-    paddingVertical: 30,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    backgroundColor: '#FEF9E5',
-    paddingHorizontal: 20,
-  },
-  thirdCardRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  thirdCardTxt: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 16,
-    flex: 1,
-  },
-  fourthSection: {
+  card: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    paddingVertical: 25,
   },
-  fourthSectionImg: {
-    width: 100,
-    height: 100,
+  div: {
+    width: '100%',
   },
-  fourthSectionTxt: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 12,
+  heading: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 20,
+  },
+  tabRow: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  label: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 18,
+  },
+  response: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
+    color: '#5E3360',
+  },
+  section: {
     flex: 1,
-    textAlign: 'center',
+    marginLeft: 10,
+  },
+  brandName: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 18,
+  },
+  product: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 20,
+  },
+  weight: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 18,
+    marginRight: 20,
+  },
+  qty: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 18,
+    color: '#000',
+    marginRight: 20,
+  },
+  cost: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
+    marginRight: 10,
+    color: 'green',
+  },
+  statusName: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 20,
+    flex: 1,
+  },
+  statusOne: {
+    marginRight: 15,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'rgba(52, 52, 52, 0.3)',
+  },
+  modalCard: {
+    width: '100%',
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  modalText: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 20,
+  },
+  modalInput: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 20,
+    marginTop: 20,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#c7c7c7c7',
+  },
+  modalBtn: {
+    marginTop: 30,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 18,
+    backgroundColor: '#5E3360',
+    marginBottom: 30,
+  },
+  modalBtnTxt: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 20,
+    color: '#ffff',
   },
 });
