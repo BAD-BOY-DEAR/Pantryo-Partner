@@ -29,7 +29,7 @@ import {useEffect} from 'react/cjs/react.production.min';
 const LoginScreen = ({navigation}) => {
   const [contactNumber, setContactNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [uniqueId, setUniqueId] = React.useState(false);
+  const [uniqueId, setUniqueId] = React.useState('');
   const {signIn} = React.useContext(AuthContext);
 
   const showToast = msg => {
@@ -53,7 +53,7 @@ const LoginScreen = ({navigation}) => {
     } else {
       setLoading(true);
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=login',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=login1',
         {
           method: 'POST',
           headers: {
@@ -62,7 +62,7 @@ const LoginScreen = ({navigation}) => {
           },
           body: JSON.stringify({
             partner_contactNumber: contactNumber,
-            deviceId: uniqueId,
+            partner_deviceId: uniqueId,
           }),
         },
       )

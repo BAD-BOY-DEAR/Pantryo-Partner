@@ -11,7 +11,6 @@ import {
   Image,
   ToastAndroid,
   Platform,
-  Picker,
   FlatList,
 } from 'react-native';
 
@@ -24,6 +23,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Animatable from 'react-native-animatable';
 import DropDownPicker from 'react-native-dropdown-picker';
 import CheckBox from '@react-native-community/checkbox';
+import DeviceInfo from 'react-native-device-info';
+import {Picker} from '@react-native-picker/picker';
 
 ///========Screen Loader==========///
 import LoaderScreen from '../../../controller/LoaderScreen';
@@ -31,6 +32,7 @@ import {event, onChange, set} from 'react-native-reanimated';
 import {AuthContext} from '../../../controller/Utils';
 
 const RegisterScreen = ({navigation, route}) => {
+  const [uniqueId, setUniqueId] = React.useState('');
   const {signIn} = React.useContext(AuthContext);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
@@ -292,32 +294,46 @@ const RegisterScreen = ({navigation, route}) => {
       .finally(() => setLoading(false));
   };
 
-  React.useEffect(() => {
-    fetchPartnerCategoryApi();
-    setPartnerContactNumber(route.params.partner_contactNumber);
-    const requestLocationPermission = async () => {
-      if (Platform.OS === 'ios') {
-        getOneTimeLocation();
-      } else {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            {
-              title: 'Location Access Required',
-              message: 'This App needs to Access your location',
-            },
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            getOneTimeLocation();
-          } else {
-            setLocationStatus('Permission Denied');
-          }
-        } catch (err) {
-          console.warn(err);
+  ///Device Id
+  const getToken = async () => {
+    var uniqueId = DeviceInfo.getUniqueId();
+    setUniqueId(uniqueId);
+  };
+
+  ///Location Permission
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'ios') {
+      getOneTimeLocation();
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Access Required',
+            message: 'This App needs to Access your location',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          getOneTimeLocation();
+        } else {
+          setLocationStatus('Permission Denied');
         }
+      } catch (err) {
+        console.warn(err);
       }
-    };
+    }
+  };
+
+  React.useEffect(() => {
+    //Device Id
+    getToken();
+    ////Partner Category
+    fetchPartnerCategoryApi();
+    //set Partner Contact Number
+    setPartnerContactNumber(route.params.partner_contactNumber);
+    ///Location
     requestLocationPermission();
+    //clear Watch Id
     return () => {
       Geolocation.clearWatch({watchID});
       setLoading(false);
