@@ -73,6 +73,7 @@ const LoginScreen = ({navigation}) => {
             let partner_category = result.partner_category;
             let partner_categoryName = result.partner_category_name;
             let partner_pincode = result.partner_pincode;
+            let partner_shopaddress = result.partner_shopaddress;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -80,6 +81,7 @@ const LoginScreen = ({navigation}) => {
               partner_category,
               partner_categoryName,
               partner_pincode,
+              partner_shopaddress,
             });
           } else if (result.error == 1) {
             navigation.navigate('VerificationScreen', {
