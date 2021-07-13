@@ -5662,6 +5662,11 @@
     "jscodeshift" "^0.11.0"
     "nullthrows" "^1.1.1"
 
+"react-native-device-info@^8.1.3":
+  "integrity" "sha512-73e3wiGFL8DvIXEd8x4Aq+mO8mZvHARwfYorIEu+X0trLHY92bP5Ict8DJHDjCQ0+HtAvpA4Wda2VoUVN1zh6Q=="
+  "resolved" "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-8.1.3.tgz"
+  "version" "8.1.3"
+
 "react-native-dropdown-picker@^5.1.15":
   "integrity" "sha512-5GrEvpyemk9eA0ukkglZmJQg8G9G3SVqRVmsK9HPfGhpWm8jZVmi2OB7GhS8DkWGbPjbf44eF0BZfMPmN7dpwA=="
   "resolved" "https://registry.npmjs.org/react-native-dropdown-picker/-/react-native-dropdown-picker-5.1.15.tgz"

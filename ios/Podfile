@@ -12,6 +12,8 @@ target 'pantryoPartner' do
     :hermes_enabled => false
   )
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   target 'pantryoPartnerTests' do
     inherit! :complete
     # Pods for testing

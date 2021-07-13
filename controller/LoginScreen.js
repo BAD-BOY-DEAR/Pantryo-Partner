@@ -15,6 +15,7 @@ import coffeeIcon from '../assets/icons/coffee.png';
 // ===== Library ===== //
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DeviceInfo from 'react-native-device-info';
 
 // ===== Screens ===== //
 import {AuthContext} from './Utils';
@@ -23,10 +24,12 @@ import Navigation from './Navigation';
 import RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
 import UploadDocs from '../view/HomeScreen/Registration/UploadDocs';
 import LoaderScreen from '../controller/LoaderScreen';
+import {useEffect} from 'react/cjs/react.production.min';
 
 const LoginScreen = ({navigation}) => {
   const [contactNumber, setContactNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [uniqueId, setUniqueId] = React.useState(false);
   const {signIn} = React.useContext(AuthContext);
 
   const showToast = msg => {
@@ -59,6 +62,7 @@ const LoginScreen = ({navigation}) => {
           },
           body: JSON.stringify({
             partner_contactNumber: contactNumber,
+            deviceId: uniqueId,
           }),
         },
       )
@@ -98,6 +102,15 @@ const LoginScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
+
+  const getToken = async () => {
+    var uniqueId = DeviceInfo.getUniqueId();
+    setUniqueId(uniqueId);
+  };
+
+  React.useEffect(() => {
+    getToken();
+  }, []);
 
   return (
     <>
