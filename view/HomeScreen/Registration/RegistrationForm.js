@@ -173,6 +173,7 @@ const RegisterScreen = ({navigation, route}) => {
       data.append('partner_bankISFCCode', bankISFCCode);
       data.append('partner_upiId', upiId);
       data.append('partner_storeImage', storeImage);
+      data.append('partner_deviceId', uniqueId);
       setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerRegistration.php',
