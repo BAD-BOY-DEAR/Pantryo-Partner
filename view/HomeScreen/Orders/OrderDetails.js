@@ -88,25 +88,29 @@ const OrderDetails = () => {
               />
             </View>
 
-            <View style={styles.tabRow}>
-              <Text style={styles.statusName}>Order Ready</Text>
-              {modalVisible ? (
-                <CheckBox
-                  disabled={true}
-                  value={statusTwo}
-                  onValueChange={newValue => setStatusTwo(newValue)}
-                  style={styles.statusOne}
-                />
-              ) : (
-                <CheckBox
-                  disabled={false}
-                  value={statusTwo}
-                  onValueChange={newValue => setStatusTwo(newValue)}
-                  style={styles.statusOne}
-                  onChange={() => setModalVisible(true)}
-                />
-              )}
-            </View>
+            {statusOne ? (
+              <>
+                <View style={styles.tabRow}>
+                  <Text style={styles.statusName}>Order Ready</Text>
+                  {modalVisible ? (
+                    <CheckBox
+                      disabled={true}
+                      value={statusTwo}
+                      onValueChange={newValue => setStatusTwo(newValue)}
+                      style={styles.statusOne}
+                    />
+                  ) : (
+                    <CheckBox
+                      disabled={false}
+                      value={statusTwo}
+                      onValueChange={newValue => setStatusTwo(newValue)}
+                      style={styles.statusOne}
+                      onChange={() => setModalVisible(true)}
+                    />
+                  )}
+                </View>
+              </>
+            ) : null}
           </View>
         </View>
 
