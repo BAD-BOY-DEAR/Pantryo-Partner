@@ -16,7 +16,8 @@ import {
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
-import Geolocation from '@react-native-community/geolocation';
+// import Geolocation from '@react-native-community/geolocation';
+navigator.geolocation = require('@react-native-community/geolocation');
 import * as ImagePicker from 'react-native-image-picker';
 import {RNCamera} from 'react-native-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -197,6 +198,8 @@ const RegisterScreen = ({navigation, route}) => {
             let partner_category = result.partner_category;
             let partner_categoryName = result.partner_category_name;
             let partner_pincode = result.partner_pincode;
+            let partner_shopaddress = result.partner_shopaddress;
+            let partner_kycStatus = result.partner_kycStatus;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -204,11 +207,13 @@ const RegisterScreen = ({navigation, route}) => {
               partner_category,
               partner_categoryName,
               partner_pincode,
+              partner_shopaddress,
+              partner_kycStatus,
             });
+            // navigation.navigate('UploadDocs');
           } else if (result.error == 2) {
             showToast(result.msg);
-            // navigation.navigate('UploadDocs');
-            navigation.navigate('HomeScreen');
+            // navigation.navigate('HomeScreen');
           } else {
             showToast('Something went wrong');
           }
@@ -224,7 +229,7 @@ const RegisterScreen = ({navigation, route}) => {
   ///////======Get user location==========//////////
   const getOneTimeLocation = () => {
     setAddressPlaceHolder('Getting Location ...');
-    watchID = Geolocation.getCurrentPosition(
+    navigator.geolocation.getCurrentPosition(
       position => {
         setAddressPlaceHolder('You are Here..');
         const currentLongitude = JSON.stringify(position.coords.longitude);
@@ -336,7 +341,7 @@ const RegisterScreen = ({navigation, route}) => {
     requestLocationPermission();
     //clear Watch Id
     return () => {
-      Geolocation.clearWatch({watchID});
+      // Geolocation.clearWatch({watchID});
       setLoading(false);
     };
   }, []);

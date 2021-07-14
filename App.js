@@ -86,9 +86,11 @@ const App = () => {
           partner_categoryName,
           partner_shopaddress,
           partner_pincode,
+          partner_kycStatus,
         } = data;
         AsyncStorage.setItem('partner_id', partner_id);
         AsyncStorage.setItem('partner_shopName', partner_shopName);
+        AsyncStorage.setItem('partner_kycStatus', partner_kycStatus);
         AsyncStorage.setItem('partner_category', partner_category);
         AsyncStorage.setItem('partner_category_name', partner_categoryName);
         AsyncStorage.setItem('partner_contactNumber', partner_contactNumber);

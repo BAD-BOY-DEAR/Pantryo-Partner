@@ -27,9 +27,11 @@ const UploadDocs = ({navigation}) => {
   const [docFrontImagePath, SetDocFrontImagePath] = React.useState('');
   const [docBackImage, SetDocBackImage] = React.useState('');
   const [docBackImagePath, SetDocBackImagePath] = React.useState('');
+  const [gstCertificate, setGstCertificate] = React.useState('');
+  const [gstCertificatePath, setGstCertificatePath] = React.useState('');
 
   ///Take Image
-  const requestGalleryPermission = async selectForImage => {
+  const requestGalleryPermission = async (selectForImage, requestType) => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -43,6 +45,7 @@ const UploadDocs = ({navigation}) => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         let SelectFor = selectForImage;
+        let RequestType = requestType;
         let options = {
           storageOptions: {
             skipBackup: true,
@@ -55,29 +58,47 @@ const UploadDocs = ({navigation}) => {
           durationLimit: 30,
           includeBase64: true,
         };
-        await ImagePicker.launchImageLibrary(options, res => {
-          if (res) {
-            if (res.errorCode == 'permission') {
-              alert('Permission not granted');
-              return;
-            } else if (res.errorCode == 'others') {
-              alert(res.errorMessage);
-              return;
-            } else if (res.didCancel) {
-              console.log('User cancelled image picker');
-            } else {
-              let temp = {name: res.fileName, uri: res.uri, type: res.type};
-              if (SelectFor == 'Front') {
-                SetDocFrontImagePath(res.uri);
-                SetDocFrontImage(temp);
-              }
-              if (SelectFor == 'Back') {
-                SetDocBackImagePath(res.uri);
-                SetDocBackImage(temp);
+        if (RequestType == 'Image') {
+          await ImagePicker.launchImageLibrary(options, res => {
+            if (res) {
+              if (res.errorCode == 'permission') {
+                alert('Permission not granted');
+                return;
+              } else if (res.errorCode == 'others') {
+                alert(res.errorMessage);
+                return;
+              } else if (res.didCancel) {
+                console.log('User cancelled image picker');
+              } else {
+                let temp = {name: res.fileName, uri: res.uri, type: res.type};
+                if (SelectFor == 'Front') {
+                  SetDocFrontImagePath(res.uri);
+                  SetDocFrontImage(temp);
+                }
+                if (SelectFor == 'Back') {
+                  SetDocBackImagePath(res.uri);
+                  SetDocBackImage(temp);
+                }
               }
             }
-          }
-        });
+          });
+        } else if (RequestType == 'Document') {
+          await ImagePicker.launchImageLibrary(options, res => {
+            if (res) {
+              if (res.errorCode == 'permission') {
+                alert('Permission not granted');
+                return;
+              } else if (res.errorCode == 'others') {
+                alert(res.errorMessage);
+                return;
+              } else if (res.didCancel) {
+                console.log('User cancelled image picker');
+              } else {
+                let temp = {name: res.fileName, uri: res.uri, type: res.type};
+              }
+            }
+          });
+        }
       } else {
         console.log('Camera permission denied');
       }
