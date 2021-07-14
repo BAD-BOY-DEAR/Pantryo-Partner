@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
   View,
   Text,
@@ -46,29 +46,50 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-          {kycStatus == '1' ? (
-            <View style={styles.kycContainer}>
-              <Pressable
-                onPress={() => navigation.navigate('UploadDocs')}
-                style={styles.kycSeaction}>
-                <Text style={styles.cardOneLabel}>Complete Your KYC</Text>
-                <Text style={styles.cardOneResponse}>Click Here</Text>
-              </Pressable>
+      {kycStatus == '1' ? (
+        <>
+          <View style={styles.kycContainer}>
+            <View style={styles.lottieContainer}>
+              <LottieView
+                source={require('../../assets/lottie/waitingNew.json')}
+                autoPlay
+                loop
+                style={styles.lottie}
+              />
             </View>
-          ) : (
-            <>
+            <View style={styles.kycBottomContainer}>
+              <LinearGradient
+                colors={['#cea5d1', '#87548a']}
+                style={styles.kycCard}>
+                <LottieView
+                  source={require('../../assets/lottie/documents.json')}
+                  autoPlay
+                  loop
+                  style={styles.bottomKycLottie}
+                />
+                <Text style={styles.kycBottomHeading}>Upload Documents</Text>
+                <Text style={styles.explanation}>
+                  Please complete your E-KYC to start your journey with Pantryo
+                </Text>
+                <Pressable
+                  onPress={() => navigation.navigate('UploadDocs')}
+                  style={styles.kycBtn}>
+                  <Text style={styles.kycBtnTxt}>Click here</Text>
+                </Pressable>
+              </LinearGradient>
+            </View>
+          </View>
+        </>
+      ) : (
+        <>
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.container}>
               {/* ========== Header Section ========== */}
               <View style={styles.header}>
                 <Text style={styles.screenName}>Dashboard</Text>
                 <Pressable
                   onPress={() => navigation.navigate('RegistrationForm')}>
-                  <Icons
-                    name="document-text-outline"
-                    size={28}
-                    color="#5E3360"
-                  />
+                  <Icons name="document-text-outline" size={28} color="#fff" />
                 </Pressable>
                 <View
                   style={{
@@ -79,6 +100,7 @@ const HomeScreen = ({navigation}) => {
                     style={{
                       fontFamily: 'OpenSans-SemiBold',
                       fontSize: 18,
+                      color: '#fff',
                     }}>
                     Go Live
                   </Text>
@@ -95,24 +117,22 @@ const HomeScreen = ({navigation}) => {
               {/* ========== Header Section ========== */}
 
               {/* ========== Overview Section ========== */}
-              <View style={styles.middleSection}>
+              <LinearGradient
+                colors={['#b586b8', '#87548a']}
+                style={styles.middleSection}>
                 <View style={styles.row}>
-                  <View
-                    // colors={['#e4c4f2', '#c79adb']}
-                    style={styles.cardOne}>
+                  <View style={styles.cardOne}>
                     <Text style={styles.cardOneLabel}>Orders Today</Text>
                     <Text style={styles.cardOneResponse}>10</Text>
                   </View>
-                  <View
-                    // colors={['#e4c4f2', '#c79adb']}
-                    style={styles.cardOne}>
+                  <View style={styles.cardOne}>
                     <Text style={styles.cardOneLabel}>
                       Total Orders Received
                     </Text>
                     <Text style={styles.cardOneResponse}>100</Text>
                   </View>
                 </View>
-              </View>
+              </LinearGradient>
               {/* ========== Overview Section ========== */}
 
               {/* ========== Ongoing Orders Section ========== */}
@@ -136,11 +156,11 @@ const HomeScreen = ({navigation}) => {
                   </View>
                 </Pressable>
               </View>
-            </>
-          )}
-          {/* ========== Ongoing Orders Section ========== */}
-        </View>
-      </ScrollView>
+            </View>
+          </ScrollView>
+        </>
+      )}
+      {/* ========== Ongoing Orders Section ========== */}
     </>
   );
 };
@@ -149,12 +169,30 @@ const Stack = createStackNavigator();
 
 function Home() {
   return (
-    <Stack.Navigator headerMode="none">
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen name="UploadDocs" component={UploadDocs} />
+    <Stack.Navigator>
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="UploadDocs"
+        component={UploadDocs}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen name="PostUploadStatus" component={PostUploadStatus} />
       <Stack.Screen name="RegistrationForm" component={RegistrationForm} />
-      <Stack.Screen name="OrderDetails" component={OrderDetails} />
+      <Stack.Screen
+        name="OrderDetails"
+        options={{
+          title: 'Order Details',
+        }}
+        component={OrderDetails}
+      />
       <Stack.Screen name="OrdersList" component={OrdersList} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
     </Stack.Navigator>
@@ -181,11 +219,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     flexDirection: 'row',
-    backgroundColor: '#8c578f',
+    backgroundColor: '#b586b8',
   },
   screenName: {
     fontFamily: 'OpenSans-Bold',
-    fontSize: 24,
+    fontSize: 20,
     flex: 1,
     color: '#fff',
   },
@@ -341,20 +379,78 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
   kycContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
+    backgroundColor: '#eeddf0',
+  },
+  lottieContainer: {
     flex: 1,
-    borderWidth: 0.4,
-    borderRadius: 10,
-    width: '90%',
-    marginHorizontal: 10,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: '#eeddf0',
+  },
+  kycSection: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lottie: {
+    width: 400,
+    height: 400,
+    backgroundColor: '#eeddf0',
+  },
+  kycBottomContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    width: '100%',
+  },
+  kycCard: {
+    width: '50%',
+    height: '70%',
+    marginRight: 30,
+    marginBottom: 30,
+    borderRadius: 20,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingHorizontal: 15,
+    shadowColor: '#cea5d1',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+    backgroundColor: '#cea5d1',
+  },
+  bottomKycLottie: {
+    width: 150,
+    height: 150,
+  },
+  kycBottomHeading: {
+    fontFamily: 'OpenSans-ExtraBold',
+    fontSize: 30,
+    color: '#fff',
+  },
+  explanation: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 16,
+    color: '#fff',
+  },
+  kycBtn: {
+    width: 150,
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#fff',
+    borderRadius: 5,
     paddingVertical: 10,
   },
-  kycSeaction: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
+  kycBtnTxt: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 16,
+    color: '#fff',
   },
 });
