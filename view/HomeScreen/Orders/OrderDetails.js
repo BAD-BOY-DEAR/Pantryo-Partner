@@ -90,13 +90,22 @@ const OrderDetails = () => {
 
             <View style={styles.tabRow}>
               <Text style={styles.statusName}>Order Ready</Text>
-              <CheckBox
-                disabled={false}
-                value={statusTwo}
-                onValueChange={newValue => setStatusTwo(newValue)}
-                style={styles.statusOne}
-                onChange={() => setModalVisible(true)}
-              />
+              {modalVisible ? (
+                <CheckBox
+                  disabled={true}
+                  value={statusTwo}
+                  onValueChange={newValue => setStatusTwo(newValue)}
+                  style={styles.statusOne}
+                />
+              ) : (
+                <CheckBox
+                  disabled={false}
+                  value={statusTwo}
+                  onValueChange={newValue => setStatusTwo(newValue)}
+                  style={styles.statusOne}
+                  onChange={() => setModalVisible(true)}
+                />
+              )}
             </View>
           </View>
         </View>
@@ -112,8 +121,8 @@ const OrderDetails = () => {
           <View style={styles.modalContainer}>
             <View style={styles.modalCard}>
               <Text style={styles.modalText}>
-                Enter hand over code provided by Delivery Partner to confirm
-                code
+                Enter Confirmation Code provided by Delivery Partner to confirm
+                order handover
               </Text>
               <TextInput
                 placeholder="Enter 6 Digit Code"
@@ -137,15 +146,26 @@ export default OrderDetails;
 const styles = StyleSheet.create({
   scroll: {
     paddingVertical: 10,
+    backgroundColor: '#5E3360',
+    paddingHorizontal: 10,
   },
   card: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     backgroundColor: '#fff',
     paddingVertical: 25,
+    borderRadius: 5,
+    shadowColor: '#fff',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+    elevation: 10,
   },
   div: {
     width: '100%',
