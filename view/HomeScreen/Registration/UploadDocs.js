@@ -6,6 +6,8 @@ import {
   Pressable,
   ToastAndroid,
   PermissionsAndroid,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -13,8 +15,11 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import * as ImagePicker from 'react-native-image-picker';
 import {RNCamera} from 'react-native-camera';
+import DocumentPicker from 'react-native-document-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UploadDocs = ({navigation}) => {
+  const [isLoading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(null);
   const [items, setItems] = React.useState([
@@ -31,7 +36,7 @@ const UploadDocs = ({navigation}) => {
   const [gstCertificatePath, setGstCertificatePath] = React.useState('');
 
   ///Take Image
-  const requestGalleryPermission = async (selectForImage, requestType) => {
+  const requestGalleryPermission = async selectForImage => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -45,7 +50,6 @@ const UploadDocs = ({navigation}) => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         let SelectFor = selectForImage;
-        let RequestType = requestType;
         let options = {
           storageOptions: {
             skipBackup: true,
@@ -58,52 +62,133 @@ const UploadDocs = ({navigation}) => {
           durationLimit: 30,
           includeBase64: true,
         };
-        if (RequestType == 'Image') {
-          await ImagePicker.launchImageLibrary(options, res => {
-            if (res) {
-              if (res.errorCode == 'permission') {
-                alert('Permission not granted');
-                return;
-              } else if (res.errorCode == 'others') {
-                alert(res.errorMessage);
-                return;
-              } else if (res.didCancel) {
-                console.log('User cancelled image picker');
-              } else {
-                let temp = {name: res.fileName, uri: res.uri, type: res.type};
-                if (SelectFor == 'Front') {
-                  SetDocFrontImagePath(res.uri);
-                  SetDocFrontImage(temp);
-                }
-                if (SelectFor == 'Back') {
-                  SetDocBackImagePath(res.uri);
-                  SetDocBackImage(temp);
-                }
+        await ImagePicker.launchImageLibrary(options, res => {
+          if (res) {
+            if (res.errorCode == 'permission') {
+              alert('Permission not granted');
+              return;
+            } else if (res.errorCode == 'others') {
+              alert(res.errorMessage);
+              return;
+            } else if (res.didCancel) {
+              // console.log('User cancelled image picker');
+            } else {
+              let temp = {name: res.fileName, uri: res.uri, type: res.type};
+              if (SelectFor == 'Front') {
+                SetDocFrontImagePath(res.uri);
+                SetDocFrontImage(temp);
+              }
+              if (SelectFor == 'Back') {
+                SetDocBackImagePath(res.uri);
+                SetDocBackImage(temp);
               }
             }
-          });
-        } else if (RequestType == 'Document') {
-          await ImagePicker.launchImageLibrary(options, res => {
-            if (res) {
-              if (res.errorCode == 'permission') {
-                alert('Permission not granted');
-                return;
-              } else if (res.errorCode == 'others') {
-                alert(res.errorMessage);
-                return;
-              } else if (res.didCancel) {
-                console.log('User cancelled image picker');
-              } else {
-                let temp = {name: res.fileName, uri: res.uri, type: res.type};
-              }
-            }
-          });
-        }
+          }
+        });
       } else {
         console.log('Camera permission denied');
       }
     } catch (err) {
       console.warn(err);
+    }
+  };
+
+  /////Doc
+  const uploadDocument = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.pdf, DocumentPicker.types.images],
+        // type: [DocumentPicker.types.images],
+      });
+      let temp = {name: res.name, uri: res.uri, type: res.type};
+      // console.log(temp);
+      setGstCertificatePath(res.uri);
+      setGstCertificate(temp);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  const requestDocument = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Pantryo Partner Camera Permission',
+          message: 'Pantryo Partner  needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        uploadDocument();
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  /////////Upload KYC Documents
+  const kycDocumentUpdate = async () => {
+    if (!value) {
+      Alert.alert('Select Id Type');
+      return;
+    } else if (!docFrontImage) {
+      Alert.alert('Please Upload your Id front side Image');
+      return;
+    } else if (!docBackImage) {
+      Alert.alert('Please Upload your Id Back side Image');
+      return;
+    } else if (!gstCertificate) {
+      Alert.alert('Please Upload your gst Document in  Image or Pdf');
+      return;
+    } else {
+      let partner_id = await AsyncStorage.getItem('partner_id');
+      const data = new FormData();
+      data.append('partner_id', partner_id);
+      data.append('partner_idFrontImage', docFrontImage);
+      data.append('partner_idBackImage', docBackImage);
+      data.append('partner_gstCertificate', gstCertificate);
+      data.append('partner_idType', value);
+      // console.log(data);
+      // return;
+      setLoading(true);
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerUploadDocs.php',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data;',
+          },
+          body: data,
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          // console.log(result);
+          if (result.error == 0) {
+            AsyncStorage.setItem(
+              'partner_kycStatus',
+              JSON.stringify(result.partner_kycStatus),
+            );
+            navigation.navigate('HomeScreen');
+          }
+          Alert.alert(result.msg);
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
     }
   };
 
@@ -128,33 +213,64 @@ const UploadDocs = ({navigation}) => {
             />
           </View>
           <View style={styles.uploadRow}>
-            <View style={styles.uploadBox}>
-              <Icons name="cloud-upload" size={25} color="#c7c7c7c7" />
+            <Pressable
+              onPress={() => requestGalleryPermission('Front')}
+              style={styles.uploadBox}>
+              {docFrontImage == '' ? (
+                <Icons name="cloud-upload" size={25} color="#c7c7c7c7" />
+              ) : (
+                <Icons name="checkmark-circle" size={25} color="green" />
+              )}
               <Text styles={styles.uploadBoxTxtInner}>Front Image</Text>
-            </View>
+            </Pressable>
 
-            <View style={styles.uploadBox}>
-              <Icons name="cloud-upload" size={25} color="#c7c7c7c7" />
+            <Pressable
+              onPress={() => requestGalleryPermission('Back')}
+              style={styles.uploadBox}>
+              {docBackImage == '' ? (
+                <Icons name="cloud-upload" size={25} color="#c7c7c7c7" />
+              ) : (
+                <Icons name="checkmark-circle" size={25} color="green" />
+              )}
               <Text styles={styles.uploadBoxTxtInner}>Back Image</Text>
-            </View>
+            </Pressable>
           </View>
         </View>
 
-        <View style={styles.sectionTwo}>
+        <Pressable onPress={() => requestDocument()} style={styles.sectionTwo}>
           <View style={styles.uploadBox}>
-            <Icons name="cloud-upload" size={25} color="#c7c7c7c7" />
+            {gstCertificate == '' ? (
+              <Icons name="cloud-upload" size={25} color="#c7c7c7c7" />
+            ) : (
+              <Icons name="checkmark-circle" size={25} color="green" />
+            )}
           </View>
           <View style={styles.div}>
             <Text style={styles.divTop}>Upload GST Certificate</Text>
             <Text style={styles.divBottom}>(.PNG, .JPG or PDF)</Text>
           </View>
-        </View>
-
-        <Pressable
-          style={styles.btn}
-          onPress={() => navigation.navigate('PostUploadStatus')}>
-          <Text style={styles.btnTxt}>SUBMIT</Text>
         </Pressable>
+        {isLoading == false ? (
+          <Pressable
+            style={styles.btn}
+            onPress={() => {
+              kycDocumentUpdate();
+            }}>
+            <Text style={styles.btnTxt}>SUBMIT</Text>
+          </Pressable>
+        ) : (
+          <View style={styles.btn}>
+            <ActivityIndicator
+              animating={true}
+              color="#fff"
+              size="small"
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            />
+          </View>
+        )}
       </View>
     </>
   );

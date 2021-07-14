@@ -30,13 +30,14 @@ import PaymentScreen from './Payments/PaymentScreen';
 
 const HomeScreen = ({navigation}) => {
   const [isEnabled, setIsEnabled] = React.useState(false);
-  const [kycStatus, setKycStatus] = React.useState(false);
+  const [kycStatus, setKycStatus] = React.useState('1');
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   ///set Partner Details
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
     setKycStatus(partner_kycStatus);
+    getPartnerDetails();
   };
 
   React.useEffect(() => {
