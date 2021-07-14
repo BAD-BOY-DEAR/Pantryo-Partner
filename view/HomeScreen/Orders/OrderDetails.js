@@ -55,7 +55,7 @@ const OrderDetails = () => {
             <View style={styles.tabRow}>
               <View style={styles.section}>
                 <Text style={styles.brandName}>Amul</Text>
-                <Text style={styles.product}>Spice Garlic Cheese Spread</Text>
+                <Text style={styles.product}>Spicy Garlic Cheese Spread</Text>
               </View>
               <Text style={styles.weight}>500gm</Text>
               <Text style={styles.qty}>X 1</Text>
@@ -70,6 +70,16 @@ const OrderDetails = () => {
               <Text style={styles.weight}>40gm</Text>
               <Text style={styles.qty}>X 1</Text>
               <Text style={styles.cost}>₹60</Text>
+            </View>
+
+            <View style={styles.tabRow}>
+              <View style={styles.section}>
+                <Text style={styles.brandName}>Veeba</Text>
+                <Text style={styles.product}>Mint Mayonnaise Chutney</Text>
+              </View>
+              <Text style={styles.weight}>250gm</Text>
+              <Text style={styles.qty}>X 1</Text>
+              <Text style={styles.cost}>₹199</Text>
             </View>
           </View>
         </View>
@@ -204,6 +214,7 @@ const styles = StyleSheet.create({
   product: {
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 20,
+    flex: 1,
   },
   weight: {
     fontFamily: 'OpenSans-SemiBold',

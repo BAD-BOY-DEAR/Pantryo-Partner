@@ -5,9 +5,9 @@ import {
   Pressable,
   StyleSheet,
   ScrollView,
-  Image,
   Switch,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -39,20 +39,10 @@ const HomeScreen = ({navigation}) => {
           <View style={styles.header}>
             <Text style={styles.screenName}>Dashboard</Text>
             <Pressable onPress={() => navigation.navigate('RegistrationForm')}>
-              <Icons name="document-text-outline" size={28} color="#5E3360" />
+              <Icons name="document-text-outline" size={28} color="#fff" />
             </Pressable>
-            <View
-              style={{
-                marginLeft: 20,
-                marginRight: 20,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'OpenSans-SemiBold',
-                  fontSize: 18,
-                }}>
-                Go Live
-              </Text>
+            <View style={styles.midDiv}>
+              <Text style={styles.midDivTxt}>Go Live</Text>
               <Switch
                 trackColor={{false: '#767577', true: '#5E3360'}}
                 thumbColor={isEnabled ? 'green' : '#f4f3f4'}
@@ -66,22 +56,20 @@ const HomeScreen = ({navigation}) => {
           {/* ========== Header Section ========== */}
 
           {/* ========== Overview Section ========== */}
-          <View style={styles.middleSection}>
+          <LinearGradient
+            colors={['#8c578f', '#5c325e']}
+            style={styles.middleSection}>
             <View style={styles.row}>
-              <View
-                // colors={['#e4c4f2', '#c79adb']}
-                style={styles.cardOne}>
+              <View style={styles.cardOne}>
                 <Text style={styles.cardOneLabel}>Orders Today</Text>
                 <Text style={styles.cardOneResponse}>10</Text>
               </View>
-              <View
-                // colors={['#e4c4f2', '#c79adb']}
-                style={styles.cardOne}>
+              <View style={styles.cardOne}>
                 <Text style={styles.cardOneLabel}>Total Orders Received</Text>
                 <Text style={styles.cardOneResponse}>100</Text>
               </View>
             </View>
-          </View>
+          </LinearGradient>
           {/* ========== Overview Section ========== */}
 
           {/* ========== Ongoing Orders Section ========== */}
@@ -146,14 +134,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    marginBottom: 20,
+    backgroundColor: '#8c578f',
   },
   screenName: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 20,
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 24,
     flex: 1,
-    color: '#000000',
+    color: '#fff',
   },
   tabContainer: {
     marginTop: 30,
@@ -246,6 +233,8 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     marginBottom: 20,
+    backgroundColor: '#5E3360',
+    paddingVertical: 30,
   },
   row: {
     width: '100%',
@@ -256,7 +245,7 @@ const styles = StyleSheet.create({
   cardOne: {
     flex: 1,
     borderRadius: 5,
-    shadowColor: '#000',
+    shadowColor: '#fff',
     shadowOffset: {
       width: 0,
       height: 3,
@@ -303,5 +292,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 5,
     color: 'blue',
+  },
+  midDiv: {
+    marginLeft: 20,
+    marginRight: 10,
+  },
+  midDivTxt: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 18,
+    color: '#fff',
   },
 });

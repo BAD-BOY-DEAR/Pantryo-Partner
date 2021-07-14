@@ -14,7 +14,7 @@ const WalletScreen = ({navigation}) => {
     <>
       <View style={styles.topContainer}>
         <View style={styles.section}>
-          <Text style={styles.screenName}>Wallet Balance</Text>
+          <Text style={styles.screenName}>Your Account</Text>
           <Pressable
             onPress={() => navigation.navigate('WalletActionScreen')}
             style={styles.salesCard}>
@@ -107,9 +107,10 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
   btmScroll: {
-    marginTop: 70,
+    marginTop: 30,
     marginBottom: 10,
     width: '100%',
   },
@@ -133,17 +134,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   transactionLabel: {
-    fontFamily: 'OpenSans-Regular',
-    fontSize: 16,
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
   },
   date: {
     fontFamily: 'OpenSans-Regular',
     color: '#777777',
   },
   amount: {
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'OpenSans-Bold',
     color: 'green',
-    fontSize: 20,
+    fontSize: 24,
     marginRight: 10,
   },
 });

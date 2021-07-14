@@ -18,13 +18,13 @@ import {
 import Icons from 'react-native-vector-icons/Ionicons';
 import Geolocation from '@react-native-community/geolocation';
 import * as ImagePicker from 'react-native-image-picker';
+import DeviceInfo from 'react-native-device-info';
+import {Picker} from '@react-native-picker/picker';
 import {RNCamera} from 'react-native-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Animatable from 'react-native-animatable';
 import DropDownPicker from 'react-native-dropdown-picker';
 import CheckBox from '@react-native-community/checkbox';
-import DeviceInfo from 'react-native-device-info';
-import {Picker} from '@react-native-picker/picker';
 
 ///========Screen Loader==========///
 import LoaderScreen from '../../../controller/LoaderScreen';
@@ -330,7 +330,7 @@ const RegisterScreen = ({navigation, route}) => {
     ////Partner Category
     fetchPartnerCategoryApi();
     //set Partner Contact Number
-    setPartnerContactNumber(route.params.partner_contactNumber);
+    // setPartnerContactNumber(route.params.partner_contactNumber);
     ///Location
     requestLocationPermission();
     //clear Watch Id
