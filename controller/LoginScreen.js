@@ -78,6 +78,7 @@ const LoginScreen = ({navigation}) => {
             let partner_categoryName = result.partner_category_name;
             let partner_pincode = result.partner_pincode;
             let partner_shopaddress = result.partner_shopaddress;
+            let partner_kycStatus = result.partner_kycStatus;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -86,6 +87,7 @@ const LoginScreen = ({navigation}) => {
               partner_categoryName,
               partner_pincode,
               partner_shopaddress,
+              partner_kycStatus,
             });
           } else if (result.error == 1) {
             navigation.navigate('VerificationScreen', {

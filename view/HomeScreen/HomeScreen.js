@@ -15,6 +15,7 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -29,68 +30,114 @@ import PaymentScreen from './Payments/PaymentScreen';
 
 const HomeScreen = ({navigation}) => {
   const [isEnabled, setIsEnabled] = React.useState(false);
+  const [kycStatus, setKycStatus] = React.useState('1');
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  ///set Partner Details
+  const getPartnerDetails = async () => {
+    let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
+    setKycStatus(partner_kycStatus);
+    getPartnerDetails();
+  };
+
+  React.useEffect(() => {
+    getPartnerDetails();
+  }, []);
 
   return (
     <>
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
-          {/* ========== Header Section ========== */}
-          <View style={styles.header}>
-            <Text style={styles.screenName}>Dashboard</Text>
-            <Pressable onPress={() => navigation.navigate('RegistrationForm')}>
-              <Icons name="document-text-outline" size={28} color="#fff" />
-            </Pressable>
-            <View style={styles.midDiv}>
-              <Text style={styles.midDivTxt}>Go Live</Text>
-              <Switch
-                trackColor={{false: '#767577', true: '#5E3360'}}
-                thumbColor={isEnabled ? 'green' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={isEnabled}
-                style={{marginTop: 5}}
-              />
+          {kycStatus == '1' ? (
+            <View style={styles.kycContainer}>
+              <Pressable
+                onPress={() => navigation.navigate('UploadDocs')}
+                style={styles.kycSeaction}>
+                <Text style={styles.cardOneLabel}>Complete Your KYC</Text>
+                <Text style={styles.cardOneResponse}>Click Here</Text>
+              </Pressable>
             </View>
-          </View>
-          {/* ========== Header Section ========== */}
-
-          {/* ========== Overview Section ========== */}
-          <LinearGradient
-            colors={['#8c578f', '#5c325e']}
-            style={styles.middleSection}>
-            <View style={styles.row}>
-              <View style={styles.cardOne}>
-                <Text style={styles.cardOneLabel}>Orders Today</Text>
-                <Text style={styles.cardOneResponse}>10</Text>
-              </View>
-              <View style={styles.cardOne}>
-                <Text style={styles.cardOneLabel}>Total Orders Received</Text>
-                <Text style={styles.cardOneResponse}>100</Text>
-              </View>
-            </View>
-          </LinearGradient>
-          {/* ========== Overview Section ========== */}
-
-          {/* ========== Ongoing Orders Section ========== */}
-          <View style={styles.section}>
-            <Text style={styles.tabHeading}>Ongoing Today</Text>
-            <Pressable
-              onPress={() => navigation.navigate('OrderDetails')}
-              style={styles.details}>
-              <View style={styles.divOne}>
-                <Text style={styles.detailsTxt}>Syed John Goswami</Text>
-                <Text style={styles.detailsAddressLabel}>Address:</Text>
-                <Text style={styles.detailsAddress}>
-                  A-23, Sector J, Aliganj Lucknow
-                </Text>
-                <View style={styles.detailsInnerRow}>
-                  <Text style={styles.detailsDate}>15 May 2021 12:15 PM</Text>
-                  <Text style={styles.btnDetails}>View Order Details</Text>
+          ) : (
+            <>
+              {/* ========== Header Section ========== */}
+              <View style={styles.header}>
+                <Text style={styles.screenName}>Dashboard</Text>
+                <Pressable
+                  onPress={() => navigation.navigate('RegistrationForm')}>
+                  <Icons
+                    name="document-text-outline"
+                    size={28}
+                    color="#5E3360"
+                  />
+                </Pressable>
+                <View
+                  style={{
+                    marginLeft: 20,
+                    marginRight: 20,
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: 'OpenSans-SemiBold',
+                      fontSize: 18,
+                    }}>
+                    Go Live
+                  </Text>
+                  <Switch
+                    trackColor={{false: '#767577', true: '#5E3360'}}
+                    thumbColor={isEnabled ? 'green' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
+                    style={{marginTop: 5}}
+                  />
                 </View>
               </View>
-            </Pressable>
-          </View>
+              {/* ========== Header Section ========== */}
+
+              {/* ========== Overview Section ========== */}
+              <View style={styles.middleSection}>
+                <View style={styles.row}>
+                  <View
+                    // colors={['#e4c4f2', '#c79adb']}
+                    style={styles.cardOne}>
+                    <Text style={styles.cardOneLabel}>Orders Today</Text>
+                    <Text style={styles.cardOneResponse}>10</Text>
+                  </View>
+                  <View
+                    // colors={['#e4c4f2', '#c79adb']}
+                    style={styles.cardOne}>
+                    <Text style={styles.cardOneLabel}>
+                      Total Orders Received
+                    </Text>
+                    <Text style={styles.cardOneResponse}>100</Text>
+                  </View>
+                </View>
+              </View>
+              {/* ========== Overview Section ========== */}
+
+              {/* ========== Ongoing Orders Section ========== */}
+              <View style={styles.section}>
+                <Text style={styles.tabHeading}>Ongoing Today</Text>
+                <Pressable
+                  onPress={() => navigation.navigate('OrderDetails')}
+                  style={styles.details}>
+                  <View style={styles.divOne}>
+                    <Text style={styles.detailsTxt}>Syed John Goswami</Text>
+                    <Text style={styles.detailsAddressLabel}>Address:</Text>
+                    <Text style={styles.detailsAddress}>
+                      A-23, Sector J, Aliganj Lucknow
+                    </Text>
+                    <View style={styles.detailsInnerRow}>
+                      <Text style={styles.detailsDate}>
+                        15 May 2021 12:15 PM
+                      </Text>
+                      <Text style={styles.btnDetails}>View Order Details</Text>
+                    </View>
+                  </View>
+                </Pressable>
+              </View>
+            </>
+          )}
           {/* ========== Ongoing Orders Section ========== */}
         </View>
       </ScrollView>
@@ -293,13 +340,21 @@ const styles = StyleSheet.create({
     marginRight: 5,
     color: 'blue',
   },
-  midDiv: {
-    marginLeft: 20,
-    marginRight: 10,
+  kycContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+    flex: 1,
+    borderWidth: 0.4,
+    borderRadius: 10,
+    width: '90%',
+    marginHorizontal: 10,
+    paddingVertical: 10,
   },
-  midDivTxt: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 18,
-    color: '#fff',
+  kycSeaction: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
 });
