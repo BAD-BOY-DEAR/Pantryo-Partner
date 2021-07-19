@@ -52,7 +52,7 @@ const HomeScreen = ({navigation}) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setLoading(true);
+    // setLoading(true);
     getPartnerDetails();
     getTodayOrder();
     wait(2000).then(() => setRefreshing(false));
@@ -231,35 +231,35 @@ const HomeScreen = ({navigation}) => {
                     ) : todayOrderData !== '' ? (
                       <FlatList
                         data={todayOrderData}
+                        style={{width: '100%'}}
                         refreshControl={
                           <RefreshControl
                             refreshing={refreshing}
                             onRefresh={onRefresh}
                           />
                         }
-                        keyExtractor={order_id => index(order_id)}
+                        keyExtractor={item => item.orderId}
                         renderItem={({item}) => (
                           <Pressable
                             onPress={() =>
                               navigation.navigate('OrderDetails', {
-                                order_id: item.order_id,
+                                order_id: item.orderId,
                               })
                             }
                             style={styles.details}>
                             <View style={styles.divOne}>
                               <Text style={styles.detailsTxt}>
-                                Syed John Goswami{item.customer}
+                                {item.customer_name}
                               </Text>
                               <Text style={styles.detailsAddressLabel}>
                                 Address:
                               </Text>
                               <Text style={styles.detailsAddress}>
-                                A-23, Sector J, Aliganj Lucknow
-                                {item.customer_name}
+                                {item.customerDeliveryAddress}
                               </Text>
                               <View style={styles.detailsInnerRow}>
                                 <Text style={styles.detailsDate}>
-                                  15 May 2021 12:15 PM{item.order_date}
+                                  {item.create_date}
                                 </Text>
                                 <Text style={styles.btnDetails}>
                                   View Order Details
