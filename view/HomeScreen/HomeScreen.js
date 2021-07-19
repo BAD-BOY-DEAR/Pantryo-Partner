@@ -10,7 +10,8 @@ import {
   Image,
   FlatList,
   RefreshControl,
-  ActivityIndicator
+  ActivityIndicator,
+  LogBox,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -33,22 +34,25 @@ import OrdersList from './Orders/OrdersList';
 import PaymentScreen from './Payments/PaymentScreen';
 
 ////////
-const wait = (timeout) => {
+const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
-}
+};
 
 const HomeScreen = ({navigation}) => {
   const netInfo = useNetInfo();
   const [isEnabled, setIsEnabled] = React.useState(false);
   const [isLoading, setLoading] = React.useState(true);
   const [kycStatus, setKycStatus] = React.useState('1');
-  const [todayOrderData, setTodayOrderData] = React.useState(null);
+  const [todayOrderData, setTodayOrderData] = React.useState('');
+  const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
+  const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
+    setLoading(true);
     getPartnerDetails();
     getTodayOrder();
     wait(2000).then(() => setRefreshing(false));
@@ -62,40 +66,43 @@ const HomeScreen = ({navigation}) => {
   };
 
   /////get Today Order
-  const getTodayOrder = ()=>{
-     let partner_id = await AsyncStorage.getItem('partner_id');
-      fetch(
-          'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getTodayOrderOfPartner',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            partner_id: partner_id,
-          }),
+  const getTodayOrder = async () => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getTodayOrderOfPartner',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-      )
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (result) {
-          console.log(result);
-          // setTodayOrderData(result.OrderData);
-          // getTodayOrder();
-        })
-        .catch(error => {
-          console.error(error);
-        })
-        .finally(() => setLoading(false));
-
-  }
+        body: JSON.stringify({
+          partner_id: partner_id,
+        }),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        // console.log(result);
+        setTodayOrderData(result.todayorderdetails);
+        getTodayOrder();
+        setNumberOfOrderAll(result.allordercount);
+        setNumberOfOrderToday(result.todayordercount);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => setLoading(false));
+  };
   ////get Today Order
 
   React.useEffect(() => {
     getPartnerDetails();
     getTodayOrder();
+    LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+    LogBox.ignoreAllLogs(); //Ignore all log notifications
   }, []);
 
   return (
@@ -186,13 +193,17 @@ const HomeScreen = ({navigation}) => {
                     <View style={styles.row}>
                       <View style={styles.cardOne}>
                         <Text style={styles.cardOneLabel}>Orders Today</Text>
-                        <Text style={styles.cardOneResponse}>10</Text>
+                        <Text style={styles.cardOneResponse}>
+                          {numberOfOrderToday}
+                        </Text>
                       </View>
                       <View style={styles.cardOne}>
                         <Text style={styles.cardOneLabel}>
                           Total Orders Received
                         </Text>
-                        <Text style={styles.cardOneResponse}>100</Text>
+                        <Text style={styles.cardOneResponse}>
+                          {numberOfOrderAll}
+                        </Text>
                       </View>
                     </View>
                   </LinearGradient>
@@ -201,39 +212,77 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Ongoing Orders Section ========== */}
                   <View style={styles.section}>
                     <Text style={styles.tabHeading}>Ongoing Today</Text>
-                    {isLoading == true?<ActivityIndicator />:todayOrderData !== ''?
-                    <FlatList
-                    data={todayOrderData}
-                    refreshControl={
-                      <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                      />
-                    }
-                    keyExtractor={(order_id)=>index(order_id)}
-                    renderItem={({item})=>(
-                    <Pressable
-                      onPress={() => navigation.navigate('OrderDetails',{order_id:item.order_id})}
-                      style={styles.details}>
-                      <View style={styles.divOne}>
-                        <Text style={styles.detailsTxt}>Syed John Goswami{item.customer}</Text>
-                        <Text style={styles.detailsAddressLabel}>Address:</Text>
-                        <Text style={styles.detailsAddress}>
-                          A-23, Sector J, Aliganj Lucknow{item.customer_name}
-                        </Text>
-                        <View style={styles.detailsInnerRow}>
-                          <Text style={styles.detailsDate}>
-                            15 May 2021 12:15 PM{item.order_date}
-                          </Text>
-                          <Text style={styles.btnDetails}>
-                            View Order Details
-                          </Text>
-                        </View>
+                    {isLoading == true ? (
+                      <View
+                        style={[
+                          styles.loader,
+                          {
+                            paddingVertical: '30%',
+                            paddingHorizontal: '35%',
+                          },
+                        ]}>
+                        <LottieView
+                          style={{height: 75, width: 75}}
+                          source={require('../../assets/lottie/loading.json')}
+                          autoPlay
+                          loop
+                        />
                       </View>
-                    </Pressable>
+                    ) : todayOrderData !== '' ? (
+                      <FlatList
+                        data={todayOrderData}
+                        refreshControl={
+                          <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                          />
+                        }
+                        keyExtractor={order_id => index(order_id)}
+                        renderItem={({item}) => (
+                          <Pressable
+                            onPress={() =>
+                              navigation.navigate('OrderDetails', {
+                                order_id: item.order_id,
+                              })
+                            }
+                            style={styles.details}>
+                            <View style={styles.divOne}>
+                              <Text style={styles.detailsTxt}>
+                                Syed John Goswami{item.customer}
+                              </Text>
+                              <Text style={styles.detailsAddressLabel}>
+                                Address:
+                              </Text>
+                              <Text style={styles.detailsAddress}>
+                                A-23, Sector J, Aliganj Lucknow
+                                {item.customer_name}
+                              </Text>
+                              <View style={styles.detailsInnerRow}>
+                                <Text style={styles.detailsDate}>
+                                  15 May 2021 12:15 PM{item.order_date}
+                                </Text>
+                                <Text style={styles.btnDetails}>
+                                  View Order Details
+                                </Text>
+                              </View>
+                            </View>
+                          </Pressable>
+                        )}
+                      />
+                    ) : (
+                      <View
+                        style={{
+                          flex: 1,
+                          paddingVertical: '45%',
+                          paddingHorizontal: '50%',
+                        }}>
+                        <LottieView
+                          source={require('../../assets/lottie/nodata.json')}
+                          autoPlay
+                          loop
+                        />
+                      </View>
                     )}
-                    />
-:<ScrollView><Text>No order</Text></ScrollView>}
                   </View>
                   {/* ========== Ongoing Orders Section ========== */}
                 </View>
@@ -242,7 +291,7 @@ const HomeScreen = ({navigation}) => {
           )}
         </>
       ) : netInfo.isConnected == false ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={styles.loader}>
           <LottieView
             source={require('../../assets/lottie/noInternet.json')}
             autoPlay
@@ -291,6 +340,11 @@ function Home() {
 export default Home;
 
 const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   scrollView: {
     paddingBottom: 10,
     backgroundColor: '#ffffff',
