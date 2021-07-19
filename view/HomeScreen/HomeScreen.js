@@ -8,6 +8,9 @@ import {
   Switch,
   TouchableOpacity,
   Image,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator
 } from 'react-native';
 
 // ===== Library ===== //
@@ -16,6 +19,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -28,10 +32,27 @@ import OrderDetails from './Orders/OrderDetails';
 import OrdersList from './Orders/OrdersList';
 import PaymentScreen from './Payments/PaymentScreen';
 
+////////
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 const HomeScreen = ({navigation}) => {
+  const netInfo = useNetInfo();
   const [isEnabled, setIsEnabled] = React.useState(false);
+  const [isLoading, setLoading] = React.useState(true);
   const [kycStatus, setKycStatus] = React.useState('1');
+  const [todayOrderData, setTodayOrderData] = React.useState(null);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getPartnerDetails();
+    getTodayOrder();
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
 
   ///set Partner Details
   const getPartnerDetails = async () => {
@@ -40,127 +61,195 @@ const HomeScreen = ({navigation}) => {
     getPartnerDetails();
   };
 
+  /////get Today Order
+  const getTodayOrder = ()=>{
+     let partner_id = await AsyncStorage.getItem('partner_id');
+      fetch(
+          'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getTodayOrderOfPartner',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            partner_id: partner_id,
+          }),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          console.log(result);
+          // setTodayOrderData(result.OrderData);
+          // getTodayOrder();
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+
+  }
+  ////get Today Order
+
   React.useEffect(() => {
     getPartnerDetails();
+    getTodayOrder();
   }, []);
 
   return (
     <>
-      {kycStatus == '1' ? (
+      {netInfo.isConnected == true ? (
         <>
-          <View style={styles.kycContainer}>
-            <View style={styles.lottieContainer}>
-              <LottieView
-                source={require('../../assets/lottie/waitingNew.json')}
-                autoPlay
-                loop
-                style={styles.lottie}
-              />
-            </View>
-            <View style={styles.kycBottomContainer}>
-              <LinearGradient
-                colors={['#cea5d1', '#87548a']}
-                style={styles.kycCard}>
-                <LottieView
-                  source={require('../../assets/lottie/documents.json')}
-                  autoPlay
-                  loop
-                  style={styles.bottomKycLottie}
-                />
-                <Text style={styles.kycBottomHeading}>Upload Documents</Text>
-                <Text style={styles.explanation}>
-                  Please complete your E-KYC to start your journey with Pantryo
-                </Text>
-                <Pressable
-                  onPress={() => navigation.navigate('UploadDocs')}
-                  style={styles.kycBtn}>
-                  <Text style={styles.kycBtnTxt}>Click here</Text>
-                </Pressable>
-              </LinearGradient>
-            </View>
-          </View>
-        </>
-      ) : (
-        <>
-          <ScrollView style={styles.scrollView}>
-            <View style={styles.container}>
-              {/* ========== Header Section ========== */}
-              <View style={styles.header}>
-                <Text style={styles.screenName}>Dashboard</Text>
-                <Pressable
-                  onPress={() => navigation.navigate('RegistrationForm')}>
-                  <Icons name="document-text-outline" size={28} color="#fff" />
-                </Pressable>
-                <View
-                  style={{
-                    marginLeft: 20,
-                    marginRight: 20,
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: 'OpenSans-SemiBold',
-                      fontSize: 18,
-                      color: '#fff',
-                    }}>
-                    Go Live
-                  </Text>
-                  <Switch
-                    trackColor={{false: '#767577', true: '#5E3360'}}
-                    thumbColor={isEnabled ? 'green' : '#f4f3f4'}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={toggleSwitch}
-                    value={isEnabled}
-                    style={{marginTop: 5}}
+          {kycStatus == '1' ? (
+            <>
+              <View style={styles.kycContainer}>
+                <View style={styles.lottieContainer}>
+                  <LottieView
+                    source={require('../../assets/lottie/waitingNew.json')}
+                    autoPlay
+                    loop
+                    style={styles.lottie}
                   />
                 </View>
-              </View>
-              {/* ========== Header Section ========== */}
-
-              {/* ========== Overview Section ========== */}
-              <LinearGradient
-                colors={['#b586b8', '#87548a']}
-                style={styles.middleSection}>
-                <View style={styles.row}>
-                  <View style={styles.cardOne}>
-                    <Text style={styles.cardOneLabel}>Orders Today</Text>
-                    <Text style={styles.cardOneResponse}>10</Text>
-                  </View>
-                  <View style={styles.cardOne}>
-                    <Text style={styles.cardOneLabel}>
-                      Total Orders Received
+                <View style={styles.kycBottomContainer}>
+                  <LinearGradient
+                    colors={['#cea5d1', '#87548a']}
+                    style={styles.kycCard}>
+                    <LottieView
+                      source={require('../../assets/lottie/documents.json')}
+                      autoPlay
+                      loop
+                      style={styles.bottomKycLottie}
+                    />
+                    <Text style={styles.kycBottomHeading}>
+                      Upload Documents
                     </Text>
-                    <Text style={styles.cardOneResponse}>100</Text>
-                  </View>
+                    <Text style={styles.explanation}>
+                      Please complete your E-KYC to start your journey with
+                      Pantryo
+                    </Text>
+                    <Pressable
+                      onPress={() => navigation.navigate('UploadDocs')}
+                      style={styles.kycBtn}>
+                      <Text style={styles.kycBtnTxt}>Click here</Text>
+                    </Pressable>
+                  </LinearGradient>
                 </View>
-              </LinearGradient>
-              {/* ========== Overview Section ========== */}
-
-              {/* ========== Ongoing Orders Section ========== */}
-              <View style={styles.section}>
-                <Text style={styles.tabHeading}>Ongoing Today</Text>
-                <Pressable
-                  onPress={() => navigation.navigate('OrderDetails')}
-                  style={styles.details}>
-                  <View style={styles.divOne}>
-                    <Text style={styles.detailsTxt}>Syed John Goswami</Text>
-                    <Text style={styles.detailsAddressLabel}>Address:</Text>
-                    <Text style={styles.detailsAddress}>
-                      A-23, Sector J, Aliganj Lucknow
-                    </Text>
-                    <View style={styles.detailsInnerRow}>
-                      <Text style={styles.detailsDate}>
-                        15 May 2021 12:15 PM
+              </View>
+            </>
+          ) : (
+            <>
+              <ScrollView style={styles.scrollView}>
+                <View style={styles.container}>
+                  {/* ========== Header Section ========== */}
+                  <View style={styles.header}>
+                    <Text style={styles.screenName}>Dashboard</Text>
+                    <Pressable
+                      onPress={() => navigation.navigate('RegistrationForm')}>
+                      <Icons
+                        name="document-text-outline"
+                        size={28}
+                        color="#fff"
+                      />
+                    </Pressable>
+                    <View
+                      style={{
+                        marginLeft: 20,
+                        marginRight: 20,
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: 'OpenSans-SemiBold',
+                          fontSize: 18,
+                          color: '#fff',
+                        }}>
+                        Go Live
                       </Text>
-                      <Text style={styles.btnDetails}>View Order Details</Text>
+                      <Switch
+                        trackColor={{false: '#767577', true: '#5E3360'}}
+                        thumbColor={isEnabled ? 'green' : '#f4f3f4'}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={toggleSwitch}
+                        value={isEnabled}
+                        style={{marginTop: 5}}
+                      />
                     </View>
                   </View>
-                </Pressable>
-              </View>
-            </View>
-          </ScrollView>
+                  {/* ========== Header Section ========== */}
+
+                  {/* ========== Overview Section ========== */}
+                  <LinearGradient
+                    colors={['#b586b8', '#87548a']}
+                    style={styles.middleSection}>
+                    <View style={styles.row}>
+                      <View style={styles.cardOne}>
+                        <Text style={styles.cardOneLabel}>Orders Today</Text>
+                        <Text style={styles.cardOneResponse}>10</Text>
+                      </View>
+                      <View style={styles.cardOne}>
+                        <Text style={styles.cardOneLabel}>
+                          Total Orders Received
+                        </Text>
+                        <Text style={styles.cardOneResponse}>100</Text>
+                      </View>
+                    </View>
+                  </LinearGradient>
+                  {/* ========== Overview Section ========== */}
+
+                  {/* ========== Ongoing Orders Section ========== */}
+                  <View style={styles.section}>
+                    <Text style={styles.tabHeading}>Ongoing Today</Text>
+                    {isLoading == true?<ActivityIndicator />:todayOrderData !== ''?
+                    <FlatList
+                    data={todayOrderData}
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                      />
+                    }
+                    keyExtractor={(order_id)=>index(order_id)}
+                    renderItem={({item})=>(
+                    <Pressable
+                      onPress={() => navigation.navigate('OrderDetails',{order_id:item.order_id})}
+                      style={styles.details}>
+                      <View style={styles.divOne}>
+                        <Text style={styles.detailsTxt}>Syed John Goswami{item.customer}</Text>
+                        <Text style={styles.detailsAddressLabel}>Address:</Text>
+                        <Text style={styles.detailsAddress}>
+                          A-23, Sector J, Aliganj Lucknow{item.customer_name}
+                        </Text>
+                        <View style={styles.detailsInnerRow}>
+                          <Text style={styles.detailsDate}>
+                            15 May 2021 12:15 PM{item.order_date}
+                          </Text>
+                          <Text style={styles.btnDetails}>
+                            View Order Details
+                          </Text>
+                        </View>
+                      </View>
+                    </Pressable>
+                    )}
+                    />
+:<ScrollView><Text>No order</Text></ScrollView>}
+                  </View>
+                  {/* ========== Ongoing Orders Section ========== */}
+                </View>
+              </ScrollView>
+            </>
+          )}
         </>
-      )}
-      {/* ========== Ongoing Orders Section ========== */}
+      ) : netInfo.isConnected == false ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <LottieView
+            source={require('../../assets/lottie/noInternet.json')}
+            autoPlay
+            loop
+          />
+        </View>
+      ) : null}
     </>
   );
 };
