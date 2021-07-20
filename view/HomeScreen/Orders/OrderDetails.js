@@ -16,10 +16,20 @@ import CheckBox from '@react-native-community/checkbox';
 // ===== Images ===== //
 import deliveryBoy from '../../../assets/icons/delivery.gif';
 
-const OrderDetails = () => {
+const OrderDetails = ({route}) => {
   const [statusOne, setStatusOne] = useState(false);
   const [statusTwo, setStatusTwo] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [orderId, setOrderId] = React.useState('');
+  const [customerName, setCustomerName] = React.useState('');
+  const [totalItem, setTotalItem] = React.useState('');
+
+  React.useEffect(() => {
+    setOrderId(route.params.order_id);
+    setCustomerName(route.params.customer_name);
+    // setOrderId(order_id);
+  }, []);
+
   return (
     <>
       <ScrollView style={styles.scroll}>
@@ -29,12 +39,12 @@ const OrderDetails = () => {
 
             <View style={styles.tabRow}>
               <Text style={styles.label}>OrderID: </Text>
-              <Text style={styles.response}>123456789</Text>
+              <Text style={styles.response}>{orderId}</Text>
             </View>
 
             <View style={styles.tabRow}>
               <Text style={styles.label}>Customer: </Text>
-              <Text style={styles.response}>Syed John Goswami</Text>
+              <Text style={styles.response}>{customerName}</Text>
             </View>
           </View>
         </View>

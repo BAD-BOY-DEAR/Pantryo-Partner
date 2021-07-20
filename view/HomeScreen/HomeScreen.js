@@ -47,6 +47,10 @@ const HomeScreen = ({navigation}) => {
   const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
   const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  ///////////order Details
+  // const [orderId,setOrderId] = React.useState('');
+  // const [customerName,setCustomerName] = React.useState('');
+  // const [totalItem,setTotalItem] = React.useState('');
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -244,6 +248,8 @@ const HomeScreen = ({navigation}) => {
                             onPress={() =>
                               navigation.navigate('OrderDetails', {
                                 order_id: item.orderId,
+                                customer_name: item.customer_name,
+                                totalItem: item.orderId,
                               })
                             }
                             style={styles.details}>
