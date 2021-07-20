@@ -159,9 +159,9 @@ export default OrderDetails;
 
 const styles = StyleSheet.create({
   scroll: {
-    paddingVertical: 10,
-    backgroundColor: '#5E3360',
+    backgroundColor: '#fff',
     paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   card: {
     flex: 1,
@@ -172,14 +172,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingVertical: 25,
     borderRadius: 5,
-    shadowColor: '#fff',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
-    elevation: 10,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 5,
+    // },
+    // shadowOpacity: 0.34,
+    // shadowRadius: 6.27,
+    // elevation: 10,
+    borderWidth: 1.5,
+    borderColor: '#c7c7c7c7',
   },
   div: {
     width: '100%',

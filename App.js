@@ -1,11 +1,13 @@
 import React from 'react';
 import {ToastAndroid} from 'react-native';
+
 // ======= Libraries ======= //
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import linking from './controller/linking';
 import {AuthContext} from './controller/Utils';
+import messaging from '@react-native-firebase/messaging';
 
 // ===== Screens ===== //
 import SplashScreen from './controller/SplashScreen';
@@ -15,6 +17,10 @@ import Navigation from './controller/Navigation';
 const Stack = createStackNavigator();
 
 const App = () => {
+  const [initialRoute, setInitialRoute] = React.useState('HomeScreen');
+  const [isLoading, setLoading] = React.useState();
+  const [refreshing, setRefreshing] = React.useState(false);
+
   const showToast = msg => {
     ToastAndroid.showWithGravityAndOffset(
       msg,
@@ -24,7 +30,7 @@ const App = () => {
       50,
     );
   };
-  const [isLoading, setLoading] = React.useState();
+
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -61,6 +67,31 @@ const App = () => {
   );
 
   React.useEffect(() => {
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+      );
+      navigation.navigate(remoteMessage.data.type);
+    });
+
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+          setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+        }
+        setLoading(false);
+      });
+
+    if (isLoading) {
+      return null;
+    }
+
     setTimeout(() => {
       const bootstrapAsync = async () => {
         let userToken;
@@ -109,7 +140,7 @@ const App = () => {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer linking={linking}>
-        <Stack.Navigator headerMode="none">
+        <Stack.Navigator initialRoute={initialRoute} headerMode="none">
           {state.isLoading ? (
             <Stack.Screen name="SplashScreen" component={SplashScreen} />
           ) : state.userToken == null ? (

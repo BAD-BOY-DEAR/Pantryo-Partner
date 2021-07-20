@@ -21,7 +21,6 @@ import LottieView from 'lottie-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNetInfo} from '@react-native-community/netinfo';
-import messaging from '@react-native-firebase/messaging';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -47,8 +46,6 @@ const HomeScreen = ({navigation}) => {
   const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
   const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-  const [initialRoute, setInitialRoute] = React.useState('HomeScreen');
-
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
@@ -99,32 +96,6 @@ const HomeScreen = ({navigation}) => {
   };
 
   React.useEffect(() => {
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log(
-        'Notification caused app to open from background state:',
-        remoteMessage.notification,
-      );
-      navigation.navigate(remoteMessage.data.type);
-    });
-
-    // Check whether an initial notification is available
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage.notification,
-          );
-          setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
-        }
-        setLoading(false);
-      });
-
-    if (isLoading) {
-      return null;
-    }
-
     getPartnerDetails();
     getTodayOrder();
     LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message

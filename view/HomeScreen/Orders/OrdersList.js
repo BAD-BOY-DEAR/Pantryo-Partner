@@ -71,9 +71,6 @@ const OrdersList = () => {
         </View>
         {/* =========== Orders List =========== */}
       </View>
-
-      {/* =========== Orders List Modal =========== */}
-      {/* =========== Orders List Modal =========== */}
     </>
   );
 };
@@ -89,7 +86,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 80,
-    backgroundColor: '#5E3360',
+    backgroundColor: '#fff',
     width: '100%',
     paddingVertical: 15,
     paddingHorizontal: 10,
