@@ -77,7 +77,7 @@ const OrderDetails = ({route}) => {
           </View>
         </View>
 
-        <View style={styles.card}>
+        <View style={[styles.card, {marginBottom: 40}]}>
           <View style={[styles.div]}>
             <Text style={styles.heading}>Action</Text>
 
