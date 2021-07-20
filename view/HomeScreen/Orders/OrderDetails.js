@@ -8,6 +8,8 @@ import {
   Image,
   Modal,
   TextInput,
+  LogBox,
+  FlatList,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -26,13 +28,15 @@ const OrderDetails = ({route}) => {
 
   React.useEffect(() => {
     setOrderId(route.params.order_id);
+    setTotalItem(route.params.totalItem);
     setCustomerName(route.params.customer_name);
-    // setOrderId(order_id);
+    LogBox.ignoreLogs(['Warning: ...']);
+    LogBox.ignoreAllLogs(true);
   }, []);
 
   return (
     <>
-      <ScrollView style={styles.scroll}>
+      <ScrollView style={styles.scroll} scrollEnabled={true}>
         <View style={styles.card}>
           <View style={styles.div}>
             <Text style={styles.heading}>Order Details</Text>
@@ -52,45 +56,24 @@ const OrderDetails = ({route}) => {
         <View style={styles.card}>
           <View style={styles.div}>
             <Text style={styles.heading}>Products to be packed</Text>
-            <View style={styles.tabRow}>
-              <View style={styles.section}>
-                <Text style={styles.brandName}>Amul</Text>
-                <Text style={styles.product}>Butter</Text>
-              </View>
-              <Text style={styles.weight}>500gm</Text>
-              <Text style={styles.qty}>X 2</Text>
-              <Text style={styles.cost}>₹100</Text>
-            </View>
-
-            <View style={styles.tabRow}>
-              <View style={styles.section}>
-                <Text style={styles.brandName}>Amul</Text>
-                <Text style={styles.product}>Spicy Garlic Cheese Spread</Text>
-              </View>
-              <Text style={styles.weight}>500gm</Text>
-              <Text style={styles.qty}>X 1</Text>
-              <Text style={styles.cost}>₹300</Text>
-            </View>
-
-            <View style={styles.tabRow}>
-              <View style={styles.section}>
-                <Text style={styles.brandName}>MDH</Text>
-                <Text style={styles.product}>Chunky Chat Masala</Text>
-              </View>
-              <Text style={styles.weight}>40gm</Text>
-              <Text style={styles.qty}>X 1</Text>
-              <Text style={styles.cost}>₹60</Text>
-            </View>
-
-            <View style={styles.tabRow}>
-              <View style={styles.section}>
-                <Text style={styles.brandName}>Veeba</Text>
-                <Text style={styles.product}>Mint Mayonnaise Chutney</Text>
-              </View>
-              <Text style={styles.weight}>250gm</Text>
-              <Text style={styles.qty}>X 1</Text>
-              <Text style={styles.cost}>₹199</Text>
-            </View>
+            <FlatList
+              data={totalItem}
+              keyExtractor={item => item.cart_id}
+              renderItem={({item}) => (
+                <View style={styles.tabRow}>
+                  <View style={styles.section}>
+                    <Text style={styles.brandName}>{item.brandName}</Text>
+                    <Text style={styles.product}>{item.productName}</Text>
+                  </View>
+                  <Text style={styles.weight}>
+                    {item.productQty}
+                    {item.productUnit}
+                  </Text>
+                  <Text style={styles.qty}>X {item.numberOfProduct}</Text>
+                  <Text style={styles.cost}>₹{item.productPrice}</Text>
+                </View>
+              )}
+            />
           </View>
         </View>
 

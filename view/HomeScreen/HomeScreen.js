@@ -47,14 +47,7 @@ const HomeScreen = ({navigation}) => {
   const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
   const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-<<<<<<< HEAD
-  ///////////order Details
-  // const [orderId,setOrderId] = React.useState('');
-  // const [customerName,setCustomerName] = React.useState('');
-  // const [totalItem,setTotalItem] = React.useState('');
-=======
   const [initialRoute, setInitialRoute] = React.useState('HomeScreen');
->>>>>>> 422f5be469826d2da29112a1bcf6ffc41feaf219
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -106,37 +99,36 @@ const HomeScreen = ({navigation}) => {
   };
 
   React.useEffect(() => {
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log(
-        'Notification caused app to open from background state:',
-        remoteMessage.notification,
-      );
-      navigation.navigate(remoteMessage.data.type);
-    });
+    // messaging().onNotificationOpenedApp(remoteMessage => {
+    //   console.log(
+    //     'Notification caused app to open from background state:',
+    //     remoteMessage.notification,
+    //   );
+    //   navigation.navigate(remoteMessage.data.type);
+    // });
 
-    // Check whether an initial notification is available
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage.notification,
-          );
-          setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
-        }
-        setLoading(false);
-      });
+    // // Check whether an initial notification is available
+    // messaging()
+    //   .getInitialNotification()
+    //   .then(remoteMessage => {
+    //     if (remoteMessage) {
+    //       console.log(
+    //         'Notification caused app to open from quit state:',
+    //         remoteMessage.notification,
+    //       );
+    //       setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+    //     }
+    //     setLoading(false);
+    //   });
 
-    if (isLoading) {
-      return null;
-    }
+    // if (isLoading) {
+    //   return null;
+    // }
 
     getPartnerDetails();
     getTodayOrder();
     LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
     LogBox.ignoreAllLogs(); //Ignore all log notifications
-    LogBox.ignoreAllLogs(['Error: VirtualizedLists ...']); //Ignore all log notifications
   }, []);
 
   return (
@@ -283,7 +275,7 @@ const HomeScreen = ({navigation}) => {
                               navigation.navigate('OrderDetails', {
                                 order_id: item.orderId,
                                 customer_name: item.customer_name,
-                                totalItem: item.orderId,
+                                totalItem: item.TodayOrderOneIdWise,
                               })
                             }
                             style={styles.details}>
