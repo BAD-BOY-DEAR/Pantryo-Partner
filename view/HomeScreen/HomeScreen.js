@@ -96,8 +96,6 @@ const HomeScreen = ({navigation}) => {
   };
 
   React.useEffect(() => {
-<<<<<<< HEAD
-=======
     // messaging().onNotificationOpenedApp(remoteMessage => {
     //   console.log(
     //     'Notification caused app to open from background state:',
@@ -124,7 +122,6 @@ const HomeScreen = ({navigation}) => {
     //   return null;
     // }
 
->>>>>>> 646de894cb2c9057c3e9b386462a713e1e0763c9
     getPartnerDetails();
     getTodayOrder();
     LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
