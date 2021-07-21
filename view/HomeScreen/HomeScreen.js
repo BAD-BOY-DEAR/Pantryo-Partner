@@ -83,7 +83,6 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        // console.log(result);
         setTodayOrderData(result.todayorderdetails);
         getTodayOrder();
         setNumberOfOrderAll(result.allordercount);
@@ -171,7 +170,14 @@ const HomeScreen = ({navigation}) => {
             </>
           ) : (
             <>
-              <ScrollView style={styles.scrollView}>
+              <ScrollView
+                style={styles.scrollView}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }>
                 <View style={styles.container}>
                   {/* ========== Header Section ========== */}
                   <View style={styles.header}>
@@ -273,6 +279,7 @@ const HomeScreen = ({navigation}) => {
                                 order_id: item.orderId,
                                 customer_name: item.customer_name,
                                 totalItem: item.TodayOrderOneIdWise,
+                                orderStatus: item.orderStatus,
                               })
                             }
                             style={styles.details}>

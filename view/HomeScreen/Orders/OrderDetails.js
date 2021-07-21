@@ -14,22 +14,66 @@ import {
 
 // ===== Library ===== //
 import CheckBox from '@react-native-community/checkbox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ===== Images ===== //
 import deliveryBoy from '../../../assets/icons/delivery.gif';
 
 const OrderDetails = ({route}) => {
   const [statusOne, setStatusOne] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [statusTwo, setStatusTwo] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [orderId, setOrderId] = React.useState('');
   const [customerName, setCustomerName] = React.useState('');
   const [totalItem, setTotalItem] = React.useState('');
+  const [orderStatus, setOrderStatus] = React.useState('');
+  const [toggleCheckBoxOne, setToggleCheckBoxOne] = useState(false);
+  const [toggleCheckBoxTwo, setToggleCheckBoxTwo] = useState(false);
+
+  //////status update
+  const updtateStatus = async status => {
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=update_order_status',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          order_status: status,
+          order_id: orderId,
+        }),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        console.log(result);
+        if (result.error == 0) {
+          setToggleCheckBoxOne(true);
+          setOrderStatus(status);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => setLoading(false));
+  };
 
   React.useEffect(() => {
     setOrderId(route.params.order_id);
     setTotalItem(route.params.totalItem);
     setCustomerName(route.params.customer_name);
+    if (route.params.orderStatus == '2') {
+      setToggleCheckBoxOne(true);
+    }
+    if (route.params.orderStatus == '3') {
+      setToggleCheckBoxOne(true);
+      setToggleCheckBoxTwo(true);
+    }
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreAllLogs(true);
   }, []);
@@ -83,15 +127,23 @@ const OrderDetails = ({route}) => {
 
             <View style={styles.tabRow}>
               <Text style={styles.statusName}>Confirm Order</Text>
-              <CheckBox
-                disabled={false}
-                value={statusOne}
-                onValueChange={newValue => setStatusOne(newValue)}
-                style={styles.statusOne}
-              />
+              {toggleCheckBoxOne === false ? (
+                <CheckBox
+                  disabled={false}
+                  value={toggleCheckBoxOne}
+                  onValueChange={() => updtateStatus('2')}
+                  style={styles.statusOne}
+                />
+              ) : (
+                <CheckBox
+                  disabled={true}
+                  value={toggleCheckBoxOne}
+                  style={styles.statusOne}
+                />
+              )}
             </View>
 
-            {statusOne ? (
+            {toggleCheckBoxOne ? (
               <>
                 <View style={styles.tabRow}>
                   <Text style={styles.statusName}>Order Ready</Text>
