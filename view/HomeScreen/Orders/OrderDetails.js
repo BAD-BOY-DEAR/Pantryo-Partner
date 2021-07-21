@@ -51,7 +51,7 @@ const OrderDetails = ({route}) => {
         return response.json();
       })
       .then(function (result) {
-        console.log(result);
+        // console.log(result);
         if (result.error == 0) {
           setToggleCheckBoxOne(true);
           setOrderStatus(status);
@@ -133,12 +133,26 @@ const OrderDetails = ({route}) => {
                   value={toggleCheckBoxOne}
                   onValueChange={() => updtateStatus('2')}
                   style={styles.statusOne}
+                  lineWidth={2}
+                  hideBox={false}
+                  boxType={'circle'}
+                  tintColors={'#9E663C'}
+                  onCheckColor={'#6F763F'}
+                  onFillColor={'#4DABEC'}
+                  onTintColor={'#F4DCF8'}
                 />
               ) : (
                 <CheckBox
                   disabled={true}
                   value={toggleCheckBoxOne}
                   style={styles.statusOne}
+                  lineWidth={2}
+                  hideBox={false}
+                  boxType={'circle'}
+                  tintColors={'#9E663C'}
+                  onCheckColor={'#6F763F'}
+                  onFillColor={'#4DABEC'}
+                  onTintColor={'#F4DCF8'}
                 />
               )}
             </View>
@@ -152,6 +166,13 @@ const OrderDetails = ({route}) => {
                   {modalVisible ? (
                     <CheckBox
                       disabled={true}
+                      lineWidth={2}
+                      hideBox={false}
+                      boxType={'circle'}
+                      tintColors={'#9E663C'}
+                      onCheckColor={'#6F763F'}
+                      onFillColor={'#4DABEC'}
+                      onTintColor={'#F4DCF8'}
                       value={statusTwo}
                       onValueChange={newValue => setStatusTwo(newValue)}
                       style={styles.statusOne}
@@ -159,6 +180,13 @@ const OrderDetails = ({route}) => {
                   ) : (
                     <CheckBox
                       disabled={false}
+                      lineWidth={2}
+                      hideBox={false}
+                      boxType={'circle'}
+                      tintColors={'#9E663C'}
+                      onCheckColor={'#6F763F'}
+                      onFillColor={'#4DABEC'}
+                      onTintColor={'#F4DCF8'}
                       value={statusTwo}
                       onValueChange={newValue => setStatusTwo(newValue)}
                       style={styles.statusOne}
