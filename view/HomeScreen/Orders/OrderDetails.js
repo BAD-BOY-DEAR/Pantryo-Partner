@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // ===== Images ===== //
 import deliveryBoy from '../../../assets/icons/delivery.gif';
 
-const OrderDetails = ({route}) => {
+const OrderDetails = ({route, navigation}) => {
   const [isLoading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [orderId, setOrderId] = React.useState('');
@@ -59,6 +59,7 @@ const OrderDetails = ({route}) => {
           if (status === '3') {
             setToggleCheckBoxTwo(true);
             setModalVisible(false);
+            navigation.navigate('HomeScreen');
           }
           if (status === '2') {
             setToggleCheckBoxOne(true);
