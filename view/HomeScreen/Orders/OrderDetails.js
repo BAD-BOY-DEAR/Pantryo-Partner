@@ -10,6 +10,7 @@ import {
   TextInput,
   LogBox,
   FlatList,
+  Alert,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -20,13 +21,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import deliveryBoy from '../../../assets/icons/delivery.gif';
 
 const OrderDetails = ({route}) => {
-  const [statusOne, setStatusOne] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [statusTwo, setStatusTwo] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [orderId, setOrderId] = React.useState('');
   const [customerName, setCustomerName] = React.useState('');
   const [totalItem, setTotalItem] = React.useState('');
+  const [enteredOtp, setEnteredOtp] = React.useState('');
+  const [userConfirmationOtp, setUserConfirmationOtp] = React.useState('');
   const [orderStatus, setOrderStatus] = React.useState('');
   const [toggleCheckBoxOne, setToggleCheckBoxOne] = useState(false);
   const [toggleCheckBoxTwo, setToggleCheckBoxTwo] = useState(false);
@@ -52,15 +53,61 @@ const OrderDetails = ({route}) => {
       })
       .then(function (result) {
         // console.log(result);
+        alert(result.msg);
         if (result.error == 0) {
-          setToggleCheckBoxOne(true);
           setOrderStatus(status);
+          if (status === '3') {
+            setToggleCheckBoxTwo(true);
+            setModalVisible(false);
+          }
+          if (status === '2') {
+            setToggleCheckBoxOne(true);
+            setModalVisible(false);
+          }
+        } else {
+          if (status === '3') {
+            setToggleCheckBoxTwo(false);
+            setModalVisible(false);
+          }
+          if (status === '2') {
+            setToggleCheckBoxOne(false);
+          }
         }
       })
       .catch(error => {
         console.error(error);
       })
       .finally(() => setLoading(false));
+  };
+
+  //////Send  Otp to delivery Boy
+  const sentOtpToDeliveryBoy = async () => {
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=send_otp',
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        // console.log(result);
+        if (result.error == 1) {
+          setModalVisible(true);
+          setUserConfirmationOtp(result.otp);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  /////////Checked Otp
+  const checkOtpUserByEntered = async () => {
+    if (userConfirmationOtp == enteredOtp) {
+      updtateStatus('3');
+    } else {
+      alert('Otp Not Matched!!');
+    }
   };
 
   React.useEffect(() => {
@@ -127,7 +174,7 @@ const OrderDetails = ({route}) => {
 
             <View style={styles.tabRow}>
               <Text style={styles.statusName}>Confirm Order</Text>
-              {toggleCheckBoxOne === false ? (
+              {toggleCheckBoxOne == false ? (
                 <CheckBox
                   disabled={false}
                   value={toggleCheckBoxOne}
@@ -173,25 +220,42 @@ const OrderDetails = ({route}) => {
                       onCheckColor={'#6F763F'}
                       onFillColor={'#4DABEC'}
                       onTintColor={'#F4DCF8'}
-                      value={statusTwo}
-                      onValueChange={newValue => setStatusTwo(newValue)}
+                      value={toggleCheckBoxTwo}
+                      onValueChange={newValue => settoggleCheckBoxTwo(newValue)}
                       style={styles.statusOne}
                     />
                   ) : (
-                    <CheckBox
-                      disabled={false}
-                      lineWidth={2}
-                      hideBox={false}
-                      boxType={'circle'}
-                      tintColors={'#9E663C'}
-                      onCheckColor={'#6F763F'}
-                      onFillColor={'#4DABEC'}
-                      onTintColor={'#F4DCF8'}
-                      value={statusTwo}
-                      onValueChange={newValue => setStatusTwo(newValue)}
-                      style={styles.statusOne}
-                      onChange={() => setModalVisible(true)}
-                    />
+                    <>
+                      {toggleCheckBoxTwo == false ? (
+                        <CheckBox
+                          disabled={false}
+                          lineWidth={2}
+                          hideBox={false}
+                          boxType={'circle'}
+                          tintColors={'#9E663C'}
+                          onCheckColor={'#6F763F'}
+                          onFillColor={'#4DABEC'}
+                          onTintColor={'#F4DCF8'}
+                          value={toggleCheckBoxTwo}
+                          onValueChange={() => sentOtpToDeliveryBoy()}
+                          style={styles.statusOne}
+                          // onChange={() => setModalVisible(true)}
+                        />
+                      ) : (
+                        <CheckBox
+                          disabled={true}
+                          lineWidth={2}
+                          hideBox={false}
+                          boxType={'circle'}
+                          tintColors={'#9E663C'}
+                          onCheckColor={'#6F763F'}
+                          onFillColor={'#4DABEC'}
+                          onTintColor={'#F4DCF8'}
+                          value={toggleCheckBoxTwo}
+                          style={styles.statusOne}
+                        />
+                      )}
+                    </>
                   )}
                 </View>
               </>
@@ -215,12 +279,16 @@ const OrderDetails = ({route}) => {
               </Text>
               <TextInput
                 placeholder="Enter 6 Digit Code"
+                placeholderTextColor="#777"
                 style={styles.modalInput}
                 keyboardType="number-pad"
+                onChangeText={text => setEnteredOtp(text)}
               />
-              <View style={styles.modalBtn}>
+              <Pressable
+                onPress={checkOtpUserByEntered}
+                style={styles.modalBtn}>
                 <Text style={styles.modalBtnTxt}>SUBMIT</Text>
-              </View>
+              </Pressable>
             </View>
           </View>
         </Modal>
@@ -342,6 +410,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderBottomWidth: 0.5,
     borderBottomColor: '#c7c7c7c7',
+    color: '#000',
   },
   modalBtn: {
     marginTop: 30,
