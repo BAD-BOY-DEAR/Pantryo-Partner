@@ -81,20 +81,26 @@ const OrderDetails = ({route}) => {
           <View style={[styles.div]}>
             <Text style={styles.heading}>Action</Text>
 
-            <View style={styles.tabRow}>
-              <Text style={styles.statusName}>Confirm Order</Text>
-              <CheckBox
-                disabled={false}
-                value={statusOne}
-                onValueChange={newValue => setStatusOne(newValue)}
-                style={styles.statusOne}
-              />
-            </View>
+            {!statusOne ? (
+              <>
+                <View style={styles.tabRow}>
+                  <Text style={styles.statusName}>Confirm Order</Text>
+                  <CheckBox
+                    disabled={false}
+                    value={statusOne}
+                    onValueChange={newValue => setStatusOne(newValue)}
+                    style={styles.statusOne}
+                  />
+                </View>
+              </>
+            ) : null}
 
             {statusOne ? (
               <>
                 <View style={styles.tabRow}>
-                  <Text style={styles.statusName}>Order Ready</Text>
+                  <Text style={[styles.statusName, {color: 'green'}]}>
+                    Order Ready
+                  </Text>
                   {modalVisible ? (
                     <CheckBox
                       disabled={true}
