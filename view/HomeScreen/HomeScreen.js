@@ -21,6 +21,7 @@ import LottieView from 'lottie-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNetInfo} from '@react-native-community/netinfo';
+import analytics from '@react-native-firebase/analytics';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -230,14 +231,21 @@ const HomeScreen = ({navigation}) => {
                           </Text>
                         )}
                       </View>
-                      <View style={styles.cardOne}>
+                      <Pressable
+                        onPress={async () =>
+                          await analytics().logEvent('totalorders', {
+                            item: 'total orders received',
+                            description: ['total orders', 'home screen'],
+                          })
+                        }
+                        style={styles.cardOne}>
                         <Text style={styles.cardOneLabel}>
                           Total Orders Received
                         </Text>
                         <Text style={styles.cardOneResponse}>
                           {numberOfOrderAll}
                         </Text>
-                      </View>
+                      </Pressable>
                     </View>
                   </LinearGradient>
                   {/* ========== Overview Section ========== */}
