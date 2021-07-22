@@ -198,6 +198,14 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.2.1')
     implementation 'com.google.firebase:firebase-analytics'
 
+    // This should be here already
+  implementation project(':react-native-firebase')
+   implementation "com.google.firebase:firebase-messaging:18.0.0"
+
+  // Firebase dependencies
+  implementation "com.google.android.gms:play-services-base:16.1.0"
+  implementation "com.google.firebase:firebase-core:16.0.9"
+
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
