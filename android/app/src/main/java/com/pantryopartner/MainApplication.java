@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactInstanceManager;
@@ -16,6 +17,8 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.airbnb.android.react.maps.MapsPackage;  
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage; 
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 
 
 public class MainApplication extends Application implements ReactApplication {
@@ -34,6 +37,9 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           // new MapsPackage() 
+          
+          packages.add(new RNFirebaseNotificationsPackage());
+          packages.add(new RNFirebaseMessagingPackage()); 
           packages.add(new LottiePackage()); 
           return packages;
         }

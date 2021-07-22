@@ -25,12 +25,29 @@ import RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
 import UploadDocs from '../view/HomeScreen/Registration/UploadDocs';
 import LoaderScreen from '../controller/LoaderScreen';
 import {useEffect} from 'react/cjs/react.production.min';
+import PushNotification from 'react-native-push-notification';
 
 const LoginScreen = ({navigation}) => {
   const [contactNumber, setContactNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [uniqueId, setUniqueId] = React.useState('');
   const {signIn} = React.useContext(AuthContext);
+  const [FCMToken, setFCMToken] = React.useState('');
+
+  React.useEffect(() => {
+    getFCMToken();
+  }, []);
+
+  /////FCM Token
+  const getFCMToken = async () => {
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function (token) {
+        // console.log('TOKEN:', token.token);
+        setFCMToken(token.token);
+        // return token;
+      },
+    });
+  };
 
   const showToast = msg => {
     ToastAndroid.showWithGravityAndOffset(
@@ -62,7 +79,7 @@ const LoginScreen = ({navigation}) => {
           },
           body: JSON.stringify({
             partner_contactNumber: contactNumber,
-            partner_deviceId: uniqueId,
+            partner_deviceId: FCMToken,
           }),
         },
       )
@@ -79,6 +96,7 @@ const LoginScreen = ({navigation}) => {
             let partner_pincode = result.partner_pincode;
             let partner_shopaddress = result.partner_shopaddress;
             let partner_kycStatus = result.partner_kycStatus;
+            let user_token = result.user_token;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -88,6 +106,7 @@ const LoginScreen = ({navigation}) => {
               partner_pincode,
               partner_shopaddress,
               partner_kycStatus,
+              user_token,
             });
           } else if (result.error == 1) {
             navigation.navigate('VerificationScreen', {
@@ -104,15 +123,6 @@ const LoginScreen = ({navigation}) => {
         .finally(() => setLoading(false));
     }
   };
-
-  const getToken = async () => {
-    var uniqueId = DeviceInfo.getUniqueId();
-    setUniqueId(uniqueId);
-  };
-
-  React.useEffect(() => {
-    getToken();
-  }, []);
 
   return (
     <>

@@ -1164,6 +1164,11 @@
     "opencollective-postinstall" "^2.0.1"
     "superstruct" "^0.6.2"
 
+"@react-native-firebase/auth@^12.2.0":
+  "integrity" "sha512-8dloi7I+hR2bgVvjzoCp9Nh/Vno21KUns1Wc9okekEZ3vs2+8s3PZJLl4wvvgw4fkMkNtlTdVEcPPNjJMGPR4g=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-12.2.0.tgz"
+  "version" "12.2.0"
+
 "@react-native-firebase/messaging@^12.2.0":
   "integrity" "sha512-oAGuqBGh/a9CFOWYkEgP6/Yny3VWJh9QbE8xm4TAdj7rEYQCWznG3XBhCtq9Tu3UaW2KuRw8I9orNF/80/Bnpg=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-12.2.0.tgz"
@@ -3217,11 +3222,6 @@
   "integrity" "sha1-FQStJSMVjKpA20onh8sBQRmU6k8="
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
-
-"fsevents@^2.1.2":
-  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
-  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
-  "version" "2.3.2"
 
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
@@ -5366,7 +5366,7 @@
   dependencies:
     "is-wsl" "^1.1.0"
 
-"opencollective-postinstall@^2.0.1":
+"opencollective-postinstall@^2.0.0", "opencollective-postinstall@^2.0.1":
   "integrity" "sha512-8AV/sCtuzUeTo8gQK5qDZzARrulB3egtLzFgteqB2tcT4Mw7B8Kt7JcDHmltjz6FOAHsvTevk70gZEbhM4ZS9Q=="
   "resolved" "https://registry.npmjs.org/opencollective-postinstall/-/opencollective-postinstall-2.0.3.tgz"
   "version" "2.0.3"
@@ -5748,6 +5748,14 @@
   "resolved" "https://registry.npmjs.org/react-native-dropdown-picker/-/react-native-dropdown-picker-5.1.15.tgz"
   "version" "5.1.15"
 
+"react-native-firebase@^5.6.0":
+  "integrity" "sha512-I+o3zNLdIz4pxWTCSZH70M1BcPl+SdqKQfurOT0sWcaMSL2ecDqVy0PCTmN7ORt7/Z879Er6PLgA/psjArQlmw=="
+  "resolved" "https://registry.npmjs.org/react-native-firebase/-/react-native-firebase-5.6.0.tgz"
+  "version" "5.6.0"
+  dependencies:
+    "opencollective-postinstall" "^2.0.0"
+    "prop-types" "^15.7.2"
+
 "react-native-gesture-handler@^1.10.3":
   "integrity" "sha512-cBGMi1IEsIVMgoox4RvMx7V2r6bNKw0uR1Mu1o7NbuHS6BRSVLq0dP34l2ecnPlC+jpWd3le6Yg1nrdCjby2Mw=="
   "resolved" "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-1.10.3.tgz"
@@ -5789,6 +5797,11 @@
     "@callstack/react-theme-provider" "^3.0.5"
     "color" "^3.1.2"
     "react-native-iphone-x-helper" "^1.3.1"
+
+"react-native-push-notification@^7.4.0":
+  "integrity" "sha512-Ac3Ep71e2D8Q/Vy0OHBAO5JwhsFsNSuf9knkpXQWS0B9488nIZJLEMuTpF8610xPvGw7XxVrL/q0oZO5F1pOzw=="
+  "resolved" "https://registry.npmjs.org/react-native-push-notification/-/react-native-push-notification-7.4.0.tgz"
+  "version" "7.4.0"
 
 "react-native-reanimated@^2.1.0":
   "integrity" "sha512-tlPvvcdf+X7HGQ7g/7npBFhwMznfdk7MHUc9gUB/kp2abSscXNe/kOVKlrNEOO4DS11rNOXc+llFxVFMuNk0zA=="

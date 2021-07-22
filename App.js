@@ -118,6 +118,7 @@ const App = () => {
           partner_shopaddress,
           partner_pincode,
           partner_kycStatus,
+          user_token,
         } = data;
         AsyncStorage.setItem('partner_id', partner_id);
         AsyncStorage.setItem('partner_shopName', partner_shopName);
@@ -128,7 +129,7 @@ const App = () => {
         AsyncStorage.setItem('partner_pincode', partner_pincode);
         AsyncStorage.setItem('partner_shopaddress', partner_shopaddress);
         dispatch({type: 'SIGN_IN', token: 'userToken'});
-        AsyncStorage.setItem('userToken', '1');
+        AsyncStorage.setItem('userToken', user_token);
         showToast('Welcome');
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),

@@ -31,9 +31,9 @@ import CheckBox from '@react-native-community/checkbox';
 import LoaderScreen from '../../../controller/LoaderScreen';
 import {event, onChange, set} from 'react-native-reanimated';
 import {AuthContext} from '../../../controller/Utils';
+import PushNotification from 'react-native-push-notification';
 
 const RegisterScreen = ({navigation, route}) => {
-  const [uniqueId, setUniqueId] = React.useState('');
   const {signIn} = React.useContext(AuthContext);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
@@ -62,6 +62,19 @@ const RegisterScreen = ({navigation, route}) => {
   const [bankISFCCode, setBankISFCCode] = React.useState('');
   const [addressPlaceHolder, setAddressPlaceHolder] = React.useState('');
   const [upiId, setUPIID] = React.useState('');
+  const [FCMToken, setFCMToken] = React.useState('');
+
+  /////FCM Token
+  const getFCMToken = async () => {
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function (token) {
+        // console.log('TOKEN:', token.token);
+        setFCMToken(token.token);
+        // return token;
+      },
+    });
+  };
 
   ///Take Image
   const requestGalleryPermission = async () => {
@@ -174,7 +187,7 @@ const RegisterScreen = ({navigation, route}) => {
       data.append('partner_bankISFCCode', bankISFCCode);
       data.append('partner_upiId', upiId);
       data.append('partner_storeImage', storeImage);
-      data.append('partner_deviceId', uniqueId);
+      data.append('partner_deviceId', FCMToken);
       setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerRegistration.php',
@@ -200,6 +213,7 @@ const RegisterScreen = ({navigation, route}) => {
             let partner_pincode = result.partner_pincode;
             let partner_shopaddress = result.partner_shopaddress;
             let partner_kycStatus = result.partner_kycStatus;
+            let user_token = result.user_token;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -209,6 +223,7 @@ const RegisterScreen = ({navigation, route}) => {
               partner_pincode,
               partner_shopaddress,
               partner_kycStatus,
+              user_token,
             });
             // navigation.navigate('UploadDocs');
           } else if (result.error == 2) {
@@ -300,12 +315,6 @@ const RegisterScreen = ({navigation, route}) => {
       .finally(() => setLoading(false));
   };
 
-  ///Device Id
-  const getToken = async () => {
-    var uniqueId = DeviceInfo.getUniqueId();
-    setUniqueId(uniqueId);
-  };
-
   ///Location Permission
   const requestLocationPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -332,7 +341,7 @@ const RegisterScreen = ({navigation, route}) => {
 
   React.useEffect(() => {
     //Device Id
-    getToken();
+    getFCMToken();
     ////Partner Category
     fetchPartnerCategoryApi();
     //set Partner Contact Number

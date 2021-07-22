@@ -16,6 +16,8 @@ target 'pantryoPartner' do
 
   pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
 
+  pod 'RNFirebase', :path => '../node_modules/react-native-firebase'
+
   target 'pantryoPartnerTests' do
     inherit! :complete
     # Pods for testing
