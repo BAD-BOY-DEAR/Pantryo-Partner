@@ -31,7 +31,7 @@ import CheckBox from '@react-native-community/checkbox';
 import LoaderScreen from '../../../controller/LoaderScreen';
 import {event, onChange, set} from 'react-native-reanimated';
 import {AuthContext} from '../../../controller/Utils';
-import PushNotification from 'react-native-push-notification';
+import messaging from '@react-native-firebase/messaging';
 
 const RegisterScreen = ({navigation, route}) => {
   const {signIn} = React.useContext(AuthContext);
@@ -64,16 +64,13 @@ const RegisterScreen = ({navigation, route}) => {
   const [upiId, setUPIID] = React.useState('');
   const [FCMToken, setFCMToken] = React.useState('');
 
-  /////FCM Token
+  ///FCM Token
   const getFCMToken = async () => {
-    PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
-      onRegister: function (token) {
-        // console.log('TOKEN:', token.token);
-        setFCMToken(token.token);
-        // return token;
-      },
-    });
+    messaging()
+      .getToken()
+      .then(token => {
+        setFCMToken(token);
+      });
   };
 
   ///Take Image

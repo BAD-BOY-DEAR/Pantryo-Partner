@@ -25,7 +25,8 @@ import RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
 import UploadDocs from '../view/HomeScreen/Registration/UploadDocs';
 import LoaderScreen from '../controller/LoaderScreen';
 import {useEffect} from 'react/cjs/react.production.min';
-import PushNotification from 'react-native-push-notification';
+import messaging from '@react-native-firebase/messaging';
+import firebase from 'react-native-firebase';
 
 const LoginScreen = ({navigation}) => {
   const [contactNumber, setContactNumber] = React.useState('');
@@ -37,16 +38,13 @@ const LoginScreen = ({navigation}) => {
     getFCMToken();
   }, []);
 
-  /////FCM Token
+  ///FCM Token
   const getFCMToken = async () => {
-    PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
-      onRegister: function (token) {
-        // console.log('TOKEN:', token.token);
-        setFCMToken(token.token);
-        // return token;
-      },
-    });
+    messaging()
+      .getToken()
+      .then(token => {
+        setFCMToken(token);
+      });
   };
 
   const showToast = msg => {
