@@ -250,6 +250,19 @@ const HomeScreen = ({navigation}) => {
                   </LinearGradient>
                   {/* ========== Overview Section ========== */}
 
+                  <Pressable
+                    style={{
+                      marginTop: 30,
+                      marginBottom: 30,
+                    }}>
+                    <Text
+                      style={{
+                        color: '#000',
+                        fontSize: 24,
+                      }}>
+                      FeatureTest
+                    </Text>
+                  </Pressable>
                   {/* ========== Ongoing Orders Section ========== */}
                   <View style={styles.section}>
                     <Text style={styles.tabHeading}>Ongoing Today</Text>

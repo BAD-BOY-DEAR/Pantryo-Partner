@@ -66,7 +66,28 @@ const App = () => {
     },
   );
 
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+
   React.useEffect(() => {
+    requestUserPermission();
+
+    const regId =
+      'd4YaFNS2QLe6FljKzRgF30:APA91bGa9YGnfVTovAGPg4TkXTgdAU4ELAPMemoNB3QqQBycy7LMt_oG65pWxLnzrS6hY39wPgLuxHf4AJKmT9ZVO5a8nWLYNMSdZyNsBLS4EZJUG0EP-4KdJVRvdVrGCXXOUdrAegHX';
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      alert(JSON.stringify(remoteMessage.data.body));
+      console.log(remoteMessage);
+    });
+
     messaging().onNotificationOpenedApp(remoteMessage => {
       console.log(
         'Notification caused app to open from background state:',
@@ -75,6 +96,7 @@ const App = () => {
       navigation.navigate(remoteMessage.data.type);
     });
 
+    // Check whether an initial notification is available
     messaging()
       .getInitialNotification()
       .then(remoteMessage => {
@@ -88,10 +110,6 @@ const App = () => {
         setLoading(false);
       });
 
-    if (isLoading) {
-      return null;
-    }
-
     setTimeout(() => {
       const bootstrapAsync = async () => {
         let userToken;
@@ -104,6 +122,7 @@ const App = () => {
 
       bootstrapAsync();
     }, 3000);
+    return unsubscribe;
   }, []);
 
   const authContext = React.useMemo(
