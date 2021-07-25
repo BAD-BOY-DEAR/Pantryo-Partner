@@ -1,63 +1,33 @@
 {
   "project_info": {
-    "project_number": "139755441625",
-    "firebase_url": "https://pantryo-36fd7-default-rtdb.firebaseio.com",
-    "project_id": "pantryo-36fd7",
-    "storage_bucket": "pantryo-36fd7.appspot.com"
+    "project_number": "189747462879",
+    "project_id": "pantryo-partner-a7b1b",
+    "storage_bucket": "pantryo-partner-a7b1b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:139755441625:android:04664fce2e82085de39dc8",
-        "android_client_info": {
-          "package_name": "com.pantryo"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "139755441625-43ktof7cq8tm50adqi706spjn5fiv6h5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyASZec-5bHaEq_l0wdzOW1vw_QTnD5pyrM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "139755441625-43ktof7cq8tm50adqi706spjn5fiv6h5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:139755441625:android:df52e223559af7d2e39dc8",
+        "mobilesdk_app_id": "1:189747462879:android:c741be622ab8b32c109f6a",
         "android_client_info": {
           "package_name": "com.pantryopartner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "139755441625-43ktof7cq8tm50adqi706spjn5fiv6h5.apps.googleusercontent.com",
+          "client_id": "189747462879-ajhem7nkh8g6d1tlnrnaoialec9irub1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyASZec-5bHaEq_l0wdzOW1vw_QTnD5pyrM"
+          "current_key": "AIzaSyDx5MqJTltYasfDX6cNeWPviET3Tr0gzek"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "139755441625-43ktof7cq8tm50adqi706spjn5fiv6h5.apps.googleusercontent.com",
+              "client_id": "189747462879-ajhem7nkh8g6d1tlnrnaoialec9irub1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

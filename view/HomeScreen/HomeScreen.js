@@ -22,6 +22,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNetInfo} from '@react-native-community/netinfo';
 import analytics from '@react-native-firebase/analytics';
+import messaging from '@react-native-firebase/messaging';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -33,6 +34,7 @@ import PostUploadStatus from './Registration/PostUploadStatus';
 import OrderDetails from './Orders/OrderDetails';
 import OrdersList from './Orders/OrdersList';
 import PaymentScreen from './Payments/PaymentScreen';
+import FeatureTest from './FeatureTest';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -96,32 +98,6 @@ const HomeScreen = ({navigation}) => {
   };
 
   React.useEffect(() => {
-    // messaging().onNotificationOpenedApp(remoteMessage => {
-    //   console.log(
-    //     'Notification caused app to open from background state:',
-    //     remoteMessage.notification,
-    //   );
-    //   navigation.navigate(remoteMessage.data.type);
-    // });
-
-    // // Check whether an initial notification is available
-    // messaging()
-    //   .getInitialNotification()
-    //   .then(remoteMessage => {
-    //     if (remoteMessage) {
-    //       console.log(
-    //         'Notification caused app to open from quit state:',
-    //         remoteMessage.notification,
-    //       );
-    //       setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
-    //     }
-    //     setLoading(false);
-    //   });
-
-    // if (isLoading) {
-    //   return null;
-    // }
-
     getPartnerDetails();
     getTodayOrder();
     LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
@@ -251,6 +227,7 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Overview Section ========== */}
 
                   <Pressable
+                    onPress={() => navigation.navigate('FeatureTest')}
                     style={{
                       marginTop: 30,
                       marginBottom: 30,
@@ -390,6 +367,7 @@ function Home() {
       />
       <Stack.Screen name="OrdersList" component={OrdersList} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+      <Stack.Screen name="FeatureTest" component={FeatureTest} />
     </Stack.Navigator>
   );
 }

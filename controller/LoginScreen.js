@@ -38,11 +38,12 @@ const LoginScreen = ({navigation}) => {
     getFCMToken();
   }, []);
 
-  ///FCM Token
+  // FCM Token
   const getFCMToken = async () => {
     messaging()
       .getToken()
       .then(token => {
+        console.log(FCMToken);
         setFCMToken(token);
       });
   };
@@ -57,7 +58,7 @@ const LoginScreen = ({navigation}) => {
     );
   };
 
-  ///==========Login Start================///
+  // ==========Login Start================ //
   const loginApi = async () => {
     if (!contactNumber) {
       showToast('Please Enter Your Registered Mobile Number');

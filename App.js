@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef, useState, useEffect, useReducer, useMemo} from 'react';
 import {ToastAndroid} from 'react-native';
 
 // ======= Libraries ======= //
@@ -8,6 +8,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import linking from './controller/linking';
 import {AuthContext} from './controller/Utils';
 import messaging from '@react-native-firebase/messaging';
+import analytics from '@react-native-firebase/analytics';
 
 // ===== Screens ===== //
 import SplashScreen from './controller/SplashScreen';
@@ -17,9 +18,12 @@ import Navigation from './controller/Navigation';
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [initialRoute, setInitialRoute] = React.useState('HomeScreen');
-  const [isLoading, setLoading] = React.useState();
-  const [refreshing, setRefreshing] = React.useState(false);
+  const navigationRef = useRef();
+  const routeNameRef = useRef();
+
+  const [initialRoute, setInitialRoute] = useState('HomeScreen');
+  const [isLoading, setLoading] = useState();
+  const [refreshing, setRefreshing] = useState(false);
 
   const showToast = msg => {
     ToastAndroid.showWithGravityAndOffset(
@@ -31,7 +35,7 @@ const App = () => {
     );
   };
 
-  const [state, dispatch] = React.useReducer(
+  const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
         case 'RESTORE_TOKEN':
@@ -77,14 +81,11 @@ const App = () => {
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     requestUserPermission();
-
-    const regId =
-      'd4YaFNS2QLe6FljKzRgF30:APA91bGa9YGnfVTovAGPg4TkXTgdAU4ELAPMemoNB3QqQBycy7LMt_oG65pWxLnzrS6hY39wPgLuxHf4AJKmT9ZVO5a8nWLYNMSdZyNsBLS4EZJUG0EP-4KdJVRvdVrGCXXOUdrAegHX';
-
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       alert(JSON.stringify(remoteMessage.data.body));
+      // alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
       console.log(remoteMessage);
     });
 
@@ -125,7 +126,7 @@ const App = () => {
     return unsubscribe;
   }, []);
 
-  const authContext = React.useMemo(
+  const authContext = useMemo(
     () => ({
       signIn: async data => {
         const {
@@ -159,8 +160,31 @@ const App = () => {
 
   return (
     <AuthContext.Provider value={authContext}>
-      <NavigationContainer linking={linking}>
-        <Stack.Navigator initialRoute={initialRoute} headerMode="none">
+      <NavigationContainer
+        ref={navigationRef}
+        onReady={() =>
+          (routeNameRef.current = navigationRef.current.getCurrentRoute().name)
+        }
+        onReady={() =>
+          (routeNameRef.current = navigationRef.current.getCurrentRoute().name)
+        }
+        onStateChange={async () => {
+          const previousRouteName = routeNameRef.current;
+          const currentRouteName = navigationRef.current.getCurrentRoute().name;
+
+          if (previousRouteName !== currentRouteName) {
+            // await Analytics.setCurrentScreen(currentRouteName);
+            await analytics().logScreenView({
+              screen_name: currentRouteName,
+              screen_class: currentRouteName,
+            });
+          }
+
+          // Save the current route name for later comparison
+          routeNameRef.current = currentRouteName;
+        }}
+        linking={linking}>
+        <Stack.Navigator initialRouteName={initialRoute} headerMode="none">
           {state.isLoading ? (
             <Stack.Screen name="SplashScreen" component={SplashScreen} />
           ) : state.userToken == null ? (
