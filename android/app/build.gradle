@@ -196,7 +196,8 @@ dependencies {
     implementation project(':react-native-linear-gradient')
     implementation project(':lottie-react-native')       
 
-    implementation platform('com.google.firebase:firebase-bom:28.3.0')
+    // React Native Firebase
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')    
     implementation 'com.google.firebase:firebase-analytics'
 
     // This should be here already
