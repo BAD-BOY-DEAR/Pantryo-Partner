@@ -15,7 +15,6 @@ import coffeeIcon from '../assets/icons/coffee.png';
 // ===== Library ===== //
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DeviceInfo from 'react-native-device-info';
 
 // ===== Screens ===== //
 import {AuthContext} from './Utils';
@@ -24,7 +23,6 @@ import Navigation from './Navigation';
 import RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
 import UploadDocs from '../view/HomeScreen/Registration/UploadDocs';
 import LoaderScreen from '../controller/LoaderScreen';
-import {useEffect} from 'react/cjs/react.production.min';
 import messaging from '@react-native-firebase/messaging';
 import firebase from 'react-native-firebase';
 
