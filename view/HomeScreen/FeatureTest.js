@@ -6,11 +6,11 @@ import messaging from '@react-native-firebase/messaging';
 
 const FeatureTest = () => {
   const userToken =
-    'd4YaFNS2QLe6FljKzRgF30:APA91bGa9YGnfVTovAGPg4TkXTgdAU4ELAPMemoNB3QqQBycy7LMt_oG65pWxLnzrS6hY39wPgLuxHf4AJKmT9ZVO5a8nWLYNMSdZyNsBLS4EZJUG0EP-4KdJVRvdVrGCXXOUdrAegHX';
+    'fDMeLbTMQEqkn7KJuNIPOm:APA91bGrCV8WbKCK_-Mj5euiHg-dHlupSgqOml6mt30kRwGPrNo6dqcSCNEQEjFb_aRMH9MY5lgandOgz4Zzk57J19mT7aNFV7ujaMDii0vtfa-lO9ujEppn2Mdz5ZOTrwGZAn7jl6H9';
 
   const sendPushNotification = async () => {
-    const FIREBASE_API_KEY =
-      'AAAALC3Ugt8:APA91bFdhqYhHLlDedpHpuCBX7puDR5x1qsrmc6k3gh-pXIBaUoxTJ3t91pVuBwV51GdrSnYLb9McgZYbGnkVR6-A8BnqsUL8nQKN8Bg3qwwH9puZ01uCt4tnGU7w0qNXL0S-x8Ofnaf';
+    const CUSTOMER_FIREBASE_API_KEY =
+      'AAAAIIoSzdk:APA91bFqAg9Vu4T-_LYX5EPz9UVtqZTp0bRWOpkJLgm6GqIf4QAJtrW6RISmqWHZl6T-ykQrNLpo39kbRHLBsfGmqyz5JP8hxNCUzrfw8ECkcOItsO173OGeIrPf01_jiTLGjJsgwr33';
     const message = {
       to: userToken,
       collapeKey: 'com.pantryopartner',
@@ -31,7 +31,7 @@ const FeatureTest = () => {
 
     let headers = new Headers({
       'Content-Type': 'application/json',
-      Authorization: 'key=' + FIREBASE_API_KEY,
+      Authorization: 'key=' + CUSTOMER_FIREBASE_API_KEY,
     });
     // https://fcm.googleapis.com/fcm/send
     let response = await fetch('https://fcm.googleapis.com/fcm/send', {
