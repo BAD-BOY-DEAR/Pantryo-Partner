@@ -226,6 +226,7 @@ const HomeScreen = ({navigation}) => {
                   </LinearGradient>
                   {/* ========== Overview Section ========== */}
 
+                  {/* ========== Comment this after usage ========== */}
                   <Pressable
                     onPress={() => navigation.navigate('FeatureTest')}
                     style={{
@@ -240,6 +241,8 @@ const HomeScreen = ({navigation}) => {
                       FeatureTest
                     </Text>
                   </Pressable>
+                  {/* ========== Comment this after usage ========== */}
+
                   {/* ========== Ongoing Orders Section ========== */}
                   <View style={styles.section}>
                     <Text style={styles.tabHeading}>Ongoing Today</Text>
