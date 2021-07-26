@@ -1,5 +1,13 @@
 import React, {useRef, useState, useEffect, useReducer, useMemo} from 'react';
-import {ToastAndroid} from 'react-native';
+import {
+  ToastAndroid,
+  Modal,
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
 
 // ======= Libraries ======= //
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +26,11 @@ import Navigation from './controller/Navigation';
 const Stack = createStackNavigator();
 
 const App = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [data, setData] = useState('');
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+
   const navigationRef = useRef();
   const routeNameRef = useRef();
 
@@ -84,9 +97,12 @@ const App = () => {
   useEffect(() => {
     requestUserPermission();
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      alert(JSON.stringify(remoteMessage.data.body));
-      // alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      // alert(JSON.stringify(remoteMessage.data.body));
       console.log(remoteMessage);
+      setTitle(remoteMessage.data.title);
+      setBody(remoteMessage.data.body);
+
+      setModalVisible(true);
     });
 
     messaging().onNotificationOpenedApp(remoteMessage => {
@@ -159,57 +175,130 @@ const App = () => {
   );
 
   return (
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer
-        ref={navigationRef}
-        onReady={() =>
-          (routeNameRef.current = navigationRef.current.getCurrentRoute().name)
-        }
-        onReady={() =>
-          (routeNameRef.current = navigationRef.current.getCurrentRoute().name)
-        }
-        onStateChange={async () => {
-          const previousRouteName = routeNameRef.current;
-          const currentRouteName = navigationRef.current.getCurrentRoute().name;
-
-          if (previousRouteName !== currentRouteName) {
-            // await Analytics.setCurrentScreen(currentRouteName);
-            await analytics().logScreenView({
-              screen_name: currentRouteName,
-              screen_class: currentRouteName,
-            });
+    <>
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer
+          ref={navigationRef}
+          onReady={() =>
+            (routeNameRef.current =
+              navigationRef.current.getCurrentRoute().name)
           }
+          onReady={() =>
+            (routeNameRef.current =
+              navigationRef.current.getCurrentRoute().name)
+          }
+          onStateChange={async () => {
+            const previousRouteName = routeNameRef.current;
+            const currentRouteName =
+              navigationRef.current.getCurrentRoute().name;
 
-          // Save the current route name for later comparison
-          routeNameRef.current = currentRouteName;
-        }}
-        linking={linking}>
-        <Stack.Navigator initialRouteName={initialRoute} headerMode="none">
-          {state.isLoading ? (
-            <Stack.Screen name="SplashScreen" component={SplashScreen} />
-          ) : state.userToken == null ? (
-            <Stack.Screen
-              name="LoginScreen"
-              component={LoginScreen}
-              options={{
-                title: 'Sign in',
-                animationTypeForReplace: state.isSignout ? 'pop' : 'push',
-              }}
-            />
-          ) : (
-            <Stack.Screen
-              name="Navigation"
-              component={Navigation}
-              options={{
-                title: 'Home',
-                animationTypeForReplace: state.isSignout ? 'pop' : 'push',
-              }}
-            />
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthContext.Provider>
+            if (previousRouteName !== currentRouteName) {
+              // await Analytics.setCurrentScreen(currentRouteName);
+              await analytics().logScreenView({
+                screen_name: currentRouteName,
+                screen_class: currentRouteName,
+              });
+            }
+
+            // Save the current route name for later comparison
+            routeNameRef.current = currentRouteName;
+          }}
+          linking={linking}>
+          <Stack.Navigator initialRouteName={initialRoute} headerMode="none">
+            {state.isLoading ? (
+              <Stack.Screen name="SplashScreen" component={SplashScreen} />
+            ) : state.userToken == null ? (
+              <Stack.Screen
+                name="LoginScreen"
+                component={LoginScreen}
+                options={{
+                  title: 'Sign in',
+                  animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+                }}
+              />
+            ) : (
+              <Stack.Screen
+                name="Navigation"
+                component={Navigation}
+                options={{
+                  title: 'Home',
+                  animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+                }}
+              />
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthContext.Provider>
+
+      {/* ========= Order Modal ========= */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.container}>
+          <View style={styles.card}>
+            <Text style={styles.orderTitle}>{title}</Text>
+            <Text style={styles.orderBody}>{body}</Text>
+            <Pressable
+              style={styles.orderBtn}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.orderBtnTxt}>OK</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+      {/* ========= Order Modal ========= */}
+    </>
   );
 };
 
 export default App;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'rgba(52, 52, 52, 0.2)',
+  },
+  card: {
+    width: '100%',
+    backgroundColor: '#fff',
+    paddingBottom: 50,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: 20,
+    paddingTop: 3,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingTop: 20,
+  },
+  orderTitle: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 30,
+    color: '#5E3360',
+  },
+  orderBody: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 20,
+    marginTop: 5,
+  },
+  orderBtn: {
+    marginTop: 20,
+    width: '100%',
+    borderWidth: 1.5,
+    borderColor: '#5E3360',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 15,
+  },
+  orderBtnTxt: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 18,
+    color: '#5E3360',
+  },
+});
