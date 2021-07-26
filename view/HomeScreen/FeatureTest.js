@@ -6,7 +6,7 @@ import messaging from '@react-native-firebase/messaging';
 
 const FeatureTest = () => {
   const userToken =
-    'fDMeLbTMQEqkn7KJuNIPOm:APA91bGrCV8WbKCK_-Mj5euiHg-dHlupSgqOml6mt30kRwGPrNo6dqcSCNEQEjFb_aRMH9MY5lgandOgz4Zzk57J19mT7aNFV7ujaMDii0vtfa-lO9ujEppn2Mdz5ZOTrwGZAn7jl6H9';
+    'dI4rZyJKQTClxOwuYKzwqk:APA91bG6fud6CeiiEccES6Dmh1lKwOirVD-FaKwP3KqqUIA1TBwGR4J5pblaUrk75dIjTOrSV8V1q1Ei6Tod7yZOjCb3EIyxhKjmF-65Ts8cpVgaiqAk2PmV76qGqxixHJFOPPxZf5qF';
 
   const sendPushNotification = async () => {
     const CUSTOMER_FIREBASE_API_KEY =
