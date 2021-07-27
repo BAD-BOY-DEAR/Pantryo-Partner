@@ -227,7 +227,7 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Overview Section ========== */}
 
                   {/* ========== Comment this after usage ========== */}
-                  <Pressable
+                  {/* <Pressable
                     onPress={() => navigation.navigate('FeatureTest')}
                     style={{
                       marginTop: 30,
@@ -240,7 +240,7 @@ const HomeScreen = ({navigation}) => {
                       }}>
                       FeatureTest
                     </Text>
-                  </Pressable>
+                  </Pressable> */}
                   {/* ========== Comment this after usage ========== */}
 
                   {/* ========== Ongoing Orders Section ========== */}
