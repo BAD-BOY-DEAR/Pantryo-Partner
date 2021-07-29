@@ -86,10 +86,12 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        setTodayOrderData(result.todayorderdetails);
         getTodayOrder();
-        setNumberOfOrderAll(result.allordercount);
-        setNumberOfOrderToday(result.todayordercount);
+        if (result.error == 0) {
+          setTodayOrderData(result.todayorderdetails);
+          setNumberOfOrderAll(result.allordercount);
+          setNumberOfOrderToday(result.todayordercount);
+        }
       })
       .catch(error => {
         console.error(error);
@@ -199,13 +201,9 @@ const HomeScreen = ({navigation}) => {
                     <View style={styles.row}>
                       <View style={styles.cardOne}>
                         <Text style={styles.cardOneLabel}>Orders Today</Text>
-                        {numberOfOrderToday == null ? (
-                          <Text style={styles.cardOneResponse}>0</Text>
-                        ) : (
-                          <Text style={styles.cardOneResponse}>
-                            {numberOfOrderToday}
-                          </Text>
-                        )}
+                        <Text style={styles.cardOneResponse}>
+                          {numberOfOrderToday}
+                        </Text>
                       </View>
                       <Pressable
                         onPress={async () =>
@@ -227,7 +225,7 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Overview Section ========== */}
 
                   {/* ========== Comment this after usage ========== */}
-                  {/* <Pressable
+                  <Pressable
                     onPress={() => navigation.navigate('FeatureTest')}
                     style={{
                       marginTop: 30,
@@ -240,7 +238,7 @@ const HomeScreen = ({navigation}) => {
                       }}>
                       FeatureTest
                     </Text>
-                  </Pressable> */}
+                  </Pressable>
                   {/* ========== Comment this after usage ========== */}
 
                   {/* ========== Ongoing Orders Section ========== */}
