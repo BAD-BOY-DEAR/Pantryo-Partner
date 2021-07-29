@@ -51,7 +51,7 @@ const AddProducts = ({route, navigation}) => {
   const [inventoryId, setInventoryId] = React.useState('');
   const [partnerCategoryId, setPanterCategoryId] = React.useState('');
   const [partnerMainCategoryId, setPanterMainCategoryId] = React.useState('');
-  const [selectedUnit, setSelectedUnit] = React.useState();
+  const [selectedUnit, setSelectedUnit] = React.useState('');
   const [inventoryQty, setInventoryQty] = React.useState('');
 
   const ref = React.useRef(null);
@@ -433,9 +433,11 @@ const AddProducts = ({route, navigation}) => {
                             placeholder="Qty"
                             keyboardType="number-pad"
                             value={
-                              item.pantryo_inventory_id == inventoryId
+                              item.pantryo_inventory_id === inventoryId
                                 ? inventoryQty
-                                : item.pantryo_item_qty
+                                : item.pantryo_item_qty !== ''
+                                ? item.pantryo_item_qty
+                                : 'No'
                             }
                             style={styles.prodTxtInput}
                             onChangeText={text => {
@@ -462,11 +464,11 @@ const AddProducts = ({route, navigation}) => {
                                 justifyContent: 'flex-end',
                                 textAlign: 'center',
                               }}
-                              selectedValue={
-                                selectedUnit !== ''
-                                  ? selectedUnit
-                                  : item.pantryo_item_unit
-                              }
+                              // selectedValue={
+                              //   item.pantryo_inventory_id == inventoryId
+                              //     ? selectedUnit
+                              //     : item.pantryo_item_unit
+                              // }
                               onValueChange={(itemValue, itemIndex) => {
                                 setSelectedUnit(itemValue);
                                 setInventoryId(item.pantryo_inventory_id);

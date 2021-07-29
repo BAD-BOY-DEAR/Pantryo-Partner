@@ -5,17 +5,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 
 const FeatureTest = () => {
-  const userToken =
-    'dI4rZyJKQTClxOwuYKzwqk:APA91bG6fud6CeiiEccES6Dmh1lKwOirVD-FaKwP3KqqUIA1TBwGR4J5pblaUrk75dIjTOrSV8V1q1Ei6Tod7yZOjCb3EIyxhKjmF-65Ts8cpVgaiqAk2PmV76qGqxixHJFOPPxZf5qF';
+  const userToken1 =
+    'cx9uxWt6SU-nlcLWgh32PZ:APA91bEVTsAfDjeJfCV_3h3ZOIM6f2Z9xVesAzZQ2FyV7-t2k4CLKMYNBxm9QCaViqhisjEJqYbvFZiMyKJOh7hKBp7d5TY7yX3PUv80yUuFLKD9s-WqTXOeSHbBHSlLU2jt94s8Ivz9';
+  const userToken2 =
+    'fx16dI92QUK6luF3mEFUKv:APA91bEOozietpDn30DbDg72y5UY6HyLUw2RbnnAI9_1gegusoDXoU5cT3C0zIjE1qsq1IKOyaizmpSd2Pzfk-DeBi2yU3Kw9oRfITg34_UuyZVhWyliPpczLQCEmevWswJ9UNnSxm8B';
 
+  ///////////////send Notification to Customer
   const sendPushNotification = async () => {
     const CUSTOMER_FIREBASE_API_KEY =
       'AAAAIIoSzdk:APA91bFqAg9Vu4T-_LYX5EPz9UVtqZTp0bRWOpkJLgm6GqIf4QAJtrW6RISmqWHZl6T-ykQrNLpo39kbRHLBsfGmqyz5JP8hxNCUzrfw8ECkcOItsO173OGeIrPf01_jiTLGjJsgwr33';
     const message = {
-      to: userToken,
-      collapeKey: 'com.pantryopartner',
+      to: userToken1,
+      collapeKey: 'com.pantryo',
       notification: {
-        title: 'Pantryo Partner',
+        title: 'Pantryo Customer',
         body: 'Test message',
         vibrate: 1,
         sound: 1,
@@ -32,6 +35,42 @@ const FeatureTest = () => {
     let headers = new Headers({
       'Content-Type': 'application/json',
       Authorization: 'key=' + CUSTOMER_FIREBASE_API_KEY,
+    });
+    // https://fcm.googleapis.com/fcm/send
+    let response = await fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(message),
+    });
+    response = await response.json();
+    console.log(response);
+  };
+
+  ///////Send Notification to Delivery Partner
+  const sendPushNotification2 = async () => {
+    const DELIVERY_PARTNER_FIREBASE_API_KEY =
+      'AAAA206GD2Q:APA91bEaq_P49bzza39abiiZgUe_-vVytc7JacVYblNvLgqGPWgKYWZhT-6zdw68tmAsM4wkDDyftgYlXNFaMA5C8IVbEFqaTUUqXLsDA21-6HuiEJqcz-QsDaVkPKVckTAIYL3u3glj';
+    const message = {
+      to: userToken2,
+      collapeKey: 'com.pantryodeliverypartner',
+      notification: {
+        title: 'Pantryo Delivery Partner',
+        body: 'Test message Delivery Partner',
+        vibrate: 1,
+        sound: 1,
+        show_in_foreground: true,
+        priority: 'high',
+        content_available: true,
+      },
+      data: {
+        title: 'Pantryo Delivery Partner',
+        body: 'Test message Delivery Partner',
+      },
+    };
+
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: 'key=' + DELIVERY_PARTNER_FIREBASE_API_KEY,
     });
     // https://fcm.googleapis.com/fcm/send
     let response = await fetch('https://fcm.googleapis.com/fcm/send', {
@@ -73,7 +112,10 @@ const FeatureTest = () => {
           }
         /> */}
         <TouchableOpacity
-          onPress={sendPushNotification}
+          onPress={() => {
+            sendPushNotification2();
+            sendPushNotification();
+          }}
           // onPress={async () =>
           //   await analytics().logEvent(
           //     'genericevent',
