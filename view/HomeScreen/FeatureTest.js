@@ -15,8 +15,8 @@ const FeatureTest = () => {
       to: userToken,
       collapeKey: 'com.pantryopartner',
       notification: {
-        title: 'Pantryo Partner',
-        body: 'Test message',
+        title: 'New Message',
+        body: 'New Message',
         vibrate: 1,
         sound: 1,
         show_in_foreground: true,
@@ -24,8 +24,8 @@ const FeatureTest = () => {
         content_available: true,
       },
       data: {
-        title: 'Pantryo Partner',
-        body: 'Test message',
+        title: 'New Message',
+        body: 'New Message',
       },
     };
 
@@ -33,7 +33,7 @@ const FeatureTest = () => {
       'Content-Type': 'application/json',
       Authorization: 'key=' + CUSTOMER_FIREBASE_API_KEY,
     });
-    // https://fcm.googleapis.com/fcm/send
+
     let response = await fetch('https://fcm.googleapis.com/fcm/send', {
       method: 'POST',
       headers,

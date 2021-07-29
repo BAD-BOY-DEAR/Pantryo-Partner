@@ -1174,6 +1174,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-12.3.0.tgz#99f0617256f8d4d52aabac7317c42cd68ae23724"
   integrity sha512-ok5r7RWgRJx0MVH/Te2Ymq+wrswXsSTcQKUd8a5/q6eOBljoO2/KNYT3822IBPdlqzKoX65Et1mCg0x8bjlrwg==
 
+"@react-native-firebase/remote-config@^12.3.0":
+  version "12.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/remote-config/-/remote-config-12.3.0.tgz#2561bd207936afdd6d250b3f8d7eb254ba40164e"
+  integrity sha512-l1gBlllzA+Qivxa4oIBbnRZLMbqgvG2cmRIT3dIsHAipS4N0hWx2fNtIXE7r6t+DzZ2GqKHtlmYCAacNZ+YyEg==
+
 "@react-native-picker/picker@^1.16.1":
   version "1.16.1"
   resolved "https://registry.npmjs.org/@react-native-picker/picker/-/picker-1.16.1.tgz"

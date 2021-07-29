@@ -18,6 +18,7 @@
     "@react-native-firebase/analytics": "^12.3.0",
     "@react-native-firebase/app": "^12.3.0",
     "@react-native-firebase/messaging": "^12.3.0",
+    "@react-native-firebase/remote-config": "^12.3.0",
     "@react-native-picker/picker": "^1.16.1",
     "@react-navigation/material-bottom-tabs": "^5.3.15",
     "@react-navigation/native": "^5.9.4",
