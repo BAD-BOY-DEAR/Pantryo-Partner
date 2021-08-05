@@ -19,7 +19,7 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage; 
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
-
+import cx.evermeet.versioninfo.RNVersionInfoPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -40,7 +40,7 @@ public class MainApplication extends Application implements ReactApplication {
           
           packages.add(new RNFirebaseNotificationsPackage());
           packages.add(new RNFirebaseMessagingPackage()); 
-          packages.add(new LottiePackage()); 
+          packages.add(new LottiePackage());           
           return packages;
         }
 

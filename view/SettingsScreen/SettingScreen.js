@@ -1,11 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView} from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '../../controller/Utils';
 import {createStackNavigator} from '@react-navigation/stack';
+import VersionInfo from 'react-native-version-info';
 
 // ===== Components ===== //
 import ProfileScreen from './Components/ProfileScreen';
@@ -17,8 +18,10 @@ const SettingsScreen = ({navigation}) => {
   const [userMobile, setUserMobile] = React.useState('');
   const [pincode, setPincode] = React.useState('');
   const [shopAddress, setShopAddress] = React.useState('');
+  const [appVersion, setAppVersion] = React.useState('');
   const {signOut} = React.useContext(AuthContext);
 
+  // Function to get Partner's Profile
   const getUserProfile = async () => {
     getUserShopName(await AsyncStorage.getItem('partner_shopName'));
     setUserCategoryName(await AsyncStorage.getItem('partner_category_name'));
@@ -29,75 +32,68 @@ const SettingsScreen = ({navigation}) => {
 
   React.useEffect(() => {
     getUserProfile();
+    console.log(VersionInfo.appVersion);
+    setAppVersion(VersionInfo.appVersion);
   }, []);
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          {/* <Pressable style={styles.iconBox}>
-            <Icons name="business-outline" size={30} color="#777" />
-          </Pressable> */}
+      <ScrollView
+        style={{
+          paddingBottom: 50,
+          backgroundColor: '#fff',
+        }}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Pressable style={styles.iconBox}>
+              <Icons name="business-outline" size={30} color="#777" />
+            </Pressable>
 
-          <View style={styles.headerTxtContainer}>
-            <Text style={styles.headerTopText}>{userShopName}</Text>
-            <Text
-              style={{
-                fontFamily: 'OpenSans-Regular',
-                fontSize: 14,
-              }}>
-              {userCategoryName}
-            </Text>
-            <Text
-              style={{
-                fontFamily: 'OpenSans-SemiBold',
-                fontSize: 14,
-                color: '#000',
-                marginTop: 5,
-              }}>
-              {pincode}
-            </Text>
-            <Text
-              style={{
-                fontFamily: 'OpenSans-SemiBold',
-                fontSize: 16,
-                marginTop: 15,
-                color: '#777',
-              }}>
-              {userMobile}
-            </Text>
+            <View style={styles.headerTxtContainer}>
+              <Text style={styles.headerTopText}>{userShopName}</Text>
+              <Text style={styles.partnerCat}>{userCategoryName}</Text>
+              <Text style={styles.pinCode}>{pincode}</Text>
+              <Text style={styles.partnerNo}>{userMobile}</Text>
 
-            <Pressable onPress={() => navigation.navigate('ProfileScreen')}>
-              <Text style={styles.headerBottom}>Edit Profile</Text>
+              <Pressable onPress={() => navigation.navigate('ProfileScreen')}>
+                <Text style={styles.headerBottom}>Edit Profile</Text>
+              </Pressable>
+            </View>
+          </View>
+
+          <View style={styles.tabContainer}>
+            <View style={styles.tab}>
+              <Icons name="help-circle-outline" size={30} color="#5E3360" />
+              <Text style={styles.tabTxt}>How It Works</Text>
+            </View>
+            <View style={styles.tab}>
+              <Icons name="alert-circle-outline" size={30} color="#5E3360" />
+              <Text style={styles.tabTxt}>Support</Text>
+            </View>
+            <Pressable
+              onPress={() => navigation.navigate('TermsConditions')}
+              style={styles.tab}>
+              <Icons name="document-attach-outline" size={30} color="#5E3360" />
+              <Text style={styles.tabTxt}>Terms & Conditions</Text>
+            </Pressable>
+            <View style={styles.tab}>
+              <Icons name="finger-print-outline" size={30} color="#5E3360" />
+              <Text style={styles.tabTxt}>Privacy Policy</Text>
+            </View>
+            <Pressable onPress={() => signOut()} style={styles.tab}>
+              <Icons name="log-out-outline" size={30} color="#5E3360" />
+              <Text style={styles.tabTxt}>Sign Out</Text>
             </Pressable>
           </View>
-        </View>
 
-        <View style={styles.tabContainer}>
-          <View style={styles.tab}>
-            <Icons name="help-circle-outline" size={30} color="#5E3360" />
-            <Text style={styles.tabTxt}>How It Works</Text>
+          <View style={styles.developer}>
+            <Text style={styles.developerDetails}>
+              Designed & Developed by Gizmmo Alchemy
+            </Text>
+            <Text style={styles.developerDetails}>App V{appVersion}</Text>
           </View>
-          <View style={styles.tab}>
-            <Icons name="alert-circle-outline" size={30} color="#5E3360" />
-            <Text style={styles.tabTxt}>Support</Text>
-          </View>
-          <Pressable
-            onPress={() => navigation.navigate('TermsConditions')}
-            style={styles.tab}>
-            <Icons name="document-attach-outline" size={30} color="#5E3360" />
-            <Text style={styles.tabTxt}>Terms & Conditions</Text>
-          </Pressable>
-          <View style={styles.tab}>
-            <Icons name="finger-print-outline" size={30} color="#5E3360" />
-            <Text style={styles.tabTxt}>Privacy Policy</Text>
-          </View>
-          <Pressable onPress={() => signOut()} style={styles.tab}>
-            <Icons name="log-out-outline" size={30} color="#5E3360" />
-            <Text style={styles.tabTxt}>Sign Out</Text>
-          </Pressable>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 };
@@ -177,5 +173,33 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Regular',
     fontSize: 16,
     marginLeft: 15,
+  },
+  partnerCat: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 14,
+  },
+  pinCode: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 14,
+    color: '#000',
+    marginTop: 5,
+  },
+  partnerNo: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 16,
+    marginTop: 15,
+    color: '#777',
+  },
+  developer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: '100%',
+    paddingBottom: 15,
+    marginTop: 30,
+  },
+  developerDetails: {
+    fontFamily: 'OpenSans-SemiBold',
+    color: '#777',
   },
 });
