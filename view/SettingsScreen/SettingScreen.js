@@ -32,7 +32,6 @@ const SettingsScreen = ({navigation}) => {
 
   React.useEffect(() => {
     getUserProfile();
-    console.log(VersionInfo.appVersion);
     setAppVersion(VersionInfo.appVersion);
   }, []);
 
