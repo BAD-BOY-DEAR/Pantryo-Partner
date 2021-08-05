@@ -12,6 +12,9 @@ import {
   RefreshControl,
   ActivityIndicator,
   LogBox,
+  Platform,
+  PermissionsAndroid,
+  ToastAndroid,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -23,6 +26,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNetInfo} from '@react-native-community/netinfo';
 import analytics from '@react-native-firebase/analytics';
 import messaging from '@react-native-firebase/messaging';
+navigator.geolocation = require('@react-native-community/geolocation');
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -41,6 +45,7 @@ const wait = timeout => {
 };
 
 const HomeScreen = ({navigation}) => {
+  const NO_LOCATION_PROVIDER_AVAILABLE = 2;
   const netInfo = useNetInfo();
   const [isEnabled, setIsEnabled] = React.useState(false);
   const [isLoading, setLoading] = React.useState(true);
@@ -50,6 +55,20 @@ const HomeScreen = ({navigation}) => {
   const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [lat, setLat] = React.useState('');
+  const [long, setLong] = React.useState('');
+  const [currentLocation, setCurrentLocation] = React.useState('');
+
+  // ======= Show Toast ========== //
+  const showToast = msg => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -58,6 +77,59 @@ const HomeScreen = ({navigation}) => {
     getTodayOrder();
     wait(2000).then(() => setRefreshing(false));
   }, []);
+
+  // Request user permission to access location
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'ios') {
+      getOneTimeLocation();
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Access Required',
+            message: 'This App needs access to your location',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          getOneTimeLocation();
+        } else {
+          showToast('Permission Denied');
+          requestLocationPermission();
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  };
+
+  // Get Longitude and Latitude
+  const getOneTimeLocation = async () => {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        let fromLoc = position.coords;
+        let coordinate = {
+          latitude: fromLoc.latitude,
+          longitude: fromLoc.longitude,
+        };
+        // console.log(coordinate.latitude);
+        // console.log(coordinate.longitude);
+        setLat(coordinate.latitude);
+        setLong(coordinate.longitude);
+        setCurrentLocation(coordinate);
+      },
+      error => {
+        if (error.code === NO_LOCATION_PROVIDER_AVAILABLE) {
+          showToast('Error 404');
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 2000,
+      },
+    );
+  };
 
   // Getting Partner Details
   const getPartnerDetails = async () => {
@@ -86,8 +158,9 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        getTodayOrder();
+        // getTodayOrder();
         if (result.error == 0) {
+          console.log(result);
           setTodayOrderData(result.todayorderdetails);
           setNumberOfOrderAll(result.allordercount);
           setNumberOfOrderToday(result.todayordercount);
@@ -100,10 +173,12 @@ const HomeScreen = ({navigation}) => {
   };
 
   React.useEffect(() => {
+    requestLocationPermission();
     getPartnerDetails();
     getTodayOrder();
-    LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
-    LogBox.ignoreAllLogs(); //Ignore all log notifications
+    LogBox.ignoreAllLogs(true);
+    LogBox.ignoreLogs(['Warning: ...']);
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
   }, []);
 
   return (
@@ -225,7 +300,7 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Overview Section ========== */}
 
                   {/* ========== Comment this after usage ========== */}
-                  <Pressable
+                  {/* <Pressable
                     onPress={() => navigation.navigate('FeatureTest')}
                     style={{
                       marginTop: 30,
@@ -238,12 +313,12 @@ const HomeScreen = ({navigation}) => {
                       }}>
                       FeatureTest
                     </Text>
-                  </Pressable>
+                  </Pressable> */}
                   {/* ========== Comment this after usage ========== */}
 
                   {/* ========== Ongoing Orders Section ========== */}
                   <View style={styles.section}>
-                    <Text style={styles.tabHeading}>Ongoing Today</Text>
+                    <Text style={styles.tabHeading}>Orders Received Today</Text>
                     {isLoading == true ? (
                       <View
                         style={[
@@ -308,14 +383,32 @@ const HomeScreen = ({navigation}) => {
                       <View
                         style={{
                           flex: 1,
-                          paddingVertical: '45%',
-                          paddingHorizontal: '50%',
+                          // paddingVertical: '45%',
+                          // paddingHorizontal: '50%',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          width: '100%',
+                          paddingTop: 20,
                         }}>
                         <LottieView
                           source={require('../../assets/lottie/nodata.json')}
                           autoPlay
                           loop
+                          style={{
+                            width: 100,
+                            height: 100,
+                          }}
                         />
+                        <Text
+                          style={{
+                            fontFamily: 'OpenSans-Regular',
+                            fontSize: 20,
+                            textAlign: 'center',
+                            color: '#777',
+                          }}>
+                          Waiting for customer orders. You will receive a
+                          notification as soon as a customer places their order
+                        </Text>
                       </View>
                     )}
                   </View>

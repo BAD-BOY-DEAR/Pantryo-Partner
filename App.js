@@ -101,7 +101,6 @@ const App = () => {
       console.log(remoteMessage);
       setTitle(remoteMessage.data.title);
       setBody(remoteMessage.data.body);
-
       setModalVisible(true);
     });
 
