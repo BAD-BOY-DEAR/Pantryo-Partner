@@ -27,6 +27,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import analytics from '@react-native-firebase/analytics';
 import messaging from '@react-native-firebase/messaging';
 navigator.geolocation = require('@react-native-community/geolocation');
+import {showToast} from './functions';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -58,17 +59,6 @@ const HomeScreen = ({navigation}) => {
   const [lat, setLat] = React.useState('');
   const [long, setLong] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState('');
-
-  // ======= Show Toast ========== //
-  const showToast = msg => {
-    ToastAndroid.showWithGravityAndOffset(
-      msg,
-      ToastAndroid.SHORT,
-      ToastAndroid.BOTTOM,
-      25,
-      50,
-    );
-  };
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -158,9 +148,7 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        // getTodayOrder();
         if (result.error == 0) {
-          console.log(result);
           setTodayOrderData(result.todayorderdetails);
           setNumberOfOrderAll(result.allordercount);
           setNumberOfOrderToday(result.todayordercount);
@@ -173,12 +161,13 @@ const HomeScreen = ({navigation}) => {
   };
 
   React.useEffect(() => {
-    requestLocationPermission();
-    getPartnerDetails();
-    getTodayOrder();
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
+
+    requestLocationPermission();
+    getPartnerDetails();
+    getTodayOrder();
   }, []);
 
   return (
@@ -236,14 +225,6 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Header Section ========== */}
                   <View style={styles.header}>
                     <Text style={styles.screenName}>Dashboard</Text>
-                    <Pressable
-                      onPress={() => navigation.navigate('RegistrationForm')}>
-                      <Icons
-                        name="document-text-outline"
-                        size={28}
-                        color="#fff"
-                      />
-                    </Pressable>
                     <View
                       style={{
                         marginLeft: 20,
@@ -299,23 +280,6 @@ const HomeScreen = ({navigation}) => {
                   </LinearGradient>
                   {/* ========== Overview Section ========== */}
 
-                  {/* ========== Comment this after usage ========== */}
-                  {/* <Pressable
-                    onPress={() => navigation.navigate('FeatureTest')}
-                    style={{
-                      marginTop: 30,
-                      marginBottom: 30,
-                    }}>
-                    <Text
-                      style={{
-                        color: '#000',
-                        fontSize: 24,
-                      }}>
-                      FeatureTest
-                    </Text>
-                  </Pressable> */}
-                  {/* ========== Comment this after usage ========== */}
-
                   {/* ========== Ongoing Orders Section ========== */}
                   <View style={styles.section}>
                     <Text style={styles.tabHeading}>Orders Received Today</Text>
@@ -347,36 +311,39 @@ const HomeScreen = ({navigation}) => {
                         }
                         keyExtractor={item => item.orderId}
                         renderItem={({item}) => (
-                          <Pressable
-                            onPress={() =>
-                              navigation.navigate('OrderDetails', {
-                                order_id: item.orderId,
-                                customer_name: item.customer_name,
-                                totalItem: item.TodayOrderOneIdWise,
-                                orderStatus: item.orderStatus,
-                              })
-                            }
-                            style={styles.details}>
-                            <View style={styles.divOne}>
-                              <Text style={styles.detailsTxt}>
-                                {item.customer_name}
-                              </Text>
-                              <Text style={styles.detailsAddressLabel}>
-                                Address:
-                              </Text>
-                              <Text style={styles.detailsAddress}>
-                                {item.customerDeliveryAddress}
-                              </Text>
-                              <View style={styles.detailsInnerRow}>
-                                <Text style={styles.detailsDate}>
-                                  {item.create_date}
+                          <>
+                            <Pressable
+                              onPress={() =>
+                                navigation.navigate('OrderDetails', {
+                                  order_id: item.orderId,
+                                  customer_name: item.customer_name,
+                                  totalItem: item.TodayOrderOneIdWise,
+                                  orderStatus: item.orderStatus,
+                                  customerToken: item.customer_token,
+                                })
+                              }
+                              style={styles.details}>
+                              <View style={styles.divOne}>
+                                <Text style={styles.detailsTxt}>
+                                  {item.customer_name}
                                 </Text>
-                                <Text style={styles.btnDetails}>
-                                  View Order Details
+                                <Text style={styles.detailsAddressLabel}>
+                                  Address:
                                 </Text>
+                                <Text style={styles.detailsAddress}>
+                                  {item.customerDeliveryAddress}
+                                </Text>
+                                <View style={styles.detailsInnerRow}>
+                                  <Text style={styles.detailsDate}>
+                                    {item.create_date}
+                                  </Text>
+                                  <Text style={styles.btnDetails}>
+                                    View Order Details
+                                  </Text>
+                                </View>
                               </View>
-                            </View>
-                          </Pressable>
+                            </Pressable>
+                          </>
                         )}
                       />
                     ) : (

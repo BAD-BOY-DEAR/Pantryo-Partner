@@ -13,6 +13,8 @@ import {
   Alert,
   Platform,
   PermissionsAndroid,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -20,11 +22,17 @@ import CheckBox from '@react-native-community/checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 navigator.geolocation = require('@react-native-community/geolocation');
 import Icons from 'react-native-vector-icons/Ionicons';
+import messaging from '@react-native-firebase/messaging';
 
 // ===== Images ===== //
 import deliveryBoy from '../../../assets/icons/delivery.gif';
 
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
+
 const OrderDetails = ({route, navigation}) => {
+  const [refreshing, setRefreshing] = React.useState(false);
   const NO_LOCATION_PROVIDER_AVAILABLE = 2;
   const [isLoading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,12 +47,112 @@ const OrderDetails = ({route, navigation}) => {
   const [lat, setLat] = React.useState('');
   const [long, setLong] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState('');
+  const [customerToken, setCustomerToken] = React.useState('');
+  const [partnerShop, setPartnerShop] = React.useState('');
+  const [partnerId, setPartnerId] = React.useState('');
 
   // Delivery boy Variables
   const [deliveryPartnerName, setDeliveryPartnerName] = React.useState('');
   const [deliveryPartnerContactNumber, setDeliveryPartnerContactNumber] =
     React.useState('');
-  const [deliveryPartnerModal, setDeliveryPartnerModal] = useState(false);
+  const [deliveryPartnerImg, setDeliveryPartnerImg] = React.useState('');
+  const [deliverypartnerToken, setDeliveryPartnerToken] = useState('');
+
+  const customer_firebase_key =
+    'AAAAIIoSzdk:APA91bFqAg9Vu4T-_LYX5EPz9UVtqZTp0bRWOpkJLgm6GqIf4QAJtrW6RISmqWHZl6T-ykQrNLpo39kbRHLBsfGmqyz5JP8hxNCUzrfw8ECkcOItsO173OGeIrPf01_jiTLGjJsgwr33';
+  const delivery_partner_firebase_key =
+    'AAAA206GD2Q:APA91bEaq_P49bzza39abiiZgUe_-vVytc7JacVYblNvLgqGPWgKYWZhT-6zdw68tmAsM4wkDDyftgYlXNFaMA5C8IVbEFqaTUUqXLsDA21-6HuiEJqcz-QsDaVkPKVckTAIYL3u3glj';
+
+  // Refresh Function
+  const onRefresh = React.useCallback(() => {
+    searchDeliveryPartner();
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
+  // Function to get Partner's Profile
+  const getUserProfile = async () => {
+    setPartnerShop(await AsyncStorage.getItem('partner_shopName'));
+    setPartnerId(await AsyncStorage.getItem('partner_id'));
+  };
+
+  const notificationToCustomer = async () => {
+    const CUSTOMER_FIREBASE_API_KEY = customer_firebase_key;
+    const message = {
+      to: customerToken,
+      notification: {
+        title: 'Order Confirmation',
+        body:
+          partnerShop +
+          ' ' +
+          'has accepted your order. Please wait while we search for a delivery partner for you',
+        vibrate: 1,
+        sound: 1,
+        show_in_foreground: true,
+        priority: 'high',
+        content_available: true,
+      },
+      data: {
+        title: 'Order Confirmation',
+        body:
+          partnerShop +
+          ' ' +
+          'has accepted your order. Please wait while we search for a delivery partner for you',
+      },
+    };
+
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: 'key=' + CUSTOMER_FIREBASE_API_KEY,
+    });
+    // https://fcm.googleapis.com/fcm/send
+    let response = await fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(message),
+    });
+    response = await response.json();
+    console.log(response);
+  };
+
+  // const notificationToPartner = async () => {
+  //   const FIREBASE_API_KEY = delivery_partner_firebase_key;
+  //   const message = {
+  //     to: customerToken,
+  //     notification: {
+  //       title: 'Order Accepted',
+  //       body:
+  //         partnerShop +
+  //         ' ' +
+  //         'has accepted your order. Please wait while we search for a delivery partner for you',
+  //       vibrate: 1,
+  //       sound: 1,
+  //       show_in_foreground: true,
+  //       priority: 'high',
+  //       content_available: true,
+  //     },
+  //     data: {
+  //       title: 'Order Accepted',
+  //       body:
+  //         partnerShop +
+  //         ' ' +
+  //         'has accepted your order. Please wait while we search for a delivery partner for you',
+  //     },
+  //   };
+
+  //   let headers = new Headers({
+  //     'Content-Type': 'application/json',
+  //     Authorization: 'key=' + FIREBASE_API_KEY,
+  //   });
+  //   // https://fcm.googleapis.com/fcm/send
+  //   let response = await fetch('https://fcm.googleapis.com/fcm/send', {
+  //     method: 'POST',
+  //     headers,
+  //     body: JSON.stringify(message),
+  //   });
+  //   response = await response.json();
+  //   console.log(response);
+  // };
 
   // Request user permission to access location
   const requestLocationPermission = async () => {
@@ -114,6 +222,7 @@ const OrderDetails = ({route, navigation}) => {
           order_id: orderId,
           partner_lan: lat,
           partner_long: long,
+          customer_token: customerToken,
         }),
       },
     )
@@ -121,7 +230,6 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        console.log(result.msg);
         if (result.error == 0) {
           setOrderStatus(status);
           if (status === '3') {
@@ -130,10 +238,25 @@ const OrderDetails = ({route, navigation}) => {
             navigation.navigate('HomeScreen');
           }
           if (status === '2') {
+            console.log(
+              'Order Status:' +
+                status +
+                'Order ID:' +
+                orderId +
+                'Lat:' +
+                lat +
+                'Long:' +
+                long +
+                'Customer Token:' +
+                customerToken,
+            );
+            console.log(
+              'Status after confirmin order: ' + JSON.stringify(result),
+            );
+            notificationToCustomer();
+            setOrderStatus(status);
             searchDeliveryPartner();
             setToggleCheckBoxOne(true);
-            console.log(long);
-            console.log(lat);
             // setModalVisible(true);
           }
         } else {
@@ -182,6 +305,57 @@ const OrderDetails = ({route, navigation}) => {
       });
   };
 
+  // Search Delivery Partner
+  // const searchDeliveryPartner = async () => {
+  //   let status = orderStatus;
+  //   await fetch(
+  //     'https://gizmmoalchemy.com/api/pantryo/DeliveryPartnerApi/DeliveryPartner.php?flag=deliveryPartnerStatus',
+  //     {
+  //       method: 'POST',
+  //       headers: {
+  //         Accept: 'application/json',
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         partner_lat: lat,
+  //         partner_long: long,
+  //         order_id: orderId,
+  //         partner_id: partnerId,
+  //         delivery_status: orderStatus,
+  //       }),
+  //     },
+  //   )
+  //     .then(function (response) {
+  //       return response.json();
+  //     })
+  //     .then(function (result) {
+  //       console.log(
+  //         'Partner Lat:' +
+  //           lat +
+  //           'Partner Long: ' +
+  //           long +
+  //           'order ID: ' +
+  //           orderId +
+  //           'Partner ID: ' +
+  //           partnerId +
+  //           'delivery Status: ' +
+  //           orderStatus,
+  //       );
+  //       console.log(
+  //         'Search delivery partner API Response: ' + JSON.stringify(result),
+  //       );
+  //       if (result.error == 0) {
+  //         // notificationToDelivery();
+  //         setDeliveryPartnerImg(result.data.profileImage);
+  //         setDeliveryPartnerName(result.data.fullname);
+  //         setDeliveryPartnerContactNumber(result.data.contactNumber);
+  //         setDeliveryPartnerToken(result.data.userToken);
+  //       } else {
+  //         console.log('Error: ' + JSON.stringify(result));
+  //       }
+  //     });
+  // };
+
   // Send  Otp to delivery Boy
   const sentOtpToDeliveryBoy = async () => {
     await fetch(
@@ -217,6 +391,8 @@ const OrderDetails = ({route, navigation}) => {
     setOrderId(route.params.order_id);
     setTotalItem(route.params.totalItem);
     setCustomerName(route.params.customer_name);
+    setCustomerToken(route.params.customerToken);
+    getUserProfile();
     if (route.params.orderStatus == '2') {
       setToggleCheckBoxOne(true);
     }
@@ -224,16 +400,19 @@ const OrderDetails = ({route, navigation}) => {
       setToggleCheckBoxOne(true);
       setToggleCheckBoxTwo(true);
     }
-    LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreAllLogs(true);
+    LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
-    console.log(deliveryPartnerName);
-    console.log(deliveryPartnerContactNumber);
   }, []);
 
   return (
     <>
-      <ScrollView style={styles.scroll} scrollEnabled={true}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={styles.scroll}
+        scrollEnabled={true}>
         {/* ======== Order Details Start ======== */}
         <View style={styles.card}>
           <View style={styles.div}>
@@ -317,83 +496,33 @@ const OrderDetails = ({route, navigation}) => {
 
             {toggleCheckBoxOne ? (
               <>
-                <View
-                  style={{
-                    marginTop: 20,
-                    width: '100%',
-                  }}>
-                  <View>
-                    <Icons name="image-outline" size={25} />
+                <View style={styles.deliveryContainer}>
+                  <View style={styles.delRow}>
+                    {deliveryPartnerImg !== '' ? (
+                      <Image
+                        source={{uri: deliveryPartnerImg}}
+                        style={styles.delImg}
+                      />
+                    ) : (
+                      <Text>Searching for Delivery Partner</Text>
+                    )}
                   </View>
-                  <Text
-                    style={{
-                      color: '#000',
-                    }}>
-                    {deliveryPartnerName}
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#000',
-                    }}>
-                    {deliveryPartnerContactNumber}
-                  </Text>
+
+                  {deliveryPartnerContactNumber &&
+                  deliveryPartnerName !== '' ? (
+                    <View style={styles.delDetails}>
+                      <Text style={styles.delName}>{deliveryPartnerName}</Text>
+                      <Text style={styles.delNumber}>
+                        {deliveryPartnerContactNumber}
+                      </Text>
+                    </View>
+                  ) : (
+                    <ActivityIndicator />
+                  )}
                 </View>
                 <View style={styles.readyBtn}>
                   <Text style={styles.readyBtnTxt}>Order Ready</Text>
                 </View>
-                {/* <View style={styles.tabRow}>
-                  <Text style={[styles.statusName, {color: 'green'}]}>
-                    Order Ready
-                  </Text>
-                  {modalVisible ? (
-                    <CheckBox
-                      disabled={true}
-                      lineWidth={2}
-                      hideBox={false}
-                      boxType={'circle'}
-                      tintColors={'#9E663C'}
-                      onCheckColor={'#6F763F'}
-                      onFillColor={'#4DABEC'}
-                      onTintColor={'#F4DCF8'}
-                      value={toggleCheckBoxTwo}
-                      onValueChange={newValue => settoggleCheckBoxTwo(newValue)}
-                      style={styles.statusOne}
-                    />
-                  ) : (
-                    <>
-                      {toggleCheckBoxTwo == false ? (
-                        <CheckBox
-                          disabled={false}
-                          lineWidth={2}
-                          hideBox={false}
-                          boxType={'circle'}
-                          tintColors={'#9E663C'}
-                          onCheckColor={'#6F763F'}
-                          onFillColor={'#4DABEC'}
-                          onTintColor={'#F4DCF8'}
-                          value={toggleCheckBoxTwo}
-                          // onValueChange={() => sentOtpToDeliveryBoy()}
-                          style={styles.statusOne}
-                          // onValueChange={() => setModalVisible(true)}
-                          onChange={() => setModalVisible(true)}
-                        />
-                      ) : (
-                        <CheckBox
-                          disabled={true}
-                          lineWidth={2}
-                          hideBox={false}
-                          boxType={'circle'}
-                          tintColors={'#9E663C'}
-                          onCheckColor={'#6F763F'}
-                          onFillColor={'#4DABEC'}
-                          onTintColor={'#F4DCF8'}
-                          value={toggleCheckBoxTwo}
-                          style={styles.statusOne}
-                        />
-                      )}
-                    </>
-                  )}
-                </View> */}
               </>
             ) : null}
           </View>
@@ -581,5 +710,44 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 20,
     color: '#fff',
+  },
+  deliveryContainer: {
+    marginTop: 20,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#5E3360',
+  },
+  delRow: {
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  delImg: {
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+  },
+  delDetails: {
+    flex: 1,
+    marginLeft: 15,
+  },
+  delName: {
+    color: '#000',
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 22,
+  },
+  delNumber: {
+    color: '#000',
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 16,
+    marginTop: 5,
   },
 });

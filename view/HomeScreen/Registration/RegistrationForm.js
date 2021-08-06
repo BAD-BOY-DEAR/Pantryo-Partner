@@ -64,7 +64,7 @@ const RegisterScreen = ({navigation, route}) => {
   const [upiId, setUPIID] = React.useState('');
   const [FCMToken, setFCMToken] = React.useState('');
 
-  ///FCM Token
+  // FCM Token
   const getFCMToken = async () => {
     messaging()
       .getToken()
@@ -73,7 +73,7 @@ const RegisterScreen = ({navigation, route}) => {
       });
   };
 
-  ///Take Image
+  // Take Image
   const requestGalleryPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -125,7 +125,7 @@ const RegisterScreen = ({navigation, route}) => {
     }
   };
 
-  ////======Registration Api=============////
+  // ======Registration Api============= //
   const registrationApi = async () => {
     if (!shopName) {
       showToast('Please Enter Your Shop Name');
@@ -236,9 +236,8 @@ const RegisterScreen = ({navigation, route}) => {
         .finally(() => setLoading(false));
     }
   };
-  ////======Registration Api=============////
 
-  ///////======Get user location==========//////////
+  // ====== Get user location ========== //
   const getOneTimeLocation = () => {
     setAddressPlaceHolder('Getting Location ...');
     navigator.geolocation.getCurrentPosition(
@@ -281,7 +280,7 @@ const RegisterScreen = ({navigation, route}) => {
       },
     );
   };
-  ///////======Get user location==========//////////
+  // ======Get user location========== //
   const showToast = msg => {
     ToastAndroid.showWithGravityAndOffset(
       msg,
