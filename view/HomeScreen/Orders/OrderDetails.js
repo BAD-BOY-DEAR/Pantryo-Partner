@@ -48,6 +48,7 @@ const OrderDetails = ({route, navigation}) => {
   const [long, setLong] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState('');
   const [customerToken, setCustomerToken] = React.useState('');
+  const [deliveryPartnerToken, setDeliveryPartnerToken] = React.useState('');
   const [partnerShop, setPartnerShop] = React.useState('');
   const [partnerId, setPartnerId] = React.useState('');
 
@@ -56,12 +57,12 @@ const OrderDetails = ({route, navigation}) => {
   const [deliveryPartnerContactNumber, setDeliveryPartnerContactNumber] =
     React.useState('');
   const [deliveryPartnerImg, setDeliveryPartnerImg] = React.useState('');
-  const [deliverypartnerToken, setDeliveryPartnerToken] = useState('');
+  // const [deliverypartnerToken, setDeliveryPartnerToken] = useState('');
 
   const customer_firebase_key =
     'AAAAIIoSzdk:APA91bFqAg9Vu4T-_LYX5EPz9UVtqZTp0bRWOpkJLgm6GqIf4QAJtrW6RISmqWHZl6T-ykQrNLpo39kbRHLBsfGmqyz5JP8hxNCUzrfw8ECkcOItsO173OGeIrPf01_jiTLGjJsgwr33';
   const delivery_partner_firebase_key =
-    'AAAA206GD2Q:APA91bEaq_P49bzza39abiiZgUe_-vVytc7JacVYblNvLgqGPWgKYWZhT-6zdw68tmAsM4wkDDyftgYlXNFaMA5C8IVbEFqaTUUqXLsDA21-6HuiEJqcz-QsDaVkPKVckTAIYL3u3glj';
+    'AAAALC3Ugt8:APA91bFdhqYhHLlDedpHpuCBX7puDR5x1qsrmc6k3gh-pXIBaUoxTJ3t91pVuBwV51GdrSnYLb9McgZYbGnkVR6-A8BnqsUL8nQKN8Bg3qwwH9puZ01uCt4tnGU7w0qNXL0S-x8Ofnaf';
 
   // Refresh Function
   const onRefresh = React.useCallback(() => {
@@ -115,44 +116,48 @@ const OrderDetails = ({route, navigation}) => {
     console.log(response);
   };
 
-  // const notificationToPartner = async () => {
-  //   const FIREBASE_API_KEY = delivery_partner_firebase_key;
-  //   const message = {
-  //     to: customerToken,
-  //     notification: {
-  //       title: 'Order Accepted',
-  //       body:
-  //         partnerShop +
-  //         ' ' +
-  //         'has accepted your order. Please wait while we search for a delivery partner for you',
-  //       vibrate: 1,
-  //       sound: 1,
-  //       show_in_foreground: true,
-  //       priority: 'high',
-  //       content_available: true,
-  //     },
-  //     data: {
-  //       title: 'Order Accepted',
-  //       body:
-  //         partnerShop +
-  //         ' ' +
-  //         'has accepted your order. Please wait while we search for a delivery partner for you',
-  //     },
-  //   };
+  const notificationToPartner = async userToken => {
+    const FIREBASE_API_KEY = delivery_partner_firebase_key;
+    const message = {
+      to: userToken,
+      notification: {
+        title: 'New Order',
+        body:
+          'You have received a new order from' +
+          ' ' +
+          customerName +
+          ' ' +
+          '.Click here to go to pick up location',
+        vibrate: 1,
+        sound: 1,
+        show_in_foreground: true,
+        priority: 'high',
+        content_available: true,
+      },
+      data: {
+        title: 'New Order',
+        body:
+          'You have received a new order from' +
+          ' ' +
+          customerName +
+          ' ' +
+          '.Click here to go to pick up location',
+      },
+    };
 
-  //   let headers = new Headers({
-  //     'Content-Type': 'application/json',
-  //     Authorization: 'key=' + FIREBASE_API_KEY,
-  //   });
-  //   // https://fcm.googleapis.com/fcm/send
-  //   let response = await fetch('https://fcm.googleapis.com/fcm/send', {
-  //     method: 'POST',
-  //     headers,
-  //     body: JSON.stringify(message),
-  //   });
-  //   response = await response.json();
-  //   console.log(response);
-  // };
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: 'key=' + FIREBASE_API_KEY,
+    });
+    // https://fcm.googleapis.com/fcm/send
+    let response = await fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(message),
+    });
+    response = await response.json();
+    console.log(response);
+  };
 
   // Request user permission to access location
   const requestLocationPermission = async () => {
@@ -188,8 +193,8 @@ const OrderDetails = ({route, navigation}) => {
           latitude: fromLoc.latitude,
           longitude: fromLoc.longitude,
         };
-        // console.log(coordinate.latitude);
-        // console.log(coordinate.longitude);
+        console.log(coordinate.latitude);
+        console.log(coordinate.longitude);
         setLat(coordinate.latitude);
         setLong(coordinate.longitude);
         setCurrentLocation(coordinate);
@@ -238,21 +243,21 @@ const OrderDetails = ({route, navigation}) => {
             navigation.navigate('HomeScreen');
           }
           if (status === '2') {
-            console.log(
-              'Order Status:' +
-                status +
-                'Order ID:' +
-                orderId +
-                'Lat:' +
-                lat +
-                'Long:' +
-                long +
-                'Customer Token:' +
-                customerToken,
-            );
-            console.log(
-              'Status after confirmin order: ' + JSON.stringify(result),
-            );
+            // console.log(
+            //   'Order Status:' +
+            //     status +
+            //     'Order ID:' +
+            //     orderId +
+            //     'Lat:' +
+            //     lat +
+            //     'Long:' +
+            //     long +
+            //     'Customer Token:' +
+            //     customerToken,
+            // );
+            // console.log(
+            //   'Status after confirmin order: ' + JSON.stringify(result),
+            // );
             notificationToCustomer();
             setOrderStatus(status);
             searchDeliveryPartner();
@@ -288,6 +293,8 @@ const OrderDetails = ({route, navigation}) => {
         body: JSON.stringify({
           partner_lan: lat,
           partner_long: long,
+          order_id: orderId,
+          partner_id: partnerId,
         }),
       },
     )
@@ -295,10 +302,15 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        console.log(result);
+        // console.log(result);
         if (result.error == 0) {
-          setDeliveryPartnerName(result.data.fullname);
-          setDeliveryPartnerContactNumber(result.data.contactNumber);
+          let name = result.fullname;
+          let number = result.contactNumber;
+          let token = result.userToken;
+          setDeliveryPartnerName(name);
+          setDeliveryPartnerContactNumber(number);
+          // setDeliveryPartnerToken(result.userToken);
+          notificationToPartner(token);
         } else {
           console.log('Error: ' + JSON.stringify(result));
         }
