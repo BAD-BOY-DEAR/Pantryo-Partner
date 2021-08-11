@@ -196,9 +196,9 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
-        console.log(result);
+        // console.log(result);
         setPartnerStatus(result.partner_status);
-        console.log('Partner Status: ' + partnerStatus);
+        // console.log('Partner Status: ' + partnerStatus);
         if (isEnabled) {
           setPartnerStatus('1');
         } else if (!isEnabled) {

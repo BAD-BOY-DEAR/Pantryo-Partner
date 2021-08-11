@@ -193,8 +193,6 @@ const OrderDetails = ({route, navigation}) => {
           latitude: fromLoc.latitude,
           longitude: fromLoc.longitude,
         };
-        console.log(coordinate.latitude);
-        console.log(coordinate.longitude);
         setLat(coordinate.latitude);
         setLong(coordinate.longitude);
         setCurrentLocation(coordinate);
