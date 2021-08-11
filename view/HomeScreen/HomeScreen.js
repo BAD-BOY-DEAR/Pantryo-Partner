@@ -167,6 +167,7 @@ const HomeScreen = ({navigation}) => {
           setNumberOfOrderAll(result.allordercount);
           setNumberOfOrderToday(result.todayordercount);
         }
+        getTodayOrder();
       })
       .catch(error => {
         console.error(error);
