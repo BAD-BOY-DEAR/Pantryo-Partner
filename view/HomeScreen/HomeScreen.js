@@ -48,21 +48,30 @@ const wait = timeout => {
 const HomeScreen = ({navigation}) => {
   const NO_LOCATION_PROVIDER_AVAILABLE = 2;
   const netInfo = useNetInfo();
+
+  // Toggle Switch
   const [isEnabled, setIsEnabled] = React.useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
   const [isLoading, setLoading] = React.useState(true);
   const [kycStatus, setKycStatus] = React.useState('1');
   const [todayOrderData, setTodayOrderData] = React.useState('');
   const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
   const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
   const [refreshing, setRefreshing] = React.useState(false);
   const [lat, setLat] = React.useState('');
   const [long, setLong] = React.useState('');
   const [currentLocation, setCurrentLocation] = React.useState('');
 
+  // Partner
+  const [partnerId, setPartnerId] = React.useState('');
+  const [partnerStatus, setPartnerStatus] = React.useState('');
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     // setLoading(true);
+    changePartnerStatus();
     getPartnerDetails();
     getTodayOrder();
     wait(2000).then(() => setRefreshing(false));
@@ -121,11 +130,16 @@ const HomeScreen = ({navigation}) => {
     );
   };
 
-  // Getting Partner Details
+  //
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
     setKycStatus(partner_kycStatus);
     getPartnerDetails();
+  };
+
+  // Function to get Partner's Profile
+  const getUserProfile = async () => {
+    setPartnerId(await AsyncStorage.getItem('partner_id'));
   };
 
   // Get Orders received today
@@ -160,14 +174,51 @@ const HomeScreen = ({navigation}) => {
       .finally(() => setLoading(false));
   };
 
+  // Partner Status
+  const changePartnerStatus = async () => {
+    setLoading(true);
+    await fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=partnerStatusChange',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          partner_id: partnerId,
+          partner_status: partnerStatus,
+        }),
+      },
+    )
+      .then(response => {
+        return response.json();
+      })
+      .then(result => {
+        console.log(result);
+        setPartnerStatus(result.partner_status);
+        console.log('Partner Status: ' + partnerStatus);
+        if (isEnabled) {
+          setPartnerStatus('1');
+        } else if (!isEnabled) {
+          setPartnerStatus('2');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => setLoading(false));
+  };
+
   React.useEffect(() => {
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
-
+    changePartnerStatus();
     requestLocationPermission();
     getPartnerDetails();
     getTodayOrder();
+    getUserProfile();
   }, []);
 
   return (
@@ -230,22 +281,47 @@ const HomeScreen = ({navigation}) => {
                         marginLeft: 20,
                         marginRight: 20,
                       }}>
-                      <Text
-                        style={{
-                          fontFamily: 'OpenSans-SemiBold',
-                          fontSize: 18,
-                          color: '#fff',
-                        }}>
-                        Go Live
-                      </Text>
+                      <Text style={styles.btnTxtToggle}>You are Online</Text>
                       <Switch
-                        trackColor={{false: '#767577', true: '#5E3360'}}
+                        trackColor={{false: '#767577', true: '#f4f3f4'}}
                         thumbColor={isEnabled ? 'green' : '#f4f3f4'}
                         ios_backgroundColor="#3e3e3e"
                         onValueChange={toggleSwitch}
                         value={isEnabled}
                         style={{marginTop: 5}}
+                        onChange={() => changePartnerStatus('')}
                       />
+                      {/* {partnerStatus === '1' ? (
+                        <>
+                          <Text style={styles.btnTxtToggle}>
+                            You are Offline
+                          </Text>
+                          <Switch
+                            trackColor={{false: '#767577', true: '#f4f3f4'}}
+                            thumbColor={isEnabled ? 'green' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch}
+                            value={isEnabled}
+                            style={{marginTop: 5}}
+                            onChange={() => changePartnerStatus('2')}
+                          />
+                        </>
+                      ) : partnerStatus === '2' ? (
+                        <>
+                          <Text style={styles.btnTxtToggle}>
+                            You are Online
+                          </Text>
+                          <Switch
+                            trackColor={{false: '#767577', true: '#f4f3f4'}}
+                            thumbColor={isEnabled ? 'green' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch}
+                            value={isEnabled}
+                            style={{marginTop: 5}}
+                            onChange={() => changePartnerStatus('1')}
+                          />
+                        </>
+                      ) : null} */}
                     </View>
                   </View>
                   {/* ========== Header Section ========== */}
@@ -452,7 +528,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   header: {
-    paddingVertical: 10,
+    paddingVertical: 20,
     paddingHorizontal: 10,
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -690,6 +766,11 @@ const styles = StyleSheet.create({
   kycBtnTxt: {
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 16,
+    color: '#fff',
+  },
+  btnTxtToggle: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 18,
     color: '#fff',
   },
 });
