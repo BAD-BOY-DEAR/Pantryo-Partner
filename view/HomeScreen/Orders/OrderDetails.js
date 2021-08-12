@@ -51,6 +51,7 @@ const OrderDetails = ({route, navigation}) => {
   const [deliveryPartnerToken, setDeliveryPartnerToken] = React.useState('');
   const [partnerShop, setPartnerShop] = React.useState('');
   const [partnerId, setPartnerId] = React.useState('');
+  const [deliveryPartnerId, setDeliveryPartnerId] = React.useState('');
 
   // Delivery boy Variables
   const [deliveryPartnerName, setDeliveryPartnerName] = React.useState('');
@@ -401,7 +402,10 @@ const OrderDetails = ({route, navigation}) => {
     setOrderId(route.params.order_id);
     setTotalItem(route.params.totalItem);
     setCustomerName(route.params.customer_name);
-    setCustomerToken(route.params.customerToken);
+    setDeliveryPartnerContactNumber(route.params.deliveryPartnerNumber);
+    setDeliveryPartnerId(route.params.deliveryPartnerID);
+    setDeliveryPartnerName(route.params.deliveryPartnerName);
+    setDeliveryPartnerImg(route.params.deliveryPartnerImage);
     getUserProfile();
     if (route.params.orderStatus == '2') {
       setToggleCheckBoxOne(true);

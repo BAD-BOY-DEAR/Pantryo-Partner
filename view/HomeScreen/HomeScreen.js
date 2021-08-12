@@ -162,6 +162,7 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
+        // console.log(result);
         if (result.error == 0) {
           setTodayOrderData(result.todayorderdetails);
           setNumberOfOrderAll(result.allordercount);
@@ -397,6 +398,12 @@ const HomeScreen = ({navigation}) => {
                                   totalItem: item.TodayOrderOneIdWise,
                                   orderStatus: item.orderStatus,
                                   customerToken: item.customer_token,
+                                  deliveryPartnerName: item.deliveryPartnerName,
+                                  deliveryPartnerNumber:
+                                    item.deliveryPartnerNumber,
+                                  deliveryPartnerID: item.deliveryPartnerID,
+                                  deliveryPartnerImage:
+                                    item.deliveryPartnerImage,
                                 })
                               }
                               style={styles.details}>
