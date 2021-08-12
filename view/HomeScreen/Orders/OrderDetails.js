@@ -36,7 +36,6 @@ const OrderDetails = ({route, navigation}) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [isLoading, setLoading] = React.useState(true);
   const NO_LOCATION_PROVIDER_AVAILABLE = 2;
-  // const [isLoading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [orderId, setOrderId] = React.useState('');
   const [customerName, setCustomerName] = React.useState('');
