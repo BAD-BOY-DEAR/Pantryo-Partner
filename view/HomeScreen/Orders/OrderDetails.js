@@ -70,7 +70,7 @@ const OrderDetails = ({route, navigation}) => {
 
   // Refresh Function
   const onRefresh = React.useCallback(() => {
-    searchDeliveryPartner();
+    // searchDeliveryPartner();
     getOrderDetails(route.params.order_id);
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
@@ -291,7 +291,7 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        console.log(result);
+        // console.log(result);
         if (result.error == 0) {
           let name = result.fullname;
           let number = result.contactNumber;
@@ -300,6 +300,7 @@ const OrderDetails = ({route, navigation}) => {
           setDeliveryPartnerContactNumber(number);
           // setDeliveryPartnerToken(result.userToken);
           notificationToPartner(token);
+          getOrderDetails(orderId);
         } else {
           console.log('Error: ' + JSON.stringify(result));
         }
@@ -406,20 +407,24 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        let status = result.todayorderdetails[0].orderStatus;
-        let customerToken = result.todayorderdetails[0].customer_token;
-        setCustomerToken(customerToken);
+        getOrderDetails(orderId);
         if (result.error == 0) {
           setOrderDetails(result.todayorderdetails);
+          let status = result.todayorderdetails[0].orderStatus;
+          let customerToken = result.todayorderdetails[0].customer_token;
+          setCustomerToken(customerToken);
+          // if (status === '1' && status === '' && status === null) {
+          //   setToggleCheckBoxOne(false);
+          //   setToggleCheckBoxTwo(false);
+          // }
+          if (status === '2') {
+            setToggleCheckBoxOne(true);
+          }
+          if (status == '3') {
+            setToggleCheckBoxOne(true);
+            setToggleCheckBoxTwo(true);
+          }
         }
-        if (status == '2') {
-          setToggleCheckBoxOne(true);
-        }
-        if (status == '3') {
-          setToggleCheckBoxOne(true);
-          setToggleCheckBoxTwo(true);
-        }
-        getOrderDetails(orderId);
       })
       .catch(error => {
         console.error(error);
@@ -600,6 +605,27 @@ const OrderDetails = ({route, navigation}) => {
                               }}>
                               <Text style={styles.delNumber}>
                                 {item.deliveryPartnerNumber}
+                              </Text>
+                            </Pressable>
+                          </View>
+                        ) : (
+                          <ActivityIndicator />
+                        )}
+
+                        {item.deliveryPartnerNumber == '' &&
+                        item.deliveryPartnerName == '' ? (
+                          <View style={styles.delDetails}>
+                            <Text style={styles.delName}>
+                              {deliveryPartnerName}
+                            </Text>
+                            <Pressable
+                              onPress={() => {
+                                requestCallPermission(
+                                  deliveryPartnerContactNumber,
+                                );
+                              }}>
+                              <Text style={styles.delNumber}>
+                                {deliveryPartnerContactNumber}
                               </Text>
                             </Pressable>
                           </View>
