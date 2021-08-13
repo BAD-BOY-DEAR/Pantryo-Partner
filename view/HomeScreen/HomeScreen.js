@@ -394,16 +394,16 @@ const HomeScreen = ({navigation}) => {
                               onPress={() =>
                                 navigation.navigate('OrderDetails', {
                                   order_id: item.orderId,
-                                  customer_name: item.customer_name,
-                                  totalItem: item.TodayOrderOneIdWise,
-                                  orderStatus: item.orderStatus,
-                                  customerToken: item.customer_token,
-                                  deliveryPartnerName: item.deliveryPartnerName,
-                                  deliveryPartnerNumber:
-                                    item.deliveryPartnerNumber,
-                                  deliveryPartnerID: item.deliveryPartnerID,
-                                  deliveryPartnerImage:
-                                    item.deliveryPartnerImage,
+                                  // customer_name: item.customer_name,
+                                  // totalItem: item.TodayOrderOneIdWise,
+                                  // orderStatus: item.orderStatus,
+                                  // customerToken: item.customer_token,
+                                  // deliveryPartnerName: item.deliveryPartnerName,
+                                  // deliveryPartnerNumber:
+                                  //   item.deliveryPartnerNumber,
+                                  // deliveryPartnerID: item.deliveryPartnerID,
+                                  // deliveryPartnerImage:
+                                  //   item.deliveryPartnerImage,
                                 })
                               }
                               style={styles.details}>
@@ -411,12 +411,30 @@ const HomeScreen = ({navigation}) => {
                                 <Text style={styles.detailsTxt}>
                                   {item.customer_name}
                                 </Text>
-                                <Text style={styles.detailsAddressLabel}>
-                                  Address:
-                                </Text>
-                                <Text style={styles.detailsAddress}>
-                                  {item.customerDeliveryAddress}
-                                </Text>
+                                <View
+                                  style={{
+                                    flex: 1,
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'flex-start',
+                                    flexDirection: 'row',
+                                  }}>
+                                  <View style={{flex: 1}}>
+                                    <Text style={styles.detailsAddressLabel}>
+                                      Address:
+                                    </Text>
+                                    <Text style={styles.detailsAddress}>
+                                      {item.customerDeliveryAddress}
+                                    </Text>
+                                  </View>
+                                  <View style={{flex: 1}}>
+                                    <Text style={styles.detailsAddressLabel}>
+                                      Order Value:
+                                    </Text>
+                                    <Text style={styles.detailsAddress}>
+                                      {item.payment_amount}
+                                    </Text>
+                                  </View>
+                                </View>
                                 <View style={styles.detailsInnerRow}>
                                   <Text style={styles.detailsDate}>
                                     {item.create_date}

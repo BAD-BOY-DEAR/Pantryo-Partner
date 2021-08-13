@@ -15,6 +15,7 @@ import {
   PermissionsAndroid,
   ActivityIndicator,
   RefreshControl,
+  Linking,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -53,6 +54,7 @@ const OrderDetails = ({route, navigation}) => {
   const [partnerShop, setPartnerShop] = React.useState('');
   const [partnerId, setPartnerId] = React.useState('');
   const [deliveryPartnerId, setDeliveryPartnerId] = React.useState('');
+  const [orderDetails, setOrderDetails] = React.useState('');
 
   // Delivery boy Variables
   const [deliveryPartnerName, setDeliveryPartnerName] = React.useState('');
@@ -399,26 +401,90 @@ const OrderDetails = ({route, navigation}) => {
     }
   };
 
+  ////////////Order Details
+  const getOrderDetails = async order_id => {
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getTodayOrderOfPartnerDetails',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          order_id: order_id,
+        }),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        let status = result.todayorderdetails[0].orderStatus;
+        if (result.error == 0) {
+          setOrderDetails(result.todayorderdetails);
+        }
+        if (status == '2') {
+          setToggleCheckBoxOne(true);
+        }
+        if (status == '3') {
+          setToggleCheckBoxOne(true);
+          setToggleCheckBoxTwo(true);
+        }
+        getOrderDetails(orderId);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  /////////Call Persmission
+  const requestCallPermission = async deliveryNumber => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+        {
+          title: 'Pantryo Shop Partner App Call Permission',
+          message: 'Pantryo Shop Partner needs access to your Dialer',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        // console.log('You can use the Dialer');
+        let number = 'tel:${' + deliveryNumber + '}';
+        Linking.openURL(number);
+      } else {
+        console.log('Dialer permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   React.useEffect(() => {
     requestLocationPermission();
     setOrderId(route.params.order_id);
-    setTotalItem(route.params.totalItem);
-    setCustomerName(route.params.customer_name);
-    setDeliveryPartnerContactNumber(route.params.deliveryPartnerNumber);
-    setDeliveryPartnerId(route.params.deliveryPartnerID);
-    setDeliveryPartnerName(route.params.deliveryPartnerName);
-    setDeliveryPartnerImg(route.params.deliveryPartnerImage);
-    if (route.params.deliveryPartnerImage) {
-      setModalVisible(true);
-    }
-    getUserProfile();
-    if (route.params.orderStatus == '2') {
-      setToggleCheckBoxOne(true);
-    }
-    if (route.params.orderStatus == '3') {
-      setToggleCheckBoxOne(true);
-      setToggleCheckBoxTwo(true);
-    }
+    getOrderDetails(route.params.order_id);
+    // setTotalItem(route.params.totalItem);
+    // setCustomerName(route.params.customer_name);
+    // setDeliveryPartnerContactNumber(route.params.deliveryPartnerNumber);
+    // setDeliveryPartnerId(route.params.deliveryPartnerID);
+    // setDeliveryPartnerName(route.params.deliveryPartnerName);
+    // setDeliveryPartnerImg(route.params.deliveryPartnerImage);
+    // if (route.params.deliveryPartnerImage) {
+    //   setModalVisible(true);
+    // }
+    // getUserProfile();
+    // if (route.params.orderStatus == '2') {
+    //   setToggleCheckBoxOne(true);
+    // }
+    // if (route.params.orderStatus == '3') {
+    //   setToggleCheckBoxOne(true);
+    //   setToggleCheckBoxTwo(true);
+    // }
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
@@ -429,166 +495,178 @@ const OrderDetails = ({route, navigation}) => {
       {isLoading == true ? (
         <Loader />
       ) : (
-        <ScrollView
+        <FlatList
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          style={styles.scroll}
-          scrollEnabled={true}>
-          {/* ======== Order Details Start ======== */}
-          <View style={styles.card}>
-            <View style={styles.div}>
-              <Text style={styles.heading}>Order Details</Text>
-
-              <View style={styles.tabRow}>
-                <Text style={styles.label}>OrderID: </Text>
-                <Text style={styles.response}>{orderId}</Text>
-              </View>
-
-              <View style={styles.tabRow}>
-                <Text style={styles.label}>Customer: </Text>
-                <Text style={styles.response}>{customerName}</Text>
-              </View>
-            </View>
-          </View>
-          {/* ======== Order Details Start ======== */}
-
-          {/* ======== Products Details Start ======== */}
-          <View style={styles.card}>
-            <View style={styles.div}>
-              <Text style={styles.heading}>Products to be packed</Text>
-              <FlatList
-                data={totalItem}
-                keyExtractor={item => item.cart_id}
-                renderItem={({item}) => (
-                  <View style={styles.tabRow}>
-                    <View style={styles.section}>
-                      <Text style={styles.brandName}>{item.brandName}</Text>
-                      <Text style={styles.product}>{item.productName}</Text>
-                    </View>
-                    <Text style={styles.weight}>
-                      {item.productQty}
-                      {item.productUnit}
-                    </Text>
-                    <Text style={styles.qty}>X {item.numberOfProduct}</Text>
-                    <Text style={styles.cost}>₹{item.productPrice}</Text>
-                  </View>
-                )}
-              />
-            </View>
-          </View>
-          {/* ======== Products Details Start ======== */}
-
-          {/* ======== Checkbox Section Start ======== */}
-          <View style={[styles.card, {marginBottom: 40}]}>
-            <View style={[styles.div]}>
-              <Text style={styles.heading}>Action</Text>
-
-              <View style={styles.tabRow}>
-                <Text style={styles.statusName}>Confirm Order</Text>
-                {toggleCheckBoxOne == false ? (
-                  <CheckBox
-                    disabled={false}
-                    value={toggleCheckBoxOne}
-                    onValueChange={() => updtateStatus('2')}
-                    style={styles.statusOne}
-                    lineWidth={2}
-                    hideBox={false}
-                    boxType={'circle'}
-                    tintColors={'#9E663C'}
-                    onCheckColor={'#6F763F'}
-                    onFillColor={'#4DABEC'}
-                    onTintColor={'#F4DCF8'}
-                  />
-                ) : (
-                  <CheckBox
-                    disabled={true}
-                    value={toggleCheckBoxOne}
-                    style={styles.statusOne}
-                    lineWidth={2}
-                    hideBox={false}
-                    boxType={'circle'}
-                    tintColors={'#9E663C'}
-                    onCheckColor={'#6F763F'}
-                    onFillColor={'#4DABEC'}
-                    onTintColor={'#F4DCF8'}
-                  />
-                )}
-              </View>
-
-              {toggleCheckBoxOne ? (
-                <>
-                  <View style={styles.deliveryContainer}>
-                    <View style={styles.delRow}>
-                      {deliveryPartnerImg !== '' ? (
-                        <Image
-                          source={{uri: deliveryPartnerImg}}
-                          style={styles.delImg}
-                        />
-                      ) : (
-                        <Text>Searching for Delivery Partner</Text>
-                      )}
-                    </View>
-
-                    {deliveryPartnerContactNumber &&
-                    deliveryPartnerName !== '' ? (
-                      <View style={styles.delDetails}>
-                        <Text style={styles.delName}>
-                          {deliveryPartnerName}
-                        </Text>
-                        <Text style={styles.delNumber}>
-                          {deliveryPartnerContactNumber}
-                        </Text>
-                      </View>
-                    ) : (
-                      <ActivityIndicator />
-                    )}
-                  </View>
-                  <View style={styles.readyBtn}>
-                    <Text style={styles.readyBtnTxt}>Order Ready</Text>
-                  </View>
-                </>
-              ) : null}
-            </View>
-          </View>
-          {/* ======== Checkbox Section Start ======== */}
-
-          {deliveryPartnerName !== '' ? (
+          style={{width: '100%'}}
+          scrollEnabled={true}
+          data={orderDetails}
+          renderItem={({item}) => (
             <>
-              {/* ======= Modal ======= */}
-              <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                  setModalVisible(!modalVisible);
-                }}>
-                <View style={styles.modalContainer}>
-                  <View style={styles.modalCard}>
-                    <Text style={styles.modalText}>
-                      {deliveryPartnerName}
-                      Enter Confirmation Code provided by Delivery Partner to
-                      confirm order handover
-                    </Text>
-                    <TextInput
-                      placeholder="Enter 6 Digit Code"
-                      placeholderTextColor="#777"
-                      style={styles.modalInput}
-                      keyboardType="number-pad"
-                      onChangeText={text => setEnteredOtp(text)}
-                    />
-                    <Pressable
-                      onPress={checkOtpUserByEntered}
-                      style={styles.modalBtn}>
-                      <Text style={styles.modalBtnTxt}>SUBMIT</Text>
-                    </Pressable>
+              {/* ======== Order Details Start ======== */}
+              <View style={styles.card}>
+                <View style={styles.div}>
+                  <Text style={styles.heading}>Order Details</Text>
+
+                  <View style={styles.tabRow}>
+                    <Text style={styles.label}>OrderID: </Text>
+                    <Text style={styles.response}>{item.orderId}</Text>
+                  </View>
+
+                  <View style={styles.tabRow}>
+                    <Text style={styles.label}>Customer: </Text>
+                    <Text style={styles.response}>{item.customer_name}</Text>
                   </View>
                 </View>
-              </Modal>
-              {/* ======= Modal ======= */}
+              </View>
+              {/* ======== Order Details Start ======== */}
+
+              {/* ======== Products Details Start ======== */}
+              <View style={styles.card}>
+                <View style={styles.div}>
+                  <Text style={styles.heading}>Products to be packed</Text>
+                  <FlatList
+                    data={item.TodayOrderOneIdWise}
+                    keyExtractor={item => item.cart_id}
+                    renderItem={({item}) => (
+                      <View style={styles.tabRow}>
+                        <View style={styles.section}>
+                          <Text style={styles.brandName}>{item.brandName}</Text>
+                          <Text style={styles.product}>{item.productName}</Text>
+                        </View>
+                        <Text style={styles.weight}>
+                          {item.productQty}
+                          {item.productUnit}
+                        </Text>
+                        <Text style={styles.qty}>X {item.numberOfProduct}</Text>
+                        <Text style={styles.cost}>₹{item.productPrice}</Text>
+                      </View>
+                    )}
+                  />
+                </View>
+              </View>
+              {/* ======== Products Details Start ======== */}
+
+              {/* ======== Checkbox Section Start ======== */}
+              <View style={[styles.card, {marginBottom: 40}]}>
+                <View style={[styles.div]}>
+                  <Text style={styles.heading}>Action</Text>
+
+                  <View style={styles.tabRow}>
+                    <Text style={styles.statusName}>Confirm Order</Text>
+                    {toggleCheckBoxOne == false ? (
+                      <CheckBox
+                        disabled={false}
+                        value={toggleCheckBoxOne}
+                        onValueChange={() => updtateStatus('2')}
+                        style={styles.statusOne}
+                        lineWidth={2}
+                        hideBox={false}
+                        boxType={'circle'}
+                        tintColors={'#9E663C'}
+                        onCheckColor={'#6F763F'}
+                        onFillColor={'#4DABEC'}
+                        onTintColor={'#F4DCF8'}
+                      />
+                    ) : (
+                      <CheckBox
+                        disabled={true}
+                        value={toggleCheckBoxOne}
+                        style={styles.statusOne}
+                        lineWidth={2}
+                        hideBox={false}
+                        boxType={'circle'}
+                        tintColors={'#9E663C'}
+                        onCheckColor={'#6F763F'}
+                        onFillColor={'#4DABEC'}
+                        onTintColor={'#F4DCF8'}
+                      />
+                    )}
+                  </View>
+
+                  {toggleCheckBoxOne ? (
+                    <>
+                      <View style={styles.deliveryContainer}>
+                        <View style={styles.delRow}>
+                          {item.deliveryPartnerImage !== '' ? (
+                            <Image
+                              source={{uri: item.deliveryPartnerImage}}
+                              style={styles.delImg}
+                            />
+                          ) : (
+                            <Text>Searching for Delivery Partner</Text>
+                          )}
+                        </View>
+
+                        {item.deliveryPartnerNumber &&
+                        item.deliveryPartnerName !== '' ? (
+                          <View style={styles.delDetails}>
+                            <Text style={styles.delName}>
+                              {item.deliveryPartnerName}
+                            </Text>
+                            <Pressable
+                              onPress={() => {
+                                requestCallPermission(
+                                  item.deliveryPartnerNumber,
+                                );
+                              }}>
+                              <Text style={styles.delNumber}>
+                                {item.deliveryPartnerNumber}
+                              </Text>
+                            </Pressable>
+                          </View>
+                        ) : (
+                          <ActivityIndicator />
+                        )}
+                      </View>
+                      <View style={styles.readyBtn}>
+                        <Text style={styles.readyBtnTxt}>Order Ready</Text>
+                      </View>
+                    </>
+                  ) : null}
+                </View>
+              </View>
+              {/* ======== Checkbox Section Start ======== */}
+
+              {item.deliveryPartnerName !== '' ? (
+                <>
+                  {/* ======= Modal ======= */}
+                  <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                      setModalVisible(!modalVisible);
+                    }}>
+                    <View style={styles.modalContainer}>
+                      <View style={styles.modalCard}>
+                        <Text style={styles.modalText}>
+                          {deliveryPartnerName}
+                          Enter Confirmation Code provided by Delivery Partner
+                          to confirm order handover
+                        </Text>
+                        <TextInput
+                          placeholder="Enter 6 Digit Code"
+                          placeholderTextColor="#777"
+                          style={styles.modalInput}
+                          keyboardType="number-pad"
+                          onChangeText={text => setEnteredOtp(text)}
+                        />
+                        <Pressable
+                          onPress={checkOtpUserByEntered}
+                          style={styles.modalBtn}>
+                          <Text style={styles.modalBtnTxt}>SUBMIT</Text>
+                        </Pressable>
+                      </View>
+                    </View>
+                  </Modal>
+                  {/* ======= Modal ======= */}
+                </>
+              ) : null}
             </>
-          ) : null}
-        </ScrollView>
+          )}
+        />
       )}
     </>
   );
@@ -770,9 +848,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
   delNumber: {
-    color: '#000',
-    fontFamily: 'OpenSans-Regular',
-    fontSize: 16,
+    color: 'green',
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 20,
     marginTop: 5,
   },
 });
