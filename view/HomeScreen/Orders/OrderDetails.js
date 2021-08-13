@@ -71,6 +71,7 @@ const OrderDetails = ({route, navigation}) => {
   // Refresh Function
   const onRefresh = React.useCallback(() => {
     searchDeliveryPartner();
+    getOrderDetails(route.params.order_id);
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
   }, []);
@@ -197,6 +198,7 @@ const OrderDetails = ({route, navigation}) => {
           latitude: fromLoc.latitude,
           longitude: fromLoc.longitude,
         };
+        // console.log(coordinate);
         setLat(coordinate.latitude);
         setLong(coordinate.longitude);
         setCurrentLocation(coordinate);
@@ -246,26 +248,10 @@ const OrderDetails = ({route, navigation}) => {
             navigation.navigate('HomeScreen');
           }
           if (status === '2') {
-            // console.log(
-            //   'Order Status:' +
-            //     status +
-            //     'Order ID:' +
-            //     orderId +
-            //     'Lat:' +
-            //     lat +
-            //     'Long:' +
-            //     long +
-            //     'Customer Token:' +
-            //     customerToken,
-            // );
-            // console.log(
-            //   'Status after confirmin order: ' + JSON.stringify(result),
-            // );
             notificationToCustomer();
             setOrderStatus(status);
             searchDeliveryPartner();
             setToggleCheckBoxOne(true);
-            // setModalVisible(true);
           }
         } else {
           if (status === '3') {
@@ -305,7 +291,7 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        // console.log(result);
+        console.log(result);
         if (result.error == 0) {
           let name = result.fullname;
           let number = result.contactNumber;
@@ -421,6 +407,8 @@ const OrderDetails = ({route, navigation}) => {
       })
       .then(function (result) {
         let status = result.todayorderdetails[0].orderStatus;
+        let customerToken = result.todayorderdetails[0].customer_token;
+        setCustomerToken(customerToken);
         if (result.error == 0) {
           setOrderDetails(result.todayorderdetails);
         }
@@ -435,8 +423,7 @@ const OrderDetails = ({route, navigation}) => {
       })
       .catch(error => {
         console.error(error);
-      })
-      .finally(() => setLoading(false));
+      });
   };
 
   /////////Call Persmission
@@ -466,6 +453,7 @@ const OrderDetails = ({route, navigation}) => {
 
   React.useEffect(() => {
     requestLocationPermission();
+    getUserProfile();
     setOrderId(route.params.order_id);
     getOrderDetails(route.params.order_id);
     // setTotalItem(route.params.totalItem);
@@ -477,7 +465,6 @@ const OrderDetails = ({route, navigation}) => {
     // if (route.params.deliveryPartnerImage) {
     //   setModalVisible(true);
     // }
-    // getUserProfile();
     // if (route.params.orderStatus == '2') {
     //   setToggleCheckBoxOne(true);
     // }
