@@ -19,6 +19,7 @@ const SettingsScreen = ({navigation}) => {
   const [pincode, setPincode] = React.useState('');
   const [shopAddress, setShopAddress] = React.useState('');
   const [appVersion, setAppVersion] = React.useState('');
+  const [mounted, setmounted] = React.useState(true);
   const {signOut} = React.useContext(AuthContext);
 
   // Function to get Partner's Profile
@@ -33,6 +34,9 @@ const SettingsScreen = ({navigation}) => {
   React.useEffect(() => {
     getUserProfile();
     setAppVersion(VersionInfo.appVersion);
+    return function cleanup() {
+      setmounted(false);
+    };
   }, []);
 
   return (
