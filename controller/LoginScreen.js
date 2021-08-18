@@ -84,6 +84,7 @@ const LoginScreen = ({navigation}) => {
           return response.json();
         })
         .then(function (result) {
+          // console.log(result);
           if (result.error == 0) {
             let partner_id = result.partner_id;
             let partner_contactNumber = result.partner_contactNumber;
