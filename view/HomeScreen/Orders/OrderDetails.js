@@ -551,7 +551,10 @@ const OrderDetails = ({route, navigation}) => {
                       <CheckBox
                         disabled={false}
                         value={toggleCheckBoxOne}
-                        onValueChange={() => updtateStatus('2')}
+                        onValueChange={() => {
+                          updtateStatus('2');
+                          setCustomerName(item.customer_name);
+                        }}
                         style={styles.statusOne}
                         lineWidth={2}
                         hideBox={false}
