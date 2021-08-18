@@ -121,7 +121,7 @@ const OrderDetails = ({route, navigation}) => {
     console.log(response);
   };
 
-  const notificationToPartner = async userToken => {
+  const notificationToPartner = async (userToken, customerName) => {
     const FIREBASE_API_KEY = delivery_partner_firebase_key;
     const message = {
       to: userToken,
@@ -218,7 +218,7 @@ const OrderDetails = ({route, navigation}) => {
   };
 
   // status update
-  const updtateStatus = async status => {
+  const updtateStatus = async (status, customername) => {
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=update_order_status',
       {
@@ -250,7 +250,7 @@ const OrderDetails = ({route, navigation}) => {
           if (status === '2') {
             notificationToCustomer();
             setOrderStatus(status);
-            searchDeliveryPartner();
+            searchDeliveryPartner(customername);
             setToggleCheckBoxOne(true);
           }
         } else {
@@ -270,7 +270,7 @@ const OrderDetails = ({route, navigation}) => {
   };
 
   // Search Delivery Partner
-  const searchDeliveryPartner = async () => {
+  const searchDeliveryPartner = async customername => {
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getNearestDeliveryPartner',
       {
@@ -299,7 +299,7 @@ const OrderDetails = ({route, navigation}) => {
           setDeliveryPartnerName(name);
           setDeliveryPartnerContactNumber(number);
           // setDeliveryPartnerToken(result.userToken);
-          notificationToPartner(token);
+          notificationToPartner(token, customername);
           getOrderDetails(orderId);
         } else {
           console.log('Error: ' + JSON.stringify(result));
@@ -424,6 +424,9 @@ const OrderDetails = ({route, navigation}) => {
             setToggleCheckBoxOne(true);
             setToggleCheckBoxTwo(true);
           }
+        } else {
+          setToggleCheckBoxOne(false);
+          setToggleCheckBoxTwo(false);
         }
       })
       .catch(error => {
@@ -552,8 +555,8 @@ const OrderDetails = ({route, navigation}) => {
                         disabled={false}
                         value={toggleCheckBoxOne}
                         onValueChange={() => {
-                          updtateStatus('2');
-                          setCustomerName(item.customer_name);
+                          updtateStatus('2', item.customer_name);
+                          // setCustomerName();
                         }}
                         style={styles.statusOne}
                         lineWidth={2}
