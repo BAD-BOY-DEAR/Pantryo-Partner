@@ -424,9 +424,6 @@ const OrderDetails = ({route, navigation}) => {
             setToggleCheckBoxOne(true);
             setToggleCheckBoxTwo(true);
           }
-        } else {
-          setToggleCheckBoxOne(false);
-          setToggleCheckBoxTwo(false);
         }
       })
       .catch(error => {
