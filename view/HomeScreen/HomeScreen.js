@@ -336,7 +336,7 @@ const HomeScreen = ({navigation}) => {
                       <View style={styles.cardOne}>
                         <Text style={styles.cardOneLabel}>Orders Today</Text>
                         <Text style={styles.cardOneResponse}>
-                          {numberOfOrderToday}
+                          {numberOfOrderToday ? numberOfOrderToday : '0'}
                         </Text>
                       </View>
                       <Pressable
@@ -351,7 +351,7 @@ const HomeScreen = ({navigation}) => {
                           Total Orders Received
                         </Text>
                         <Text style={styles.cardOneResponse}>
-                          {numberOfOrderAll}
+                          {numberOfOrderAll ? numberOfOrderAll : '0'}
                         </Text>
                       </Pressable>
                     </View>
@@ -377,7 +377,7 @@ const HomeScreen = ({navigation}) => {
                           loop
                         />
                       </View>
-                    ) : todayOrderData !== '' ? (
+                    ) : todayOrderData !== null ? (
                       <FlatList
                         data={todayOrderData}
                         style={{width: '100%'}}

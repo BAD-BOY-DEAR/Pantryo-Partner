@@ -380,13 +380,13 @@ const OrderDetails = ({route, navigation}) => {
   };
 
   // Checked Otp
-  const checkOtpUserByEntered = async () => {
-    if (userConfirmationOtp == enteredOtp) {
-      updtateStatus('3');
-    } else {
-      alert('Otp Not Matched!!');
-    }
-  };
+  // const checkOtpUserByEntered = async () => {
+  //   if (userConfirmationOtp == enteredOtp) {
+  //     updtateStatus('3');
+  //   } else {
+  //     alert('Otp Not Matched!!');
+  //   }
+  // };
 
   ////////////Order Details
   const getOrderDetails = async order_id => {
@@ -423,8 +423,37 @@ const OrderDetails = ({route, navigation}) => {
           if (status == '3') {
             setToggleCheckBoxOne(true);
             setToggleCheckBoxTwo(true);
+            setModalVisible();
           }
         }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+  ////////////Order Details
+  const checkOtpUserByEntered = async () => {
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=MatchSecurityCodePartner',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          order_id: orderId,
+          security_code: enteredOtp,
+        }),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        console.log(result);
+        getOrderDetails(orderId);
       })
       .catch(error => {
         console.error(error);
@@ -645,41 +674,37 @@ const OrderDetails = ({route, navigation}) => {
               </View>
               {/* ======== Checkbox Section Start ======== */}
 
-              {item.deliveryPartnerName !== '' ? (
-                <>
-                  {/* ======= Modal ======= */}
-                  <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                      setModalVisible(!modalVisible);
-                    }}>
-                    <View style={styles.modalContainer}>
-                      <View style={styles.modalCard}>
-                        <Text style={styles.modalText}>
-                          {deliveryPartnerName}
-                          Enter Confirmation Code provided by Delivery Partner
-                          to confirm order handover
-                        </Text>
-                        <TextInput
-                          placeholder="Enter 6 Digit Code"
-                          placeholderTextColor="#777"
-                          style={styles.modalInput}
-                          keyboardType="number-pad"
-                          onChangeText={text => setEnteredOtp(text)}
-                        />
-                        <Pressable
-                          onPress={checkOtpUserByEntered}
-                          style={styles.modalBtn}>
-                          <Text style={styles.modalBtnTxt}>SUBMIT</Text>
-                        </Pressable>
-                      </View>
-                    </View>
-                  </Modal>
-                  {/* ======= Modal ======= */}
-                </>
-              ) : null}
+              {/* ======= Modal ======= */}
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalCard}>
+                    <Text style={styles.modalText}>
+                      {deliveryPartnerName}
+                      Enter Confirmation Code provided by Delivery Partner to
+                      confirm order handover
+                    </Text>
+                    <TextInput
+                      placeholder="Enter 6 Digit Code"
+                      placeholderTextColor="#777"
+                      style={styles.modalInput}
+                      keyboardType="number-pad"
+                      onChangeText={text => setEnteredOtp(text)}
+                    />
+                    <Pressable
+                      onPress={checkOtpUserByEntered}
+                      style={styles.modalBtn}>
+                      <Text style={styles.modalBtnTxt}>SUBMIT</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </Modal>
+              {/* ======= Modal ======= */}
             </>
           )}
         />
