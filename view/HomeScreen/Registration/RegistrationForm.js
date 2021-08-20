@@ -133,19 +133,11 @@ const RegisterScreen = ({navigation, route}) => {
     } else if (!gstStatus) {
       showToast('Please Choose GST  registartion Status');
       return;
-    } else if (gstStatus == 'Yes') {
-      if (!gstNumber) {
-        showToast('Please Enter Your GST Number');
-        return;
-      }
-    } else if (!partnerCategory) {
+    } else if (!partnerCategoryId) {
       showToast('Please Enter Your Category');
       return;
     } else if (!partnerContactNumber) {
       showToast('Please Enter Your Contact Number');
-      return;
-    } else if (!partnerAddress) {
-      showToast('Please Enter Your Full Address');
       return;
     } else if (!partnerShopAddress) {
       showToast('Please Enter Your  Full Shop Address');
@@ -169,6 +161,12 @@ const RegisterScreen = ({navigation, route}) => {
       showToast('Please Enter Your UPI ID');
       return;
     } else {
+      if (gstStatus == 'Yes') {
+        if (!gstNumber) {
+          showToast('Please Enter Your GST Number');
+          return;
+        }
+      }
       const data = new FormData();
       data.append('partner_shopName', shopName);
       data.append('partner_category', partnerCategoryId);
@@ -176,7 +174,6 @@ const RegisterScreen = ({navigation, route}) => {
       data.append('partner_gstNumber', gstNumber);
       data.append('partner_shopaddress', partnerShopAddress);
       data.append('partner_pincode', partnerPinCode);
-      data.append('partner_shopgpslocation', partnerAddress);
       data.append('partner_contactNumber', partnerContactNumber);
       data.append('partner_accountNumber', bankAccountNumber);
       data.append('partner_bankAccountHolderName', bankHolderName);
@@ -201,6 +198,7 @@ const RegisterScreen = ({navigation, route}) => {
           return response.json();
         })
         .then(function (result) {
+          // console.log(result);
           if (result.error == 0) {
             let partner_id = result.partner_id;
             let partner_contactNumber = result.partner_contactNumber;
@@ -341,9 +339,9 @@ const RegisterScreen = ({navigation, route}) => {
     ////Partner Category
     fetchPartnerCategoryApi();
     //set Partner Contact Number
-    // setPartnerContactNumber(route.params.partner_contactNumber);
+    setPartnerContactNumber(route.params.partner_contactNumber);
     ///Location
-    requestLocationPermission();
+    // requestLocationPermission();
     //clear Watch Id
     return () => {
       // Geolocation.clearWatch({watchID});
@@ -397,6 +395,7 @@ const RegisterScreen = ({navigation, route}) => {
                 selectionColor="#5E3360"
                 autoCapitalize="words"
                 onChangeText={txt => setShopName(txt)}
+                require
               />
             </View>
           </View>
@@ -412,6 +411,7 @@ const RegisterScreen = ({navigation, route}) => {
                 onValueChange={(itemValue, itemIndex) =>
                   setGSTStatus(itemValue)
                 }>
+                <Picker.Item label="Choose GST Status" value="" />
                 <Picker.Item label="Yes" value="Yes" />
                 <Picker.Item label="No" value="No" />
               </Picker>
@@ -497,7 +497,7 @@ const RegisterScreen = ({navigation, route}) => {
             </View>
           </View>
 
-          <View style={styles.formGroup}>
+          {/* <View style={styles.formGroup}>
             <Text style={styles.formLabel}>GPS LOCATION</Text>
             <View style={styles.formRow}>
               <Icons name="location-outline" size={20} color="#5E3360" />
@@ -511,7 +511,7 @@ const RegisterScreen = ({navigation, route}) => {
                 onChangeText={txt => setPartnerAddress(txt)}
               />
             </View>
-          </View>
+          </View> */}
 
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>SHOP ADDRESS</Text>

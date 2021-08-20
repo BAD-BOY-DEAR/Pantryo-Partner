@@ -52,6 +52,7 @@ const AddProducts = ({route, navigation}) => {
   const [partnerCategoryId, setPanterCategoryId] = React.useState('');
   const [partnerMainCategoryId, setPanterMainCategoryId] = React.useState('');
   const [selectedUnit, setSelectedUnit] = React.useState('');
+  const [partner_id, setPartnerId] = React.useState('');
   const [inventoryQty, setInventoryQty] = React.useState('');
 
   const ref = React.useRef(null);
@@ -62,6 +63,11 @@ const AddProducts = ({route, navigation}) => {
     fetchPantryoInventory(partnerCategoryId, partnerMainCategoryId);
     wait(500).then(() => setRefreshing(false));
   }, []);
+
+  ////set Partner Details
+  const partnerDetails = async () => {
+    setPartnerId(await AsyncStorage.getItem('partner_id'));
+  };
 
   // =========== Toast Function =========== //
   const showToast = msg => {
@@ -114,6 +120,7 @@ const AddProducts = ({route, navigation}) => {
           } else {
             showToast('Something went Wrong!');
           }
+          fetchPantryoInventory(partner_category, main_category_id);
         })
         .catch(error => {
           console.error(error);
@@ -123,7 +130,7 @@ const AddProducts = ({route, navigation}) => {
   };
 
   // ====== Add Product ======= //
-  const addProductApi = async (
+  const addProductApi = (
     partner_category_id,
     main_category_id,
     inventory_id,
@@ -133,7 +140,7 @@ const AddProducts = ({route, navigation}) => {
     product_price,
     product_unit,
   ) => {
-    let partner_id = await AsyncStorage.getItem('partner_id');
+    // let partner_id = await AsyncStorage.getItem('partner_id');
     let price = null;
     let qty = null;
     let unit = null;
@@ -276,6 +283,7 @@ const AddProducts = ({route, navigation}) => {
   };
 
   React.useEffect(() => {
+    partnerDetails();
     let {partner_category, main_category_id} = route.params;
     if (partner_category) {
       if (main_category_id) {
@@ -372,7 +380,7 @@ const AddProducts = ({route, navigation}) => {
                     onRefresh={onRefresh}
                   />
                 }
-                renderItem={({item}) => (
+                renderItem={({item, index}) => (
                   <>
                     {item.product_assign_status == 'not added' ? (
                       <View style={styles.prodTab}>
@@ -412,7 +420,7 @@ const AddProducts = ({route, navigation}) => {
                               />
                             </Pressable>
                           ) : (
-                            <Pressable
+                            <View
                               style={[
                                 styles.addBtn,
                                 {backgroundColor: 'green'},
@@ -422,7 +430,7 @@ const AddProducts = ({route, navigation}) => {
                                 size={20}
                                 color="white"
                               />
-                            </Pressable>
+                            </View>
                           )}
                         </View>
 
@@ -464,11 +472,6 @@ const AddProducts = ({route, navigation}) => {
                                 justifyContent: 'flex-end',
                                 textAlign: 'center',
                               }}
-                              // selectedValue={
-                              //   item.pantryo_inventory_id == inventoryId
-                              //     ? selectedUnit
-                              //     : item.pantryo_item_unit
-                              // }
                               onValueChange={(itemValue, itemIndex) => {
                                 setSelectedUnit(itemValue);
                                 setInventoryId(item.pantryo_inventory_id);

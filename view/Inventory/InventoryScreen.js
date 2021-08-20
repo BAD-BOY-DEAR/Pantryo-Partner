@@ -120,6 +120,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             showToast('Something went Wrong!');
           }
+          fetchAllProductsOfPartnerApi();
         })
         .catch(error => {
           console.error(error);

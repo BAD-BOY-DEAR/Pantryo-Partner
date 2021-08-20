@@ -748,13 +748,13 @@ const styles = StyleSheet.create({
   },
   kycCard: {
     width: '50%',
-    height: '70%',
     marginRight: 30,
     marginBottom: 30,
     borderRadius: 20,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingHorizontal: 15,
+    paddingVertical: 15,
     shadowColor: '#cea5d1',
     shadowOffset: {
       width: 0,
