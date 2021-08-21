@@ -162,7 +162,7 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        // console.log(result);
+        console.log(result);
         if (result.error == 0) {
           setTodayOrderData(result.todayorderdetails);
           setNumberOfOrderAll(result.allordercount);
@@ -428,12 +428,40 @@ const HomeScreen = ({navigation}) => {
                                   </View>
                                   <View style={{flex: 1}}>
                                     <Text style={styles.detailsAddressLabel}>
-                                      Order Value:
+                                      Your Earning:
                                     </Text>
-                                    <Text style={styles.detailsAddress}>
-                                      {item.payment_amount}
+                                    <Text
+                                      style={[
+                                        styles.detailsAddress,
+                                        {color: 'green', fontSize: 24},
+                                      ]}>
+                                      ₹ {item.payment_amount}
                                     </Text>
                                   </View>
+                                </View>
+
+                                <View
+                                  style={{
+                                    flex: 1,
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'flex-start',
+                                    marginTop: 15,
+                                  }}>
+                                  <Text
+                                    style={{
+                                      fontFamily: 'OpenSans-SemiBold',
+                                      fontSize: 16,
+                                    }}>
+                                    Order ID:
+                                  </Text>
+                                  <Text
+                                    style={{
+                                      fontFamily: 'OpenSans-Bold',
+                                      fontSize: 20,
+                                      color: '#000',
+                                    }}>
+                                    {item.orderId}
+                                  </Text>
                                 </View>
                                 <View style={styles.detailsInnerRow}>
                                   <Text style={styles.detailsDate}>
