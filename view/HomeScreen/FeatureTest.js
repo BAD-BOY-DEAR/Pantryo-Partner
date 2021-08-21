@@ -10,7 +10,7 @@ const FeatureTest = () => {
   const userToken2 =
     'fx16dI92QUK6luF3mEFUKv:APA91bEOozietpDn30DbDg72y5UY6HyLUw2RbnnAI9_1gegusoDXoU5cT3C0zIjE1qsq1IKOyaizmpSd2Pzfk-DeBi2yU3Kw9oRfITg34_UuyZVhWyliPpczLQCEmevWswJ9UNnSxm8B';
 
-  ///////////////send Notification to Customer
+  // Send Notification to Customer
   const sendPushNotification = async () => {
     const CUSTOMER_FIREBASE_API_KEY =
       'AAAAIIoSzdk:APA91bFqAg9Vu4T-_LYX5EPz9UVtqZTp0bRWOpkJLgm6GqIf4QAJtrW6RISmqWHZl6T-ykQrNLpo39kbRHLBsfGmqyz5JP8hxNCUzrfw8ECkcOItsO173OGeIrPf01_jiTLGjJsgwr33';
@@ -46,7 +46,7 @@ const FeatureTest = () => {
     console.log(response);
   };
 
-  ///////Send Notification to Delivery Partner
+  // Send Notification to Delivery Partner
   const sendPushNotification2 = async () => {
     const DELIVERY_PARTNER_FIREBASE_API_KEY =
       'AAAA206GD2Q:APA91bEaq_P49bzza39abiiZgUe_-vVytc7JacVYblNvLgqGPWgKYWZhT-6zdw68tmAsM4wkDDyftgYlXNFaMA5C8IVbEFqaTUUqXLsDA21-6HuiEJqcz-QsDaVkPKVckTAIYL3u3glj';
