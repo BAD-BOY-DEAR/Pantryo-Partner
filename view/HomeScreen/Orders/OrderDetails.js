@@ -453,6 +453,9 @@ const OrderDetails = ({route, navigation}) => {
       })
       .then(function (result) {
         console.log(result);
+        if (result.error == 0) {
+          setModalVisible(false);
+        }
         getOrderDetails(orderId);
       })
       .catch(error => {
@@ -675,6 +678,7 @@ const OrderDetails = ({route, navigation}) => {
               {/* ======== Checkbox Section Start ======== */}
 
               {/* ======= Modal ======= */}
+
               <Modal
                 animationType="fade"
                 transparent={true}
@@ -697,7 +701,7 @@ const OrderDetails = ({route, navigation}) => {
                       onChangeText={text => setEnteredOtp(text)}
                     />
                     <Pressable
-                      onPress={checkOtpUserByEntered}
+                      onPress={() => checkOtpUserByEntered()}
                       style={styles.modalBtn}>
                       <Text style={styles.modalBtnTxt}>SUBMIT</Text>
                     </Pressable>
