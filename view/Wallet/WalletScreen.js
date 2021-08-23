@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   section: {
     paddingHorizontal: 10,
     width: '100%',
-    marginTop: 150,
+    marginVertical: 50,
   },
   screenName: {
     fontFamily: 'OpenSans-SemiBold',

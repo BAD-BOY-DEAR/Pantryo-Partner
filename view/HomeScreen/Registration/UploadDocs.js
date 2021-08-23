@@ -17,6 +17,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import {RNCamera} from 'react-native-camera';
 import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RazorpayCheckout from 'react-native-razorpay';
 
 const UploadDocs = ({navigation}) => {
   const [isLoading, setLoading] = React.useState(false);
@@ -157,8 +158,7 @@ const UploadDocs = ({navigation}) => {
       data.append('partner_idBackImage', docBackImage);
       data.append('partner_gstCertificate', gstCertificate);
       data.append('partner_idType', value);
-      // console.log(data);
-      // return;
+
       setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerUploadDocs.php',
@@ -175,13 +175,12 @@ const UploadDocs = ({navigation}) => {
           return response.json();
         })
         .then(function (result) {
-          // console.log(result);
           if (result.error == 0) {
             AsyncStorage.setItem(
               'partner_kycStatus',
               JSON.stringify(result.partner_kycStatus),
             );
-            navigation.navigate('HomeScreen');
+            RazorpayFunction();
           }
           Alert.alert(result.msg);
         })
@@ -190,6 +189,74 @@ const UploadDocs = ({navigation}) => {
         })
         .finally(() => setLoading(false));
     }
+  };
+
+  // RazorpayFunction Payment APi
+  const RazorpayFunction = async () => {
+    let partner_contactNumber = await AsyncStorage.getItem(
+      'partner_contactNumber',
+    );
+    let partner_shopName = await AsyncStorage.getItem('partner_shopName');
+
+    var options = {
+      description: '',
+      image: 'https://gizmmoalchemy.com/api/pantryo/Logo/PantryoLogo.png',
+      currency: 'INR',
+      key: 'rzp_test_Q7747Ni4ezPrgO',
+      amount: '100',
+      name: 'Pantryo',
+      prefill: {
+        email: 'support@pantryo.com',
+        contact: partner_contactNumber,
+        name: partner_shopName,
+      },
+      theme: {color: '#6a3091'},
+    };
+
+    RazorpayCheckout.open(options)
+      .then(data => {
+        let payment_id = `${data.razorpay_payment_id}`;
+        getPaymentStatus(payment_id);
+      })
+      .catch(error => {
+        console.log(
+          'Error: ' + JSON.stringify(`${error.code} | ${error.description}`),
+        );
+      });
+  };
+
+  // Check Payment Status
+  const getPaymentStatus = async payment_id => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    setLoading(true);
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          payment_id: payment_id,
+          partner_id: partner_id,
+        }),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        if (result.payment_status === 'authorized') {
+          navigation.navigate('HomeScreen');
+        } else {
+          showToast('Status of Payment' + ' ' + JSON.stringify(result));
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (

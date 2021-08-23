@@ -338,10 +338,11 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        getOrderDetails(orderId);
         if (result.error == 0) {
           setOrderDetails(result.todayorderdetails);
           let status = result.todayorderdetails[0].orderStatus;
+          let deliveryPartnerOtp =
+            result.todayorderdetails[0].deliveryPartnerOtp;
           let customerToken = result.todayorderdetails[0].customer_token;
           setCustomerToken(customerToken);
           if (status === '2') {
@@ -350,9 +351,12 @@ const OrderDetails = ({route, navigation}) => {
           if (status == '3') {
             setToggleCheckBoxOne(true);
             setToggleCheckBoxTwo(true);
-            setModalVisible();
+            if (deliveryPartnerOtp) {
+              setModalVisible();
+            }
           }
         }
+        getOrderDetails(orderId);
       })
       .catch(error => {
         console.error(error);

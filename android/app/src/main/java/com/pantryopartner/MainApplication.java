@@ -20,6 +20,7 @@ import com.airbnb.android.react.lottie.LottiePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage; 
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import cx.evermeet.versioninfo.RNVersionInfoPackage;
+import com.razorpay.rn.RazorpayPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 

@@ -55,7 +55,7 @@ const HomeScreen = ({navigation}) => {
 
   const [isLoading, setLoading] = React.useState(true);
   const [kycStatus, setKycStatus] = React.useState('1');
-  const [todayOrderData, setTodayOrderData] = React.useState('');
+  const [todayOrderData, setTodayOrderData] = React.useState(null);
   const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
   const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
 
