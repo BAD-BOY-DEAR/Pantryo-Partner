@@ -39,8 +39,6 @@ const OrderDetails = ({route, navigation}) => {
   const NO_LOCATION_PROVIDER_AVAILABLE = 2;
   const [modalVisible, setModalVisible] = useState(false);
   const [orderId, setOrderId] = React.useState('');
-  const [customerName, setCustomerName] = React.useState('');
-  const [totalItem, setTotalItem] = React.useState('');
   const [enteredOtp, setEnteredOtp] = React.useState('');
   const [userConfirmationOtp, setUserConfirmationOtp] = React.useState('');
   const [orderStatus, setOrderStatus] = React.useState('');
@@ -48,20 +46,15 @@ const OrderDetails = ({route, navigation}) => {
   const [toggleCheckBoxTwo, setToggleCheckBoxTwo] = useState(false);
   const [lat, setLat] = React.useState('');
   const [long, setLong] = React.useState('');
-  const [currentLocation, setCurrentLocation] = React.useState('');
   const [customerToken, setCustomerToken] = React.useState('');
-  const [deliveryPartnerToken, setDeliveryPartnerToken] = React.useState('');
   const [partnerShop, setPartnerShop] = React.useState('');
   const [partnerId, setPartnerId] = React.useState('');
-  const [deliveryPartnerId, setDeliveryPartnerId] = React.useState('');
   const [orderDetails, setOrderDetails] = React.useState('');
 
   // Delivery boy Variables
   const [deliveryPartnerName, setDeliveryPartnerName] = React.useState('');
   const [deliveryPartnerContactNumber, setDeliveryPartnerContactNumber] =
     React.useState('');
-  const [deliveryPartnerImg, setDeliveryPartnerImg] = React.useState('');
-  // const [deliverypartnerToken, setDeliveryPartnerToken] = useState('');
 
   const customer_firebase_key =
     'AAAAIIoSzdk:APA91bFqAg9Vu4T-_LYX5EPz9UVtqZTp0bRWOpkJLgm6GqIf4QAJtrW6RISmqWHZl6T-ykQrNLpo39kbRHLBsfGmqyz5JP8hxNCUzrfw8ECkcOItsO173OGeIrPf01_jiTLGjJsgwr33';
@@ -162,59 +155,6 @@ const OrderDetails = ({route, navigation}) => {
     });
     response = await response.json();
     console.log(response);
-  };
-
-  // Request user permission to access location
-  const requestLocationPermission = async () => {
-    if (Platform.OS === 'ios') {
-      getOneTimeLocation();
-    } else {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Location Access Required',
-            message: 'This App needs access to your location',
-          },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          getOneTimeLocation();
-        } else {
-          showToast('Permission Denied');
-          requestLocationPermission();
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-  };
-
-  // Get Longitude and Latitude
-  const getOneTimeLocation = async () => {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        let fromLoc = position.coords;
-        let coordinate = {
-          latitude: fromLoc.latitude,
-          longitude: fromLoc.longitude,
-        };
-        // console.log(coordinate);
-        setLat(coordinate.latitude);
-        setLong(coordinate.longitude);
-        setCurrentLocation(coordinate);
-        setLoading(false);
-      },
-      error => {
-        if (error.code === NO_LOCATION_PROVIDER_AVAILABLE) {
-          showToast('Error 404');
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 2000,
-      },
-    );
   };
 
   // status update
@@ -379,15 +319,6 @@ const OrderDetails = ({route, navigation}) => {
       .finally(() => setLoading(false));
   };
 
-  // Checked Otp
-  // const checkOtpUserByEntered = async () => {
-  //   if (userConfirmationOtp == enteredOtp) {
-  //     updtateStatus('3');
-  //   } else {
-  //     alert('Otp Not Matched!!');
-  //   }
-  // };
-
   ////////////Order Details
   const getOrderDetails = async order_id => {
     fetch(
@@ -413,10 +344,6 @@ const OrderDetails = ({route, navigation}) => {
           let status = result.todayorderdetails[0].orderStatus;
           let customerToken = result.todayorderdetails[0].customer_token;
           setCustomerToken(customerToken);
-          // if (status === '1' && status === '' && status === null) {
-          //   setToggleCheckBoxOne(false);
-          //   setToggleCheckBoxTwo(false);
-          // }
           if (status === '2') {
             setToggleCheckBoxOne(true);
           }
@@ -429,7 +356,8 @@ const OrderDetails = ({route, navigation}) => {
       })
       .catch(error => {
         console.error(error);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   ////////////Order Details
@@ -452,7 +380,6 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        console.log(result);
         if (result.error == 0) {
           setModalVisible(false);
         }
@@ -489,26 +416,11 @@ const OrderDetails = ({route, navigation}) => {
   };
 
   React.useEffect(() => {
-    requestLocationPermission();
     getUserProfile();
     setOrderId(route.params.order_id);
+    setLat(route.params.latitude);
+    setLong(route.params.longitude);
     getOrderDetails(route.params.order_id);
-    // setTotalItem(route.params.totalItem);
-    // setCustomerName(route.params.customer_name);
-    // setDeliveryPartnerContactNumber(route.params.deliveryPartnerNumber);
-    // setDeliveryPartnerId(route.params.deliveryPartnerID);
-    // setDeliveryPartnerName(route.params.deliveryPartnerName);
-    // setDeliveryPartnerImg(route.params.deliveryPartnerImage);
-    // if (route.params.deliveryPartnerImage) {
-    //   setModalVisible(true);
-    // }
-    // if (route.params.orderStatus == '2') {
-    //   setToggleCheckBoxOne(true);
-    // }
-    // if (route.params.orderStatus == '3') {
-    //   setToggleCheckBoxOne(true);
-    //   setToggleCheckBoxTwo(true);
-    // }
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);

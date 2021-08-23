@@ -94,7 +94,7 @@ const HomeScreen = ({navigation}) => {
           getOneTimeLocation();
         } else {
           showToast('Permission Denied');
-          requestLocationPermission();
+          // requestLocationPermission();
         }
       } catch (err) {
         console.warn(err);
@@ -111,15 +111,15 @@ const HomeScreen = ({navigation}) => {
           latitude: fromLoc.latitude,
           longitude: fromLoc.longitude,
         };
-        // console.log(coordinate.latitude);
-        // console.log(coordinate.longitude);
         setLat(coordinate.latitude);
         setLong(coordinate.longitude);
         setCurrentLocation(coordinate);
+        setLoading(false);
       },
       error => {
         if (error.code === NO_LOCATION_PROVIDER_AVAILABLE) {
           showToast('Error 404');
+          setLoading(false);
         }
       },
       {
@@ -162,23 +162,20 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        console.log(result);
         if (result.error == 0) {
           setTodayOrderData(result.todayorderdetails);
           setNumberOfOrderAll(result.allordercount);
           setNumberOfOrderToday(result.todayordercount);
         }
-        getTodayOrder();
       })
       .catch(error => {
         console.error(error);
       })
-      .finally(() => setLoading(false));
+      .finally(() => getTodayOrder());
   };
 
   // Partner Status
   const changePartnerStatus = async () => {
-    setLoading(true);
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=partnerStatusChange',
       {
@@ -197,9 +194,7 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
-        // console.log(result);
         setPartnerStatus(result.partner_status);
-        // console.log('Partner Status: ' + partnerStatus);
         if (isEnabled) {
           setPartnerStatus('1');
         } else if (!isEnabled) {
@@ -208,8 +203,7 @@ const HomeScreen = ({navigation}) => {
       })
       .catch(error => {
         console.log(error);
-      })
-      .finally(() => setLoading(false));
+      });
   };
 
   React.useEffect(() => {
@@ -394,16 +388,8 @@ const HomeScreen = ({navigation}) => {
                               onPress={() =>
                                 navigation.navigate('OrderDetails', {
                                   order_id: item.orderId,
-                                  // customer_name: item.customer_name,
-                                  // totalItem: item.TodayOrderOneIdWise,
-                                  // orderStatus: item.orderStatus,
-                                  // customerToken: item.customer_token,
-                                  // deliveryPartnerName: item.deliveryPartnerName,
-                                  // deliveryPartnerNumber:
-                                  //   item.deliveryPartnerNumber,
-                                  // deliveryPartnerID: item.deliveryPartnerID,
-                                  // deliveryPartnerImage:
-                                  //   item.deliveryPartnerImage,
+                                  latitude: lat,
+                                  longitude: long,
                                 })
                               }
                               style={styles.details}>
