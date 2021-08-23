@@ -1,48 +1,127 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  FlatList,
+} from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ===== Components ===== //
 import WalletActionScreen from './WalletActionScreen';
 import TransactionDetails from './TransactionDetails';
 
+//////////Loader
+import Loader from '../../controller/LoaderScreen';
+
 const WalletScreen = ({navigation}) => {
+  const [transactionData, setTransactionData] = React.useState(null);
+  const [totalAmount, setTotalAmount] = React.useState('0');
+  const [isLoading, setLoading] = React.useState(true);
+  const [mounted, setmounted] = React.useState(true);
+
+  /////////////////////////Get Partner Transaction Details
+  const getPartnerTransactionDetails = async () => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    setmounted(true);
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php?flag=deliverypaymentdetails',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          partner_id: partner_id,
+        }),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        if (mounted) {
+          if (result.error == 0) {
+            setTotalAmount(result.transaction_count);
+            setTransactionData(result.details);
+          }
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => {
+        getPartnerTransactionDetails();
+        setLoading(false);
+      });
+  };
+
+  React.useEffect(() => {
+    getPartnerTransactionDetails();
+    return function cleanup() {
+      setmounted(false);
+    };
+  }, []);
+
   return (
     <>
-      <View style={styles.topContainer}>
-        <View style={styles.section}>
-          <Text style={styles.screenName}>Your Account</Text>
-          <Pressable
-            onPress={() => navigation.navigate('WalletActionScreen')}
-            style={styles.salesCard}>
-            <View style={{flex: 1}}>
-              <Text style={styles.salesCardHeading}>Total Sales</Text>
-              <Text style={styles.totalSales}>₹ 5,000</Text>
+      {isLoading == true ? (
+        <Loader />
+      ) : (
+        <>
+          <View style={styles.topContainer}>
+            <View style={styles.section}>
+              <Text style={styles.screenName}>Your Account</Text>
+              <Pressable
+                onPress={() => navigation.navigate('WalletActionScreen')}
+                style={styles.salesCard}>
+                <View style={{flex: 1}}>
+                  <Text style={styles.salesCardHeading}>Total Sales</Text>
+                  <Text style={styles.totalSales}>₹ {totalAmount}</Text>
+                </View>
+                <Icons name="add-circle" size={30} color="#5E3360" />
+              </Pressable>
             </View>
-            <Icons name="add-circle" size={30} color="#5E3360" />
-          </Pressable>
-        </View>
-      </View>
-      <View style={styles.bottomContainer}>
-        <ScrollView style={styles.btmScroll}>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Transaction History</Text>
           </View>
-          <Pressable
-            onPress={() => navigation.navigate('TransactionDetails')}
-            style={styles.transaction}>
-            <View style={styles.div}>
-              <Text style={styles.transactionLabel}>Credited</Text>
-              <Text style={styles.date}>22 May 2021 11:00 AM</Text>
+          <View style={styles.bottomContainer}>
+            <View style={styles.btmScroll}>
+              <View style={styles.header}>
+                <Text style={styles.headerText}>Transaction History</Text>
+              </View>
+              {transactionData !== null ? (
+                <FlatList
+                  style={{width: '100%'}}
+                  data={transactionData}
+                  keyExtractor={(item, id) => String(id)}
+                  renderItem={({item}) => (
+                    <Pressable
+                      onPress={() => navigation.navigate('TransactionDetails')}
+                      style={styles.transaction}>
+                      <View style={styles.div}>
+                        <Text style={styles.transactionLabel}>Credited</Text>
+                        <Text style={styles.date}>{item.payment_time}</Text>
+                      </View>
+                      <Text style={styles.amount}>₹ {item.payment_amount}</Text>
+                      <Icons
+                        name="chevron-forward-outline"
+                        size={20}
+                        color="#5E3360"
+                      />
+                    </Pressable>
+                  )}
+                />
+              ) : null}
             </View>
-            <Text style={styles.amount}>₹ 5,000</Text>
-            <Icons name="chevron-forward-outline" size={20} color="#5E3360" />
-          </Pressable>
-        </ScrollView>
-      </View>
+          </View>
+        </>
+      )}
     </>
   );
 };
@@ -110,6 +189,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   btmScroll: {
+    flex: 1,
     marginTop: 30,
     marginBottom: 10,
     width: '100%',

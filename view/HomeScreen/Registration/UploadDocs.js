@@ -230,7 +230,7 @@ const UploadDocs = ({navigation}) => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     setLoading(true);
     fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php?flag=partner_transaction',
       {
         method: 'POST',
         headers: {
