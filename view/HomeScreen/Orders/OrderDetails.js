@@ -247,79 +247,7 @@ const OrderDetails = ({route, navigation}) => {
       });
   };
 
-  // Search Delivery Partner
-  // const searchDeliveryPartner = async () => {
-  //   let status = orderStatus;
-  //   await fetch(
-  //     'https://gizmmoalchemy.com/api/pantryo/DeliveryPartnerApi/DeliveryPartner.php?flag=deliveryPartnerStatus',
-  //     {
-  //       method: 'POST',
-  //       headers: {
-  //         Accept: 'application/json',
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         partner_lat: lat,
-  //         partner_long: long,
-  //         order_id: orderId,
-  //         partner_id: partnerId,
-  //         delivery_status: orderStatus,
-  //       }),
-  //     },
-  //   )
-  //     .then(function (response) {
-  //       return response.json();
-  //     })
-  //     .then(function (result) {
-  //       console.log(
-  //         'Partner Lat:' +
-  //           lat +
-  //           'Partner Long: ' +
-  //           long +
-  //           'order ID: ' +
-  //           orderId +
-  //           'Partner ID: ' +
-  //           partnerId +
-  //           'delivery Status: ' +
-  //           orderStatus,
-  //       );
-  //       console.log(
-  //         'Search delivery partner API Response: ' + JSON.stringify(result),
-  //       );
-  //       if (result.error == 0) {
-  //         // notificationToDelivery();
-  //         setDeliveryPartnerImg(result.data.profileImage);
-  //         setDeliveryPartnerName(result.data.fullname);
-  //         setDeliveryPartnerContactNumber(result.data.contactNumber);
-  //         setDeliveryPartnerToken(result.data.userToken);
-  //       } else {
-  //         console.log('Error: ' + JSON.stringify(result));
-  //       }
-  //     });
-  // };
-
-  // Send  Otp to delivery Boy
-  const sentOtpToDeliveryBoy = async () => {
-    await fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=send_otp',
-    )
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (result) {
-        // console.log(result);
-        if (result.error == 1) {
-          setUserConfirmationOtp(result.otp);
-          setModalVisible(true);
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      })
-      .finally(() => setLoading(false));
-  };
-
-  ////////////Order Details
+  // Order Details
   const getOrderDetails = async order_id => {
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getTodayOrderOfPartnerDetails',
@@ -364,7 +292,7 @@ const OrderDetails = ({route, navigation}) => {
       .finally(() => setLoading(false));
   };
 
-  ////////////Order Details
+  // Order Details
   const checkOtpUserByEntered = async () => {
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=MatchSecurityCodePartner',
@@ -394,7 +322,7 @@ const OrderDetails = ({route, navigation}) => {
       });
   };
 
-  /////////Call Persmission
+  // Call Persmission
   const requestCallPermission = async deliveryNumber => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -538,7 +466,12 @@ const OrderDetails = ({route, navigation}) => {
                               style={styles.delImg}
                             />
                           ) : (
-                            <Text>Searching for Delivery Partner</Text>
+                            // <Text>Searching for Delivery Partner</Text>
+                            <Icons
+                              name="image-outline"
+                              size={20}
+                              color="#777"
+                            />
                           )}
                         </View>
 
@@ -594,7 +527,6 @@ const OrderDetails = ({route, navigation}) => {
               {/* ======== Checkbox Section Start ======== */}
 
               {/* ======= Modal ======= */}
-
               <Modal
                 animationType="fade"
                 transparent={true}
@@ -605,9 +537,8 @@ const OrderDetails = ({route, navigation}) => {
                 <View style={styles.modalContainer}>
                   <View style={styles.modalCard}>
                     <Text style={styles.modalText}>
-                      {deliveryPartnerName}
-                      Enter Confirmation Code provided by Delivery Partner to
-                      confirm order handover
+                      Enter Confirmation Code provided by {deliveryPartnerName}{' '}
+                      to confirm order handover
                     </Text>
                     <TextInput
                       placeholder="Enter 6 Digit Code"

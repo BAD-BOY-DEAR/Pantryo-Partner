@@ -28,6 +28,7 @@ import analytics from '@react-native-firebase/analytics';
 import messaging from '@react-native-firebase/messaging';
 navigator.geolocation = require('@react-native-community/geolocation');
 import {showToast} from './functions';
+import CheckBox from '@react-native-community/checkbox';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -50,6 +51,7 @@ const HomeScreen = ({navigation}) => {
   const netInfo = useNetInfo();
 
   // Toggle Switch
+  const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
   const [isEnabled, setIsEnabled] = React.useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -194,12 +196,34 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
+        console.log();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  // Partner Status
+  const getStatus = async () => {
+    await fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=checkpartnerStatus',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          partner_id: partnerId,
+        }),
+      },
+    )
+      .then(response => {
+        return response.json();
+      })
+      .then(result => {
+        getStatus();
         setPartnerStatus(result.partner_status);
-        if (isEnabled) {
-          setPartnerStatus('1');
-        } else if (!isEnabled) {
-          setPartnerStatus('2');
-        }
       })
       .catch(error => {
         console.log(error);
@@ -210,11 +234,15 @@ const HomeScreen = ({navigation}) => {
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
-    changePartnerStatus();
+
     requestLocationPermission();
     getPartnerDetails();
     getTodayOrder();
     getUserProfile();
+
+    getStatus();
+
+    console.log('Partner Status: ' + partnerStatus);
   }, []);
 
   return (
@@ -272,53 +300,54 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Header Section ========== */}
                   <View style={styles.header}>
                     <Text style={styles.screenName}>Dashboard</Text>
+                    {/* ========== Status Section ========== */}
                     <View
                       style={{
                         marginLeft: 20,
                         marginRight: 20,
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
                       }}>
-                      <Text style={styles.btnTxtToggle}>You are Online</Text>
-                      <Switch
-                        trackColor={{false: '#767577', true: '#f4f3f4'}}
-                        thumbColor={isEnabled ? 'green' : '#f4f3f4'}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                        style={{marginTop: 5}}
-                        onChange={() => changePartnerStatus('')}
-                      />
-                      {/* {partnerStatus === '1' ? (
+                      {partnerStatus == '1' ? (
                         <>
-                          <Text style={styles.btnTxtToggle}>
-                            You are Offline
-                          </Text>
-                          <Switch
-                            trackColor={{false: '#767577', true: '#f4f3f4'}}
-                            thumbColor={isEnabled ? 'green' : '#f4f3f4'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={toggleSwitch}
-                            value={isEnabled}
-                            style={{marginTop: 5}}
-                            onChange={() => changePartnerStatus('2')}
+                          <Text style={styles.checkBoxTxt}>Live</Text>
+                          <CheckBox
+                            disabled={false}
+                            value={toggleCheckBox}
+                            onValueChange={newValue =>
+                              setToggleCheckBox(newValue)
+                            }
+                            onChange={() => {
+                              changePartnerStatus();
+                              setPartnerStatus('1');
+                            }}
                           />
                         </>
-                      ) : partnerStatus === '2' ? (
+                      ) : partnerStatus == '2' ? (
                         <>
-                          <Text style={styles.btnTxtToggle}>
-                            You are Online
-                          </Text>
-                          <Switch
-                            trackColor={{false: '#767577', true: '#f4f3f4'}}
-                            thumbColor={isEnabled ? 'green' : '#f4f3f4'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={toggleSwitch}
-                            value={isEnabled}
-                            style={{marginTop: 5}}
-                            onChange={() => changePartnerStatus('1')}
+                          <Text style={styles.checkBoxTxt}>Offline</Text>
+                          <CheckBox
+                            disabled={false}
+                            value={toggleCheckBox}
+                            onValueChange={newValue =>
+                              setToggleCheckBox(newValue)
+                            }
+                            onChange={() => {
+                              changePartnerStatus();
+                              setPartnerStatus('2');
+                            }}
                           />
                         </>
-                      ) : null} */}
+                      ) : (
+                        <>
+                          <Text style={styles.checkBoxTxt}>
+                            Fetching Status...
+                          </Text>
+                        </>
+                      )}
                     </View>
+                    {/* ========== Status Section ========== */}
                   </View>
                   {/* ========== Header Section ========== */}
 
@@ -341,9 +370,7 @@ const HomeScreen = ({navigation}) => {
                           })
                         }
                         style={styles.cardOne}>
-                        <Text style={styles.cardOneLabel}>
-                          Total Orders Received
-                        </Text>
+                        <Text style={styles.cardOneLabel}>Total Orders</Text>
                         <Text style={styles.cardOneResponse}>
                           {numberOfOrderAll ? numberOfOrderAll : '0'}
                         </Text>
@@ -355,23 +382,29 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Ongoing Orders Section ========== */}
                   <View style={styles.section}>
                     <Text style={styles.tabHeading}>Orders Received Today</Text>
+
                     {isLoading == true ? (
-                      <View
-                        style={[
-                          styles.loader,
-                          {
-                            paddingVertical: '30%',
-                            paddingHorizontal: '35%',
-                          },
-                        ]}>
-                        <LottieView
-                          style={{height: 75, width: 75}}
-                          source={require('../../assets/lottie/loading.json')}
-                          autoPlay
-                          loop
-                        />
-                      </View>
+                      <>
+                        {/* ======= Lottie Loader while searching for orders ======= */}
+                        <View
+                          style={[
+                            styles.loader,
+                            {
+                              paddingVertical: '30%',
+                              paddingHorizontal: '35%',
+                            },
+                          ]}>
+                          <LottieView
+                            style={{height: 75, width: 75}}
+                            source={require('../../assets/lottie/loading.json')}
+                            autoPlay
+                            loop
+                          />
+                        </View>
+                        {/* ======= Lottie Loader while searching for orders ======= */}
+                      </>
                     ) : todayOrderData !== null ? (
+                      // ======== Customer Orders ========
                       <FlatList
                         data={todayOrderData}
                         style={{width: '100%'}}
@@ -461,13 +494,13 @@ const HomeScreen = ({navigation}) => {
                             </Pressable>
                           </>
                         )}
+                        // ======== Customer Orders ========
                       />
                     ) : (
+                      // ========== Waiting for Orders ==========
                       <View
                         style={{
                           flex: 1,
-                          // paddingVertical: '45%',
-                          // paddingHorizontal: '50%',
                           justifyContent: 'center',
                           alignItems: 'center',
                           width: '100%',
@@ -489,10 +522,10 @@ const HomeScreen = ({navigation}) => {
                             textAlign: 'center',
                             color: '#777',
                           }}>
-                          Waiting for customer orders. You will receive a
-                          notification as soon as a customer places their order
+                          Waiting for customer orders.
                         </Text>
                       </View>
+                      // ========== Waiting for Orders ==========
                     )}
                   </View>
                   {/* ========== Ongoing Orders Section ========== */}
@@ -811,6 +844,11 @@ const styles = StyleSheet.create({
   btnTxtToggle: {
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 18,
+    color: '#fff',
+  },
+  checkBoxTxt: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
     color: '#fff',
   },
 });

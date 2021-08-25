@@ -25,7 +25,7 @@ import Navigation from './controller/Navigation';
 
 const Stack = createStackNavigator();
 
-const App = () => {
+const App = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [data, setData] = useState('');
   const [title, setTitle] = useState('');
