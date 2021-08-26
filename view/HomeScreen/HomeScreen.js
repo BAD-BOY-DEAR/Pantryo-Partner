@@ -96,7 +96,6 @@ const HomeScreen = ({navigation}) => {
           getOneTimeLocation();
         } else {
           showToast('Permission Denied');
-          // requestLocationPermission();
         }
       } catch (err) {
         console.warn(err);
@@ -104,7 +103,7 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
-  // Get Longitude and Latitude  change
+  // Get Longitude and Latitude
   const getOneTimeLocation = async () => {
     navigator.geolocation.getCurrentPosition(
       position => {
@@ -142,7 +141,7 @@ const HomeScreen = ({navigation}) => {
     setPartnerId(await AsyncStorage.getItem('partner_id'));
   };
 
-  // Get Orders received today update
+  // Get Orders received today
   const getTodayOrder = async () => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     fetch(
