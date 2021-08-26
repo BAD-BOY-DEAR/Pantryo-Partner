@@ -96,7 +96,6 @@ const HomeScreen = ({navigation}) => {
           getOneTimeLocation();
         } else {
           showToast('Permission Denied');
-          // requestLocationPermission();
         }
       } catch (err) {
         console.warn(err);
@@ -116,12 +115,10 @@ const HomeScreen = ({navigation}) => {
         setLat(coordinate.latitude);
         setLong(coordinate.longitude);
         setCurrentLocation(coordinate);
-        setLoading(false);
       },
       error => {
         if (error.code === NO_LOCATION_PROVIDER_AVAILABLE) {
           showToast('Error 404');
-          setLoading(false);
         }
       },
       {
@@ -173,7 +170,10 @@ const HomeScreen = ({navigation}) => {
       .catch(error => {
         console.error(error);
       })
-      .finally(() => getTodayOrder());
+      .finally(() => {
+        getTodayOrder();
+        setLoading(false);
+      });
   };
 
   // Partner Status
