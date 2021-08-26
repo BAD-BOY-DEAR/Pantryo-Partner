@@ -421,6 +421,7 @@ const OrderDetails = ({route, navigation}) => {
                 <View style={[styles.div]}>
                   <Text style={styles.heading}>Action</Text>
 
+                  {/* ======== Accept Button ======== */}
                   <View style={styles.tabRow}>
                     {toggleCheckBoxOne == true ? (
                       <Text style={styles.statusName}>Order Confirmed</Text>
@@ -460,6 +461,45 @@ const OrderDetails = ({route, navigation}) => {
                       />
                     )}
                   </View>
+                  {/* ======== Accept Button ======== */}
+
+                  {/* ======== Reject Button ======== */}
+                  <View style={styles.tabRow}>
+                    {toggleCheckBoxOne == true ? (
+                      <Text style={styles.statusName}>Order Rejected</Text>
+                    ) : (
+                      <Text style={styles.statusName}>Reject</Text>
+                    )}
+
+                    {toggleCheckBoxOne == false ? (
+                      <CheckBox
+                        disabled={false}
+                        value={toggleCheckBoxOne}
+                        style={styles.statusOne}
+                        lineWidth={2}
+                        hideBox={false}
+                        boxType={'circle'}
+                        tintColors={'#9E663C'}
+                        onCheckColor={'#6F763F'}
+                        onFillColor={'#4DABEC'}
+                        onTintColor={'#F4DCF8'}
+                      />
+                    ) : (
+                      <CheckBox
+                        disabled={true}
+                        value={toggleCheckBoxOne}
+                        style={styles.statusOne}
+                        lineWidth={2}
+                        hideBox={false}
+                        boxType={'circle'}
+                        tintColors={'#9E663C'}
+                        onCheckColor={'#6F763F'}
+                        onFillColor={'#4DABEC'}
+                        onTintColor={'#F4DCF8'}
+                      />
+                    )}
+                  </View>
+                  {/* ======== Reject Button ======== */}
 
                   {toggleCheckBoxOne ? (
                     <>
