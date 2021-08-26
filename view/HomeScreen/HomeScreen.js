@@ -300,6 +300,7 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Header Section ========== */}
                   <View style={styles.header}>
                     <Text style={styles.screenName}>Dashboard</Text>
+
                     {/* ========== Status Section ========== */}
                     <View
                       style={{
