@@ -37,6 +37,7 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Picker} from '@react-native-picker/picker';
 import {useScrollToTop} from '@react-navigation/native';
+import CheckBox from '@react-native-community/checkbox';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -54,6 +55,9 @@ const AddProducts = ({route, navigation}) => {
   const [selectedUnit, setSelectedUnit] = React.useState('');
   const [partner_id, setPartnerId] = React.useState('');
   const [inventoryQty, setInventoryQty] = React.useState('');
+
+  // Checkbox
+  const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
 
   const ref = React.useRef(null);
   useScrollToTop(ref);
@@ -300,6 +304,11 @@ const AddProducts = ({route, navigation}) => {
         <LoaderScreen />
       ) : (
         <View style={styles.container}>
+          <View style={styles.header}>
+            <Pressable style={styles.headerBtn}>
+              <Text style={styles.headerBtnTxt}>Add</Text>
+            </Pressable>
+          </View>
           <View style={styles.searchSection}>
             <View style={styles.searchBox}>
               <Icons name="search-outline" size={20} color="#777" />
@@ -703,5 +712,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  header: {
+    marginTop: 10,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    width: '100%',
+  },
+  headerBtn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '30%',
+    paddingVertical: 10,
+    backgroundColor: 'green',
+    borderRadius: 5,
+  },
+  headerBtnTxt: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 18,
+    color: '#fff',
   },
 });

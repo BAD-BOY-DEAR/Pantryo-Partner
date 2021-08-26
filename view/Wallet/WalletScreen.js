@@ -83,7 +83,7 @@ const WalletScreen = ({navigation}) => {
                 onPress={() => navigation.navigate('WalletActionScreen')}
                 style={styles.salesCard}>
                 <View style={{flex: 1}}>
-                  <Text style={styles.salesCardHeading}>Total Sales</Text>
+                  <Text style={styles.salesCardHeading}>Total Collection</Text>
                   <Text style={styles.totalSales}>₹ {totalAmount}</Text>
                 </View>
                 <Icons name="add-circle" size={30} color="#5E3360" />

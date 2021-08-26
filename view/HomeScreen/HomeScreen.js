@@ -197,6 +197,7 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
+        console.log(result);
         getStatus();
       })
       .catch(error => {
@@ -224,6 +225,7 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
+        console.log(result);
         setPartnerStatus(result.partner_status);
         if (result.partner_status == 1) {
           setToggleCheckBox(true);
