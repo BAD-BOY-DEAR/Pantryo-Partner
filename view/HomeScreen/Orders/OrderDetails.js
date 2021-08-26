@@ -422,7 +422,12 @@ const OrderDetails = ({route, navigation}) => {
                   <Text style={styles.heading}>Action</Text>
 
                   <View style={styles.tabRow}>
-                    <Text style={styles.statusName}>Confirm Order</Text>
+                    {toggleCheckBoxOne == true ? (
+                      <Text style={styles.statusName}>Order Confirmed</Text>
+                    ) : (
+                      <Text style={styles.statusName}>Confirm Order</Text>
+                    )}
+
                     {toggleCheckBoxOne == false ? (
                       <CheckBox
                         disabled={false}
