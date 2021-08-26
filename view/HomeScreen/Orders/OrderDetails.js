@@ -284,7 +284,7 @@ const OrderDetails = ({route, navigation}) => {
             }
           }
         }
-        getOrderDetails(orderId);
+        getOrderDetails(order_id);
       })
       .catch(error => {
         console.error(error);
@@ -471,12 +471,12 @@ const OrderDetails = ({route, navigation}) => {
                               style={styles.delImg}
                             />
                           ) : (
-                            // <Text>Searching for Delivery Partner</Text>
-                            <Icons
-                              name="image-outline"
-                              size={20}
-                              color="#777"
-                            />
+                            <Text>Searching for Delivery Partner</Text>
+                            // <Icons
+                            //   name="image-outline"
+                            //   size={20}
+                            //   color="#777"
+                            // />
                           )}
                         </View>
 
