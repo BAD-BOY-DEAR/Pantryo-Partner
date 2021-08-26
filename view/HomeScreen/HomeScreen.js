@@ -104,7 +104,7 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
-  // Get Longitude and Latitude
+  // Get Longitude and Latitude  change
   const getOneTimeLocation = async () => {
     navigator.geolocation.getCurrentPosition(
       position => {
@@ -116,12 +116,10 @@ const HomeScreen = ({navigation}) => {
         setLat(coordinate.latitude);
         setLong(coordinate.longitude);
         setCurrentLocation(coordinate);
-        setLoading(false);
       },
       error => {
         if (error.code === NO_LOCATION_PROVIDER_AVAILABLE) {
           showToast('Error 404');
-          setLoading(false);
         }
       },
       {
@@ -144,7 +142,7 @@ const HomeScreen = ({navigation}) => {
     setPartnerId(await AsyncStorage.getItem('partner_id'));
   };
 
-  // Get Orders received today
+  // Get Orders received today update
   const getTodayOrder = async () => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     fetch(
@@ -173,7 +171,10 @@ const HomeScreen = ({navigation}) => {
       .catch(error => {
         console.error(error);
       })
-      .finally(() => getTodayOrder());
+      .finally(() => {
+        getTodayOrder();
+        setLoading(false);
+      });
   };
 
   // Partner Status
