@@ -177,7 +177,8 @@ const HomeScreen = ({navigation}) => {
   };
 
   // Partner Status
-  const changePartnerStatus = async () => {
+  const changePartnerStatus = async status => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=partnerStatusChange',
       {
@@ -187,8 +188,8 @@ const HomeScreen = ({navigation}) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          partner_id: partnerId,
-          partner_status: partnerStatus,
+          partner_id: partner_id,
+          partner_status: status,
         }),
       },
     )
@@ -196,7 +197,7 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
-        console.log();
+        getStatus();
       })
       .catch(error => {
         console.log(error);
@@ -205,6 +206,7 @@ const HomeScreen = ({navigation}) => {
 
   // Partner Status
   const getStatus = async () => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=checkpartnerStatus',
       {
@@ -214,7 +216,7 @@ const HomeScreen = ({navigation}) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          partner_id: partnerId,
+          partner_id: partner_id,
         }),
       },
     )
@@ -222,8 +224,13 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
-        getStatus();
         setPartnerStatus(result.partner_status);
+        if (result.partner_status == 1) {
+          setToggleCheckBox(true);
+        } else {
+          setToggleCheckBox(false);
+        }
+        // getStatus();
       })
       .catch(error => {
         console.log(error);
@@ -239,10 +246,8 @@ const HomeScreen = ({navigation}) => {
     getPartnerDetails();
     getTodayOrder();
     getUserProfile();
-
+    //// Partner Status
     getStatus();
-
-    console.log('Partner Status: ' + partnerStatus);
   }, []);
 
   return (
@@ -320,8 +325,8 @@ const HomeScreen = ({navigation}) => {
                               setToggleCheckBox(newValue)
                             }
                             onChange={() => {
-                              changePartnerStatus();
-                              setPartnerStatus('1');
+                              changePartnerStatus('2');
+                              // setPartnerStatus('2');
                             }}
                           />
                         </>
@@ -335,8 +340,8 @@ const HomeScreen = ({navigation}) => {
                               setToggleCheckBox(newValue)
                             }
                             onChange={() => {
-                              changePartnerStatus();
-                              setPartnerStatus('2');
+                              changePartnerStatus('1');
+                              // setPartnerStatus('1');
                             }}
                           />
                         </>
