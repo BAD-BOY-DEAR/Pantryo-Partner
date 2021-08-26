@@ -44,6 +44,7 @@ const OrderDetails = ({route, navigation}) => {
   const [orderStatus, setOrderStatus] = React.useState('');
   const [toggleCheckBoxOne, setToggleCheckBoxOne] = useState(false);
   const [toggleCheckBoxTwo, setToggleCheckBoxTwo] = useState(false);
+  const [toggleCheckBoxThree, setToggleCheckBoxThree] = useState(false);
   const [lat, setLat] = React.useState('');
   const [long, setLong] = React.useState('');
   const [customerToken, setCustomerToken] = React.useState('');
@@ -185,7 +186,7 @@ const OrderDetails = ({route, navigation}) => {
           if (status === '3') {
             setToggleCheckBoxTwo(true);
             setModalVisible(false);
-            navigation.navigate('HomeScreen');
+            // navigation.navigate('HomeScreen');
           }
           if (status === '2') {
             notificationToCustomer();
@@ -231,14 +232,12 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        // console.log(result);
         if (result.error == 0) {
           let name = result.fullname;
           let number = result.contactNumber;
           let token = result.userToken;
           setDeliveryPartnerName(name);
           setDeliveryPartnerContactNumber(number);
-          // setDeliveryPartnerToken(result.userToken);
           notificationToPartner(token, customername);
           getOrderDetails(orderId);
         } else {
@@ -269,8 +268,6 @@ const OrderDetails = ({route, navigation}) => {
         if (result.error == 0) {
           setOrderDetails(result.todayorderdetails);
           let status = result.todayorderdetails[0].orderStatus;
-          let deliveryPartnerOtp =
-            result.todayorderdetails[0].deliveryPartnerOtp;
           let customerToken = result.todayorderdetails[0].customer_token;
           setCustomerToken(customerToken);
           if (status === '2') {
@@ -279,9 +276,6 @@ const OrderDetails = ({route, navigation}) => {
           if (status == '3') {
             setToggleCheckBoxOne(true);
             setToggleCheckBoxTwo(true);
-            if (deliveryPartnerOtp) {
-              setModalVisible();
-            }
           }
         }
         getOrderDetails(order_id);
@@ -353,6 +347,8 @@ const OrderDetails = ({route, navigation}) => {
     setLat(route.params.latitude);
     setLong(route.params.longitude);
     getOrderDetails(route.params.order_id);
+
+    ////////////////
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
@@ -464,41 +460,43 @@ const OrderDetails = ({route, navigation}) => {
                   {/* ======== Accept Button ======== */}
 
                   {/* ======== Reject Button ======== */}
-                  <View style={styles.tabRow}>
-                    {toggleCheckBoxOne == true ? (
-                      <Text style={styles.statusName}>Order Rejected</Text>
-                    ) : (
-                      <Text style={styles.statusName}>Reject</Text>
-                    )}
+                  {toggleCheckBoxOne !== true ? (
+                    <View style={styles.tabRow}>
+                      {toggleCheckBoxThree == true ? (
+                        <Text style={styles.statusName}>Order Rejected</Text>
+                      ) : (
+                        <Text style={styles.statusName}>Reject</Text>
+                      )}
 
-                    {toggleCheckBoxOne == false ? (
-                      <CheckBox
-                        disabled={false}
-                        value={toggleCheckBoxOne}
-                        style={styles.statusOne}
-                        lineWidth={2}
-                        hideBox={false}
-                        boxType={'circle'}
-                        tintColors={'#9E663C'}
-                        onCheckColor={'#6F763F'}
-                        onFillColor={'#4DABEC'}
-                        onTintColor={'#F4DCF8'}
-                      />
-                    ) : (
-                      <CheckBox
-                        disabled={true}
-                        value={toggleCheckBoxOne}
-                        style={styles.statusOne}
-                        lineWidth={2}
-                        hideBox={false}
-                        boxType={'circle'}
-                        tintColors={'#9E663C'}
-                        onCheckColor={'#6F763F'}
-                        onFillColor={'#4DABEC'}
-                        onTintColor={'#F4DCF8'}
-                      />
-                    )}
-                  </View>
+                      {toggleCheckBoxThree == false ? (
+                        <CheckBox
+                          disabled={false}
+                          value={toggleCheckBoxThree}
+                          style={styles.statusOne}
+                          lineWidth={2}
+                          hideBox={false}
+                          boxType={'circle'}
+                          tintColors={'#9E663C'}
+                          onCheckColor={'#6F763F'}
+                          onFillColor={'#4DABEC'}
+                          onTintColor={'#F4DCF8'}
+                        />
+                      ) : (
+                        <CheckBox
+                          disabled={true}
+                          value={toggleCheckBoxThree}
+                          style={styles.statusOne}
+                          lineWidth={2}
+                          hideBox={false}
+                          boxType={'circle'}
+                          tintColors={'#9E663C'}
+                          onCheckColor={'#6F763F'}
+                          onFillColor={'#4DABEC'}
+                          onTintColor={'#F4DCF8'}
+                        />
+                      )}
+                    </View>
+                  ) : null}
                   {/* ======== Reject Button ======== */}
 
                   {toggleCheckBoxOne ? (
