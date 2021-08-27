@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 navigator.geolocation = require('@react-native-community/geolocation');
 import Icons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
+import * as Animatable from 'react-native-animatable';
 
 // ===== Images ===== //
 import deliveryBoy from '../../../assets/icons/delivery.gif';
@@ -85,7 +86,7 @@ const OrderDetails = ({route, navigation}) => {
         body:
           partnerShop +
           ' ' +
-          'has accepted your order. Please wait while we search for a delivery partner for you',
+          'has confirmed your order. Please wait while we search for a Delivery Partner in your area',
         vibrate: 1,
         sound: 1,
         show_in_foreground: true,
@@ -97,7 +98,7 @@ const OrderDetails = ({route, navigation}) => {
         body:
           partnerShop +
           ' ' +
-          'has accepted your order. Please wait while we search for a delivery partner for you',
+          'has confirmed your order. Please wait while we search for a Delivery Partner in your area',
       },
     };
 
@@ -126,7 +127,7 @@ const OrderDetails = ({route, navigation}) => {
           ' ' +
           customerName +
           ' ' +
-          '.Click here to go to pick up location',
+          '. Please open your app to accept',
         vibrate: 1,
         sound: 1,
         show_in_foreground: true,
@@ -140,7 +141,7 @@ const OrderDetails = ({route, navigation}) => {
           ' ' +
           customerName +
           ' ' +
-          '.Click here to go to pick up location',
+          '. Please open your app to accept',
       },
     };
 
@@ -502,21 +503,26 @@ const OrderDetails = ({route, navigation}) => {
                   {toggleCheckBoxOne ? (
                     <>
                       <View style={styles.deliveryContainer}>
-                        <View style={styles.delRow}>
-                          {item.deliveryPartnerImage !== '' ? (
+                        {item.deliveryPartnerImage !== '' ? (
+                          <View style={styles.delRow}>
                             <Image
                               source={{uri: item.deliveryPartnerImage}}
                               style={styles.delImg}
                             />
-                          ) : (
-                            <Text>Searching for Delivery Partner</Text>
-                            // <Icons
-                            //   name="image-outline"
-                            //   size={20}
-                            //   color="#777"
-                            // />
-                          )}
-                        </View>
+                          </View>
+                        ) : (
+                          <Animatable.Text
+                            animation="fadeIn"
+                            iterationCount="infinite"
+                            style={{
+                              fontFamily: 'OpenSans-SemiBold',
+                              fontSize: 16,
+                              width: '100%',
+                              textAlign: 'center',
+                            }}>
+                            Searching for Delivery Partner...
+                          </Animatable.Text>
+                        )}
 
                         {item.deliveryPartnerNumber &&
                         item.deliveryPartnerName !== '' ? (
@@ -560,9 +566,6 @@ const OrderDetails = ({route, navigation}) => {
                           <ActivityIndicator />
                         )}
                       </View>
-                      <View style={styles.readyBtn}>
-                        <Text style={styles.readyBtnTxt}>Order Ready</Text>
-                      </View>
                     </>
                   ) : null}
                 </View>
@@ -581,7 +584,7 @@ const OrderDetails = ({route, navigation}) => {
                   <View style={styles.modalCard}>
                     <Text style={styles.modalText}>
                       Enter Confirmation Code provided by {deliveryPartnerName}{' '}
-                      to confirm order handover
+                      to close order.
                     </Text>
                     <TextInput
                       placeholder="Enter 6 Digit Code"
