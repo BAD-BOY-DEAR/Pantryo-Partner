@@ -347,7 +347,6 @@ const OrderDetails = ({route, navigation}) => {
     setOrderId(route.params.order_id);
     getOrderDetails(route.params.order_id);
 
-    ////////////////
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);

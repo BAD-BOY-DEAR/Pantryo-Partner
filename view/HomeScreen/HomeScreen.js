@@ -366,7 +366,10 @@ const HomeScreen = ({navigation}) => {
                         keyExtractor={item => item.orderId}
                         renderItem={({item}) => (
                           <>
-                            {item.orderStatus == '8' ? (
+                            {item.orderStatus == '8' ||
+                            item.orderStatus == '7' ||
+                            item.orderStatus == '6' ||
+                            item.orderStatus == '5' ? (
                               <View
                                 onPress={() =>
                                   navigation.navigate('OrderDetails', {
