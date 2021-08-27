@@ -26,6 +26,7 @@ navigator.geolocation = require('@react-native-community/geolocation');
 import Icons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
 import * as Animatable from 'react-native-animatable';
+import LottieView from 'lottie-react-native';
 
 // ===== Images ===== //
 import deliveryBoy from '../../../assets/icons/delivery.gif';
@@ -53,6 +54,9 @@ const OrderDetails = ({route, navigation}) => {
   const [partnerShop, setPartnerShop] = React.useState('');
   const [partnerId, setPartnerId] = React.useState('');
   const [orderDetails, setOrderDetails] = React.useState('');
+
+  // Success Modal
+  const [successModal, setSuccessModal] = useState(false);
 
   // Delivery boy Variables
   const [deliveryPartnerName, setDeliveryPartnerName] = React.useState('');
@@ -310,6 +314,8 @@ const OrderDetails = ({route, navigation}) => {
       .then(function (result) {
         if (result.error == 0) {
           setModalVisible(false);
+          navigation.navigate('HomeScreen');
+          setSuccessModal(true);
         }
         getOrderDetails(orderId);
       })
@@ -570,12 +576,10 @@ const OrderDetails = ({route, navigation}) => {
                     </>
                   ) : null}
                 </View>
-
                 <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                  }}>
-                  <Text>Close Order</Text>
+                  onPress={() => setModalVisible(true)}
+                  style={styles.closeBtn}>
+                  <Text style={styles.closeBtnTxt}>Close Order</Text>
                 </TouchableOpacity>
               </View>
               {/* ======== Checkbox Section Start ======== */}
@@ -600,6 +604,7 @@ const OrderDetails = ({route, navigation}) => {
                       style={styles.modalInput}
                       keyboardType="number-pad"
                       onChangeText={text => setEnteredOtp(text)}
+                      onSubmitEditing={() => checkOtpUserByEntered()}
                     />
                     <Pressable
                       onPress={() => checkOtpUserByEntered()}
@@ -610,6 +615,31 @@ const OrderDetails = ({route, navigation}) => {
                 </View>
               </Modal>
               {/* ======= Modal ======= */}
+
+              {/* ======= Success Modal ======= */}
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={successModal}
+                onRequestClose={() => {
+                  setSuccessModal(!successModal);
+                }}>
+                <View style={styles.successModalContainer}>
+                  <View style={styles.successModalCard}>
+                    <LottieView
+                      source={require('../../../assets/lottie/success.json')}
+                      autoPlay
+                      loop
+                      style={{
+                        width: 100,
+                        height: 100,
+                      }}
+                    />
+                    <Text style={styles.successModalTxt}>Order Closed</Text>
+                  </View>
+                </View>
+              </Modal>
+              {/* ======= Success Modal ======= */}
             </>
           )}
         />
@@ -798,5 +828,39 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 20,
     marginTop: 5,
+  },
+  closeBtn: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#b53d1b',
+    width: '100%',
+    paddingVertical: 18,
+    borderRadius: 5,
+  },
+  closeBtnTxt: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 18,
+    color: '#fff',
+  },
+  successModalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(52, 52, 52, 0.3)',
+    paddingHorizontal: 10,
+  },
+  successModalCard: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  successModalTxt: {
+    fontFamily: 'FredokaOne-Regular',
+    fontSize: 24,
+    marginTop: 10,
   },
 });
