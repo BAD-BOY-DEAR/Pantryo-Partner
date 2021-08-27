@@ -29,6 +29,7 @@ import messaging from '@react-native-firebase/messaging';
 navigator.geolocation = require('@react-native-community/geolocation');
 import {showToast} from './functions';
 import CheckBox from '@react-native-community/checkbox';
+import * as Animatable from 'react-native-animatable';
 
 // ===== Images ===== //
 import mascot from '../../assets/logo/mascot.png';
@@ -161,6 +162,7 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
+        console.log(result);
         if (result.error == 0) {
           setTodayOrderData(result.todayorderdetails);
           setNumberOfOrderAll(result.allordercount);
@@ -438,13 +440,7 @@ const HomeScreen = ({navigation}) => {
                                 <Text style={styles.detailsTxt}>
                                   {item.customer_name}
                                 </Text>
-                                <View
-                                  style={{
-                                    flex: 1,
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'flex-start',
-                                    flexDirection: 'row',
-                                  }}>
+                                <View style={styles.newRow}>
                                   <View style={{flex: 1}}>
                                     <Text style={styles.detailsAddressLabel}>
                                       Address:
@@ -467,28 +463,43 @@ const HomeScreen = ({navigation}) => {
                                   </View>
                                 </View>
 
-                                <View
-                                  style={{
-                                    flex: 1,
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'flex-start',
-                                    marginTop: 15,
-                                  }}>
-                                  <Text
+                                <View style={styles.newRow2}>
+                                  <View
                                     style={{
-                                      fontFamily: 'OpenSans-SemiBold',
-                                      fontSize: 16,
+                                      flex: 1,
                                     }}>
-                                    Order ID:
-                                  </Text>
-                                  <Text
+                                    <Text style={styles.addressLabel}>
+                                      Order ID:
+                                    </Text>
+                                    <Text style={styles.addressLabel2}>
+                                      {item.orderId}
+                                    </Text>
+                                  </View>
+                                  <View
                                     style={{
-                                      fontFamily: 'OpenSans-Bold',
-                                      fontSize: 20,
-                                      color: '#000',
+                                      flex: 1,
                                     }}>
-                                    {item.orderId}
-                                  </Text>
+                                    <Text style={styles.addressLabel}>
+                                      Status:
+                                    </Text>
+                                    {item.orderStatus == '4' ? (
+                                      <Text style={styles.addressLabel2}>
+                                        On Going
+                                      </Text>
+                                    ) : item.orderStatus == '3' ? (
+                                      <Text style={styles.addressLabel2}>
+                                        On Going
+                                      </Text>
+                                    ) : item.orderStatus == '2' ? (
+                                      <Text style={styles.addressLabel2}>
+                                        On Going
+                                      </Text>
+                                    ) : item.orderStatus == '1' ? (
+                                      <Text style={styles.addressLabel2}>
+                                        On Going
+                                      </Text>
+                                    ) : null}
+                                  </View>
                                 </View>
                                 <View style={styles.detailsInnerRow}>
                                   <Text style={styles.detailsDate}>
@@ -519,19 +530,21 @@ const HomeScreen = ({navigation}) => {
                           autoPlay
                           loop
                           style={{
-                            width: 100,
-                            height: 100,
+                            width: 200,
+                            height: 200,
                           }}
                         />
-                        <Text
+                        <Animatable.Text
+                          animation="fadeIn"
+                          iterationCount="infinite"
                           style={{
                             fontFamily: 'OpenSans-Regular',
                             fontSize: 20,
                             textAlign: 'center',
                             color: '#777',
                           }}>
-                          Waiting for customer orders.
-                        </Text>
+                          Waiting for customer orders....
+                        </Animatable.Text>
                       </View>
                       // ========== Waiting for Orders ==========
                     )}
@@ -858,5 +871,27 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Bold',
     fontSize: 20,
     color: '#fff',
+  },
+  newRow: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+  },
+  newRow2: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    marginTop: 15,
+    flexDirection: 'row',
+  },
+  addressLabel: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 16,
+  },
+  addressLabel2: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
+    color: '#000',
   },
 });

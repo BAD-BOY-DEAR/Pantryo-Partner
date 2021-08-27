@@ -16,6 +16,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   Linking,
+  TouchableOpacity,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -569,6 +570,13 @@ const OrderDetails = ({route, navigation}) => {
                     </>
                   ) : null}
                 </View>
+
+                <TouchableOpacity
+                  style={{
+                    marginTop: 10,
+                  }}>
+                  <Text>Close Order</Text>
+                </TouchableOpacity>
               </View>
               {/* ======== Checkbox Section Start ======== */}
 
