@@ -5,34 +5,21 @@ import {
   Pressable,
   StyleSheet,
   ScrollView,
-  Switch,
-  TouchableOpacity,
-  Image,
   FlatList,
   RefreshControl,
-  ActivityIndicator,
   LogBox,
-  Platform,
-  PermissionsAndroid,
-  ToastAndroid,
 } from 'react-native';
 
 // ===== Library ===== //
-import Icons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNetInfo} from '@react-native-community/netinfo';
 import analytics from '@react-native-firebase/analytics';
-import messaging from '@react-native-firebase/messaging';
 navigator.geolocation = require('@react-native-community/geolocation');
-import {showToast} from './functions';
 import CheckBox from '@react-native-community/checkbox';
 import * as Animatable from 'react-native-animatable';
-
-// ===== Images ===== //
-import mascot from '../../assets/logo/mascot.png';
 
 // ===== Screens ===== //
 import RegistrationForm from './Registration/RegistrationForm';
@@ -48,7 +35,6 @@ const wait = timeout => {
 };
 
 const HomeScreen = ({navigation}) => {
-  const NO_LOCATION_PROVIDER_AVAILABLE = 2;
   const netInfo = useNetInfo();
 
   // Toggle Switch
@@ -61,79 +47,21 @@ const HomeScreen = ({navigation}) => {
   const [todayOrderData, setTodayOrderData] = React.useState(null);
   const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
   const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
-
   const [refreshing, setRefreshing] = React.useState(false);
-  const [lat, setLat] = React.useState('');
-  const [long, setLong] = React.useState('');
-  const [currentLocation, setCurrentLocation] = React.useState('');
-
   // Partner
   const [partnerId, setPartnerId] = React.useState('');
   const [partnerStatus, setPartnerStatus] = React.useState('');
 
+  ////////////////onRefresh
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    // setLoading(true);
     changePartnerStatus();
     getPartnerDetails();
     getTodayOrder();
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
-  // Request user permission to access location
-  const requestLocationPermission = async () => {
-    if (Platform.OS === 'ios') {
-      getOneTimeLocation();
-    } else {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Location Access Required',
-            message: 'This App needs access to your location',
-          },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          getOneTimeLocation();
-        } else {
-          showToast('Permission Denied');
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-  };
-
-  // Get Longitude and Latitude
-  const getOneTimeLocation = async () => {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        let fromLoc = position.coords;
-        let coordinate = {
-          latitude: fromLoc.latitude,
-          longitude: fromLoc.longitude,
-        };
-        setLat(coordinate.latitude);
-        setLong(coordinate.longitude);
-        setCurrentLocation(coordinate);
-        setLoading(false);
-        console.log('LAT/LONG: ' + lat + ', ' + long);
-      },
-      error => {
-        if (error.code === NO_LOCATION_PROVIDER_AVAILABLE) {
-          showToast('Error 404');
-          setLoading(false);
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 2000,
-      },
-    );
-  };
-
-  //
+  ///////////get Partner Details
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
     setKycStatus(partner_kycStatus);
@@ -177,7 +105,7 @@ const HomeScreen = ({navigation}) => {
       })
       .finally(() => {
         getTodayOrder();
-        // setLoading(false);
+        setLoading(false);
       });
   };
 
@@ -249,7 +177,6 @@ const HomeScreen = ({navigation}) => {
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
 
-    requestLocationPermission();
     getPartnerDetails();
     getTodayOrder();
     getUserProfile();
@@ -434,8 +361,6 @@ const HomeScreen = ({navigation}) => {
                               onPress={() =>
                                 navigation.navigate('OrderDetails', {
                                   order_id: item.orderId,
-                                  latitude: lat,
-                                  longitude: long,
                                 })
                               }
                               style={styles.details}>
