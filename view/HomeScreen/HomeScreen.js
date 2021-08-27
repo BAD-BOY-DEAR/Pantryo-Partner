@@ -116,10 +116,13 @@ const HomeScreen = ({navigation}) => {
         setLat(coordinate.latitude);
         setLong(coordinate.longitude);
         setCurrentLocation(coordinate);
+        setLoading(false);
+        console.log('LAT/LONG: ' + lat + ', ' + long);
       },
       error => {
         if (error.code === NO_LOCATION_PROVIDER_AVAILABLE) {
           showToast('Error 404');
+          setLoading(false);
         }
       },
       {
@@ -174,7 +177,7 @@ const HomeScreen = ({navigation}) => {
       })
       .finally(() => {
         getTodayOrder();
-        setLoading(false);
+        // setLoading(false);
       });
   };
 
@@ -482,11 +485,7 @@ const HomeScreen = ({navigation}) => {
                                     <Text style={styles.addressLabel}>
                                       Status:
                                     </Text>
-                                    {item.orderStatus == '4' ? (
-                                      <Text style={styles.addressLabel2}>
-                                        On Going
-                                      </Text>
-                                    ) : item.orderStatus == '3' ? (
+                                    {item.orderStatus == '1' ? (
                                       <Text style={styles.addressLabel2}>
                                         On Going
                                       </Text>
@@ -494,9 +493,29 @@ const HomeScreen = ({navigation}) => {
                                       <Text style={styles.addressLabel2}>
                                         On Going
                                       </Text>
-                                    ) : item.orderStatus == '1' ? (
+                                    ) : item.orderStatus == '3' ? (
                                       <Text style={styles.addressLabel2}>
                                         On Going
+                                      </Text>
+                                    ) : item.orderStatus == '4' ? (
+                                      <Text style={styles.addressLabel2}>
+                                        On Going
+                                      </Text>
+                                    ) : item.orderStatus == '5' ? (
+                                      <Text style={styles.addressLabel2}>
+                                        Completed
+                                      </Text>
+                                    ) : item.orderStatus == '6' ? (
+                                      <Text style={styles.addressLabel2}>
+                                        Completed
+                                      </Text>
+                                    ) : item.orderStatus == '7' ? (
+                                      <Text style={styles.addressLabel2}>
+                                        Completed
+                                      </Text>
+                                    ) : item.orderStatus == '8' ? (
+                                      <Text style={styles.addressLabel2}>
+                                        Order Delivered
                                       </Text>
                                     ) : null}
                                   </View>

@@ -87,7 +87,7 @@ const OrderDetails = ({route, navigation}) => {
     const message = {
       to: customerToken,
       notification: {
-        title: 'Order Confirmation',
+        title: 'Order Confirmed',
         body:
           partnerShop +
           ' ' +
@@ -99,7 +99,7 @@ const OrderDetails = ({route, navigation}) => {
         content_available: true,
       },
       data: {
-        title: 'Order Confirmation',
+        title: 'Order Confirmed',
         body:
           partnerShop +
           ' ' +
@@ -238,6 +238,8 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
+        console.log(lat + long + orderId + partnerId);
+
         if (result.error == 0) {
           let name = result.fullname;
           let number = result.contactNumber;
@@ -392,7 +394,7 @@ const OrderDetails = ({route, navigation}) => {
                   </View>
                 </View>
               </View>
-              {/* ======== Order Details Start ======== */}
+              {/* ======== Order Details ======== */}
 
               {/* ======== Products Details Start ======== */}
               <View style={styles.card}>
@@ -418,7 +420,7 @@ const OrderDetails = ({route, navigation}) => {
                   />
                 </View>
               </View>
-              {/* ======== Products Details Start ======== */}
+              {/* ======== Products Details ======== */}
 
               {/* ======== Checkbox Section Start ======== */}
               <View style={[styles.card, {marginBottom: 40}]}>
@@ -582,7 +584,7 @@ const OrderDetails = ({route, navigation}) => {
                   <Text style={styles.closeBtnTxt}>Close Order</Text>
                 </TouchableOpacity>
               </View>
-              {/* ======== Checkbox Section Start ======== */}
+              {/* ======== Checkbox Section ======== */}
 
               {/* ======= Modal ======= */}
               <Modal
