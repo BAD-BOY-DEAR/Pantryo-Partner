@@ -365,104 +365,209 @@ const HomeScreen = ({navigation}) => {
                         keyExtractor={item => item.orderId}
                         renderItem={({item}) => (
                           <>
-                            <Pressable
-                              onPress={() =>
-                                navigation.navigate('OrderDetails', {
-                                  order_id: item.orderId,
-                                })
-                              }
-                              style={styles.details}>
-                              <View style={styles.divOne}>
-                                <Text style={styles.detailsTxt}>
-                                  {item.customer_name}
-                                </Text>
-                                <View style={styles.newRow}>
-                                  <View style={{flex: 1}}>
-                                    <Text style={styles.detailsAddressLabel}>
-                                      Address:
-                                    </Text>
-                                    <Text style={styles.detailsAddress}>
-                                      {item.customerDeliveryAddress}
-                                    </Text>
+                            {item.orderStatus == '8' ? (
+                              <View
+                                onPress={() =>
+                                  navigation.navigate('OrderDetails', {
+                                    order_id: item.orderId,
+                                  })
+                                }
+                                style={styles.details}>
+                                <View style={styles.divOne}>
+                                  <Text style={styles.detailsTxt}>
+                                    {item.customer_name}
+                                  </Text>
+                                  <View style={styles.newRow}>
+                                    <View style={{flex: 1}}>
+                                      <Text style={styles.detailsAddressLabel}>
+                                        Address:
+                                      </Text>
+                                      <Text style={styles.detailsAddress}>
+                                        {item.customerDeliveryAddress}
+                                      </Text>
+                                    </View>
+                                    <View style={{flex: 1}}>
+                                      <Text style={styles.detailsAddressLabel}>
+                                        Your Earning:
+                                      </Text>
+                                      <Text
+                                        style={[
+                                          styles.detailsAddress,
+                                          {color: 'green', fontSize: 24},
+                                        ]}>
+                                        ₹ {item.payment_amount}
+                                      </Text>
+                                    </View>
                                   </View>
-                                  <View style={{flex: 1}}>
-                                    <Text style={styles.detailsAddressLabel}>
-                                      Your Earning:
-                                    </Text>
-                                    <Text
-                                      style={[
-                                        styles.detailsAddress,
-                                        {color: 'green', fontSize: 24},
-                                      ]}>
-                                      ₹ {item.payment_amount}
-                                    </Text>
-                                  </View>
-                                </View>
 
-                                <View style={styles.newRow2}>
-                                  <View
-                                    style={{
-                                      flex: 1,
-                                    }}>
-                                    <Text style={styles.addressLabel}>
-                                      Order ID:
-                                    </Text>
-                                    <Text style={styles.addressLabel2}>
-                                      {item.orderId}
-                                    </Text>
+                                  <View style={styles.newRow2}>
+                                    <View
+                                      style={{
+                                        flex: 1,
+                                      }}>
+                                      <Text style={styles.addressLabel}>
+                                        Order ID:
+                                      </Text>
+                                      <Text style={styles.addressLabel2}>
+                                        {item.orderId}
+                                      </Text>
+                                    </View>
+                                    <View
+                                      style={{
+                                        flex: 1,
+                                      }}>
+                                      <Text style={styles.addressLabel}>
+                                        Status:
+                                      </Text>
+                                      {item.orderStatus == '1' ? (
+                                        <Text style={styles.addressLabel2}>
+                                          On Going
+                                        </Text>
+                                      ) : item.orderStatus == '2' ? (
+                                        <Text style={styles.addressLabel2}>
+                                          On Going
+                                        </Text>
+                                      ) : item.orderStatus == '3' ? (
+                                        <Text style={styles.addressLabel2}>
+                                          On Going
+                                        </Text>
+                                      ) : item.orderStatus == '4' ? (
+                                        <Text style={styles.addressLabel2}>
+                                          On Going
+                                        </Text>
+                                      ) : item.orderStatus == '5' ? (
+                                        <Text style={styles.addressLabel2}>
+                                          Completed
+                                        </Text>
+                                      ) : item.orderStatus == '6' ? (
+                                        <Text style={styles.addressLabel2}>
+                                          Completed
+                                        </Text>
+                                      ) : item.orderStatus == '7' ? (
+                                        <Text style={styles.addressLabel2}>
+                                          Completed
+                                        </Text>
+                                      ) : item.orderStatus == '8' ? (
+                                        <Text style={styles.addressLabel2}>
+                                          Order Delivered
+                                        </Text>
+                                      ) : null}
+                                    </View>
                                   </View>
-                                  <View
-                                    style={{
-                                      flex: 1,
-                                    }}>
-                                    <Text style={styles.addressLabel}>
-                                      Status:
-                                    </Text>
-                                    {item.orderStatus == '1' ? (
-                                      <Text style={styles.addressLabel2}>
-                                        On Going
-                                      </Text>
-                                    ) : item.orderStatus == '2' ? (
-                                      <Text style={styles.addressLabel2}>
-                                        On Going
-                                      </Text>
-                                    ) : item.orderStatus == '3' ? (
-                                      <Text style={styles.addressLabel2}>
-                                        On Going
-                                      </Text>
-                                    ) : item.orderStatus == '4' ? (
-                                      <Text style={styles.addressLabel2}>
-                                        On Going
-                                      </Text>
-                                    ) : item.orderStatus == '5' ? (
-                                      <Text style={styles.addressLabel2}>
-                                        Completed
-                                      </Text>
-                                    ) : item.orderStatus == '6' ? (
-                                      <Text style={styles.addressLabel2}>
-                                        Completed
-                                      </Text>
-                                    ) : item.orderStatus == '7' ? (
-                                      <Text style={styles.addressLabel2}>
-                                        Completed
-                                      </Text>
-                                    ) : item.orderStatus == '8' ? (
-                                      <Text style={styles.addressLabel2}>
-                                        Order Delivered
-                                      </Text>
-                                    ) : null}
-                                  </View>
-                                </View>
-                                <View style={styles.detailsInnerRow}>
-                                  <Text style={styles.detailsDate}>
-                                    {item.create_date}
-                                  </Text>
-                                  <Text style={styles.btnDetails}>
-                                    View Order Details
-                                  </Text>
+                                  {/* <View style={styles.detailsInnerRow}>
+                                <Text style={styles.detailsDate}>
+                                  {item.create_date}
+                                </Text>
+                                <Text style={styles.btnDetails}>
+                                  View Order Details
+                                </Text>
+                              </View> */}
                                 </View>
                               </View>
-                            </Pressable>
+                            ) : (
+                              <>
+                                <Pressable
+                                  onPress={() =>
+                                    navigation.navigate('OrderDetails', {
+                                      order_id: item.orderId,
+                                    })
+                                  }
+                                  style={styles.details}>
+                                  <View style={styles.divOne}>
+                                    <Text style={styles.detailsTxt}>
+                                      {item.customer_name}
+                                    </Text>
+                                    <View style={styles.newRow}>
+                                      <View style={{flex: 1}}>
+                                        <Text
+                                          style={styles.detailsAddressLabel}>
+                                          Address:
+                                        </Text>
+                                        <Text style={styles.detailsAddress}>
+                                          {item.customerDeliveryAddress}
+                                        </Text>
+                                      </View>
+                                      <View style={{flex: 1}}>
+                                        <Text
+                                          style={styles.detailsAddressLabel}>
+                                          Your Earning:
+                                        </Text>
+                                        <Text
+                                          style={[
+                                            styles.detailsAddress,
+                                            {color: 'green', fontSize: 24},
+                                          ]}>
+                                          ₹ {item.payment_amount}
+                                        </Text>
+                                      </View>
+                                    </View>
+
+                                    <View style={styles.newRow2}>
+                                      <View
+                                        style={{
+                                          flex: 1,
+                                        }}>
+                                        <Text style={styles.addressLabel}>
+                                          Order ID:
+                                        </Text>
+                                        <Text style={styles.addressLabel2}>
+                                          {item.orderId}
+                                        </Text>
+                                      </View>
+                                      <View
+                                        style={{
+                                          flex: 1,
+                                        }}>
+                                        <Text style={styles.addressLabel}>
+                                          Status:
+                                        </Text>
+                                        {item.orderStatus == '1' ? (
+                                          <Text style={styles.addressLabel2}>
+                                            On Going
+                                          </Text>
+                                        ) : item.orderStatus == '2' ? (
+                                          <Text style={styles.addressLabel2}>
+                                            On Going
+                                          </Text>
+                                        ) : item.orderStatus == '3' ? (
+                                          <Text style={styles.addressLabel2}>
+                                            On Going
+                                          </Text>
+                                        ) : item.orderStatus == '4' ? (
+                                          <Text style={styles.addressLabel2}>
+                                            On Going
+                                          </Text>
+                                        ) : item.orderStatus == '5' ? (
+                                          <Text style={styles.addressLabel2}>
+                                            Completed
+                                          </Text>
+                                        ) : item.orderStatus == '6' ? (
+                                          <Text style={styles.addressLabel2}>
+                                            Completed
+                                          </Text>
+                                        ) : item.orderStatus == '7' ? (
+                                          <Text style={styles.addressLabel2}>
+                                            Completed
+                                          </Text>
+                                        ) : item.orderStatus == '8' ? (
+                                          <Text style={styles.addressLabel2}>
+                                            Order Delivered
+                                          </Text>
+                                        ) : null}
+                                      </View>
+                                    </View>
+                                    <View style={styles.detailsInnerRow}>
+                                      <Text style={styles.detailsDate}>
+                                        {item.create_date}
+                                      </Text>
+                                      <Text style={styles.btnDetails}>
+                                        View Order Details
+                                      </Text>
+                                    </View>
+                                  </View>
+                                </Pressable>
+                              </>
+                            )}
                           </>
                         )}
                         // ======== Customer Orders ========
