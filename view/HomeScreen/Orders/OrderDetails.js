@@ -270,10 +270,9 @@ const OrderDetails = ({route, navigation}) => {
           let status = result.todayorderdetails[0].orderStatus;
           let customerToken = result.todayorderdetails[0].customer_token;
           setCustomerToken(customerToken);
-          if (status === '2') {
+          if (status == '2') {
             setToggleCheckBoxOne(true);
-          }
-          if (status == '3') {
+          } else {
             setToggleCheckBoxOne(true);
             setToggleCheckBoxTwo(true);
           }
@@ -418,6 +417,7 @@ const OrderDetails = ({route, navigation}) => {
                   <Text style={styles.heading}>Action</Text>
 
                   {/* ======== Accept Button ======== */}
+
                   <View style={styles.tabRow}>
                     {toggleCheckBoxOne == true ? (
                       <Text style={styles.statusName}>Order Confirmed</Text>
@@ -568,11 +568,13 @@ const OrderDetails = ({route, navigation}) => {
                     </>
                   ) : null}
                 </View>
-                <TouchableOpacity
-                  onPress={() => setModalVisible(true)}
-                  style={styles.closeBtn}>
-                  <Text style={styles.closeBtnTxt}>Close Order</Text>
-                </TouchableOpacity>
+                {item.orderStatus == '4' ? (
+                  <TouchableOpacity
+                    onPress={() => setModalVisible(true)}
+                    style={styles.closeBtn}>
+                    <Text style={styles.closeBtnTxt}>Close Order</Text>
+                  </TouchableOpacity>
+                ) : null}
               </View>
               {/* ======== Checkbox Section ======== */}
 
