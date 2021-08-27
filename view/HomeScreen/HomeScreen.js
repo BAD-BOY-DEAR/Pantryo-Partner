@@ -389,6 +389,14 @@ const HomeScreen = ({navigation}) => {
                         </Text>
                       </Pressable>
                     </View>
+                    <View style={styles.row}>
+                      <View style={styles.cardOne}>
+                        <Text style={styles.cardOneLabel}>
+                          Earnings for today
+                        </Text>
+                        <Text style={styles.cardOneResponse}>₹</Text>
+                      </View>
+                    </View>
                   </LinearGradient>
                   {/* ========== Overview Section ========== */}
 
@@ -754,6 +762,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 10,
   },
   cardOne: {
     flex: 1,
