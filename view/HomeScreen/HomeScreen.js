@@ -8,6 +8,7 @@ import {
   FlatList,
   RefreshControl,
   LogBox,
+  Switch,
 } from 'react-native';
 
 // ===== Library ===== //
