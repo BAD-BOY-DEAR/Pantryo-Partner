@@ -270,7 +270,10 @@ const OrderDetails = ({route, navigation}) => {
           let status = result.todayorderdetails[0].orderStatus;
           let customerToken = result.todayorderdetails[0].customer_token;
           setCustomerToken(customerToken);
-          if (status == '2') {
+          if (status == '1') {
+            setToggleCheckBoxOne(false);
+            setToggleCheckBoxTwo(false);
+          } else if (status == '2') {
             setToggleCheckBoxOne(true);
           } else {
             setToggleCheckBoxOne(true);
