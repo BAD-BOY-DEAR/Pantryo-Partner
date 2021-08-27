@@ -95,6 +95,8 @@ const LoginScreen = ({navigation}) => {
             let partner_shopaddress = result.partner_shopaddress;
             let partner_kycStatus = result.partner_kycStatus;
             let user_token = result.user_token;
+            let user_lat = result.partner_lat;
+            let user_long = result.partner_long;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -105,6 +107,8 @@ const LoginScreen = ({navigation}) => {
               partner_shopaddress,
               partner_kycStatus,
               user_token,
+              user_lat,
+              user_long,
             });
           } else if (result.error == 1) {
             navigation.navigate('VerificationScreen', {

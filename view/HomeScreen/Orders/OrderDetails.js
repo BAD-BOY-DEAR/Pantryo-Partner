@@ -3,15 +3,12 @@ import {
   View,
   Text,
   Pressable,
-  ScrollView,
   StyleSheet,
   Image,
   Modal,
   TextInput,
   LogBox,
   FlatList,
-  Alert,
-  Platform,
   PermissionsAndroid,
   ActivityIndicator,
   RefreshControl,
@@ -23,13 +20,10 @@ import {
 import CheckBox from '@react-native-community/checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 navigator.geolocation = require('@react-native-community/geolocation');
-import Icons from 'react-native-vector-icons/Ionicons';
-import messaging from '@react-native-firebase/messaging';
 import * as Animatable from 'react-native-animatable';
 import LottieView from 'lottie-react-native';
 
 // ===== Images ===== //
-import deliveryBoy from '../../../assets/icons/delivery.gif';
 import Loader from '../../../controller/LoaderScreen';
 
 const wait = timeout => {
@@ -39,11 +33,9 @@ const wait = timeout => {
 const OrderDetails = ({route, navigation}) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [isLoading, setLoading] = React.useState(true);
-  const NO_LOCATION_PROVIDER_AVAILABLE = 2;
   const [modalVisible, setModalVisible] = useState(false);
   const [orderId, setOrderId] = React.useState('');
   const [enteredOtp, setEnteredOtp] = React.useState('');
-  const [userConfirmationOtp, setUserConfirmationOtp] = React.useState('');
   const [orderStatus, setOrderStatus] = React.useState('');
   const [toggleCheckBoxOne, setToggleCheckBoxOne] = useState(false);
   const [toggleCheckBoxTwo, setToggleCheckBoxTwo] = useState(false);
@@ -218,6 +210,8 @@ const OrderDetails = ({route, navigation}) => {
 
   // Search Delivery Partner
   const searchDeliveryPartner = async customername => {
+    let lat = await AsyncStorage.getItem('user_lat');
+    let long = await AsyncStorage.getItem('user_long');
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getNearestDeliveryPartner',
       {
@@ -238,8 +232,6 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        console.log(lat + long + orderId + partnerId);
-
         if (result.error == 0) {
           let name = result.fullname;
           let number = result.contactNumber;
@@ -354,8 +346,6 @@ const OrderDetails = ({route, navigation}) => {
   React.useEffect(() => {
     getUserProfile();
     setOrderId(route.params.order_id);
-    setLat(route.params.latitude);
-    setLong(route.params.longitude);
     getOrderDetails(route.params.order_id);
 
     ////////////////
