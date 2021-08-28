@@ -310,7 +310,7 @@ const OrderDetails = ({route, navigation}) => {
       .then(function (result) {
         if (result.error == 0) {
           setModalVisible(false);
-          navigation.navigate('HomeScreen');
+          // navigation.navigate('HomeScreen');
           setSuccessModal(true);
         }
         getOrderDetails(orderId);
@@ -419,7 +419,6 @@ const OrderDetails = ({route, navigation}) => {
                   <Text style={styles.heading}>Action</Text>
 
                   {/* ======== Accept Button ======== */}
-
                   <View style={styles.tabRow}>
                     {toggleCheckBoxOne == true ? (
                       <Text style={styles.statusName}>Order Confirmed</Text>
@@ -622,16 +621,22 @@ const OrderDetails = ({route, navigation}) => {
                 }}>
                 <View style={styles.successModalContainer}>
                   <View style={styles.successModalCard}>
-                    <LottieView
-                      source={require('../../../assets/lottie/success.json')}
-                      autoPlay
-                      loop
-                      style={{
-                        width: 100,
-                        height: 100,
-                      }}
-                    />
-                    <Text style={styles.successModalTxt}>Order Closed</Text>
+                    <View>
+                      <Text>Please confirm the stock in your inventory</Text>
+                      <Text>Brand Name</Text>
+                      <Text>Product Name</Text>
+                      <Text>100gm</Text>
+                      <Text>₹100</Text>
+                      <Text>Is this product in your Inventory?</Text>
+
+                      <TouchableOpacity>
+                        <Text>Yes</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity>
+                        <Text>No</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               </Modal>

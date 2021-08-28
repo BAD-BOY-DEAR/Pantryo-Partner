@@ -49,11 +49,13 @@ const HomeScreen = ({navigation}) => {
   const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
   const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
   const [refreshing, setRefreshing] = React.useState(false);
+
   // Partner
   const [partnerId, setPartnerId] = React.useState('');
   const [partnerStatus, setPartnerStatus] = React.useState('');
+  const [earning, setEarning] = React.useState('');
 
-  ////////////////onRefresh
+  // onRefresh
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     changePartnerStatus();
@@ -62,7 +64,7 @@ const HomeScreen = ({navigation}) => {
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
-  ///////////get Partner Details
+  // get Partner Details
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
     setKycStatus(partner_kycStatus);
@@ -173,6 +175,38 @@ const HomeScreen = ({navigation}) => {
       });
   };
 
+  // Partner Status
+  const getPartnerEarning = async () => {
+    setLoading(true);
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    await fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerCountHistroy.php?flag=gettodayearning',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          partnerId: partner_id,
+        }),
+      },
+    )
+      .then(response => {
+        return response.json();
+      })
+      .then(result => {
+        console.log(result.earn);
+        setEarning(result.earn);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   React.useEffect(() => {
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
@@ -181,6 +215,7 @@ const HomeScreen = ({navigation}) => {
     getPartnerDetails();
     getTodayOrder();
     getUserProfile();
+    getPartnerEarning();
     //// Partner Status
     getStatus();
   }, []);
@@ -305,10 +340,14 @@ const HomeScreen = ({navigation}) => {
                       </View>
                       <Pressable
                         onPress={async () =>
-                          await analytics().logEvent('totalorders', {
-                            item: 'total orders received',
-                            description: ['total orders', 'home screen'],
-                          })
+                          await analytics().logEvent(
+                            'totalorders',
+                            {
+                              item: 'total orders received',
+                              description: ['total orders', 'home screen'],
+                            },
+                            navigation.navigate('OrdersList'),
+                          )
                         }
                         style={styles.cardOne}>
                         <Text style={styles.cardOneLabel}>Total Orders</Text>
@@ -322,7 +361,10 @@ const HomeScreen = ({navigation}) => {
                         <Text style={styles.cardOneLabel}>
                           Earnings for today
                         </Text>
-                        <Text style={styles.cardOneResponse}>₹</Text>
+                        <Text style={styles.cardOneResponse}>₹{earning}</Text>
+                        <Text style={styles.cardOneLabel}>
+                          will be credited by 6:00 PM today
+                        </Text>
                       </View>
                     </View>
                   </LinearGradient>
@@ -657,7 +699,13 @@ function Home() {
         }}
         component={OrderDetails}
       />
-      <Stack.Screen name="OrdersList" component={OrdersList} />
+      <Stack.Screen
+        name="OrdersList"
+        component={OrdersList}
+        options={{
+          title: 'Total Orders',
+        }}
+      />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
       <Stack.Screen name="FeatureTest" component={FeatureTest} />
     </Stack.Navigator>

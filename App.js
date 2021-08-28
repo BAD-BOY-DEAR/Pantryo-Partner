@@ -35,6 +35,8 @@ const App = ({navigation}) => {
   const routeNameRef = useRef();
 
   const [initialRoute, setInitialRoute] = useState('HomeScreen');
+
+  // Loading & Refresh State
   const [isLoading, setLoading] = useState();
   const [refreshing, setRefreshing] = useState(false);
 

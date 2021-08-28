@@ -1,76 +1,232 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
-  Pressable,
+  TouchableOpacity,
   StyleSheet,
   ScrollView,
   Modal,
+  LogBox,
+  FlatList,
+  ActivityIndicator,
+  Pressable,
 } from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrdersList = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isLoading, setLoading] = React.useState(true);
+
+  // Order Details
+  const [allDetails, setAllDetails] = React.useState('');
+  const [details, setDetails] = React.useState('');
+
+  // Modal
+  const [orderDetails, setOrderDetails] = useState(false);
+
+  // Order ID
+  const [orderId, setOrderId] = React.useState('');
+  const [innerOrderId, setInnerOrderId] = React.useState('');
+
+  // ProductDetails
+  const [brandName, setBrandName] = React.useState('');
+  const [productName, setProductName] = React.useState('');
+  const [productPrice, setProductPrice] = React.useState('');
+  const [qty, setQty] = React.useState('');
+  const [unit, setUnit] = React.useState('');
+  const [noOfProducts, setNoOfProducts] = React.useState('');
+
+  // Get Order List
+  const getOrderList = async () => {
+    setLoading(true);
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    await fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerCountHistroy.php?flag=getAllPartnerOrderDetails',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          partnerId: partner_id,
+        }),
+      },
+    )
+      .then(response => {
+        return response.json();
+      })
+      .then(result => {
+        setAllDetails(result.alldetails);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  // Get Order List
+  const getOrderDetails = async order_id => {
+    setOrderId(order_id);
+    setLoading(true);
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    await fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerCountHistroy.php?flag=getAllPartnerOrderDetails',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          order_id: orderId,
+          partnerId: partner_id,
+        }),
+      },
+    )
+      .then(response => {
+        return response.json();
+      })
+      .then(result => {
+        console.log('ORDER ID:' + JSON.stringify(orderId));
+        console.log('PARTNER ID:' + partner_id);
+
+        setAllDetails(result.alldetails);
+
+        setOrderDetails(true);
+        setInnerOrderId(result.alldetails[0].productdetails.order_id);
+        setBrandName(result.alldetails[0].productdetails.brandName);
+        setProductName(result.alldetails[0].productdetails.productName);
+        setProductPrice(result.alldetails[0].productdetails.productPrice);
+        setQty(result.alldetails[0].productdetails.productQty);
+        setUnit(result.alldetails[0].productdetails.productUnit);
+        setNoOfProducts(result.alldetails[0].productdetails.numberOfProduct);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  React.useEffect(() => {
+    LogBox.ignoreAllLogs(true);
+    LogBox.ignoreLogs(['Warning: ...']);
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
+    getOrderList();
+  }, []);
+
   return (
     <>
-      <View style={styles.container}>
-        {/* =========== Header =========== */}
-        <View style={styles.header}>
-          <ScrollView horizontal={true}>
-            <View style={styles.datePill}>
-              <Text style={styles.datePillTxt}>All Orders</Text>
-            </View>
-
-            <View style={styles.datePill}>
-              <Text style={styles.datePillTxt}>Today</Text>
-            </View>
-
-            <View style={styles.datePill}>
-              <Text style={styles.datePillTxt}>Last Week</Text>
-            </View>
-
-            <View style={styles.datePill}>
-              <Text style={styles.datePillTxt}>This Week</Text>
-            </View>
-
-            <View style={styles.datePill}>
-              <Text style={styles.datePillTxt}>This Month</Text>
-            </View>
-
-            <View style={styles.datePill}>
-              <Text style={styles.datePillTxt}>Last 3 Months</Text>
-            </View>
-          </ScrollView>
+      {isLoading ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color="#5E3360" />
         </View>
-        {/* =========== Header =========== */}
+      ) : (
+        <View style={styles.container}>
+          {/* =========== Header Buttons =========== */}
+          <View style={styles.header}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              <TouchableOpacity style={styles.datePill}>
+                <Text style={styles.datePillTxt}>All Orders</Text>
+              </TouchableOpacity>
 
-        {/* =========== Orders List =========== */}
-        <View style={styles.orderView}>
-          {/* =========== Overview =========== */}
-          <View style={styles.midRow}>
-            <Text style={styles.midRowTxt}>Showing orders for: Today</Text>
-          </View>
-          {/* =========== Overview =========== */}
+              <TouchableOpacity style={styles.datePill}>
+                <Text style={styles.datePillTxt}>Today</Text>
+              </TouchableOpacity>
 
-          {/* =========== Order Details =========== */}
-          <View style={styles.orderViewTab}>
-            <View style={styles.iconContainer}>
-              <Icons name="person-outline" size={25} />
-            </View>
-            <View style={styles.div}>
-              <Text style={styles.userName}>Syed John Goswami</Text>
-              <Text style={styles.orderDate}>15 May 2021 02:50PM</Text>
-            </View>
-            <View style={styles.divTwo}>
-              <Text style={styles.payment}>₹651.8</Text>
-            </View>
+              <TouchableOpacity style={styles.datePill}>
+                <Text style={styles.datePillTxt}>Last Week</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.datePill}>
+                <Text style={styles.datePillTxt}>This Week</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.datePill}>
+                <Text style={styles.datePillTxt}>This Month</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.datePill}>
+                <Text style={styles.datePillTxt}>Last 3 Months</Text>
+              </TouchableOpacity>
+            </ScrollView>
           </View>
-          {/* =========== Order Details =========== */}
+          {/* =========== Header Buttons =========== */}
+
+          {/* =========== Orders List =========== */}
+          <View style={styles.orderView}>
+            {/* =========== Overview =========== */}
+            <View style={styles.midRow}>
+              <Text style={styles.midRowTxt}>Showing orders for: Today</Text>
+            </View>
+            {/* =========== Overview =========== */}
+
+            {/* =========== Order Details =========== */}
+            <FlatList
+              data={allDetails}
+              keyExtractor={({order_id}, index) => order_id}
+              renderItem={({item}) => (
+                <>
+                  <Pressable
+                    onPress={() => getOrderDetails({order_id: item.order_id})}
+                    style={styles.orderViewTab}>
+                    <View style={styles.div}>
+                      <Text style={styles.label}>Customer Name</Text>
+                      <Text style={styles.userName}>{item.customer_name}</Text>
+                      <Text style={styles.orderDate}>{item.create_date}</Text>
+                    </View>
+                    <View style={styles.divTwo}>
+                      <Text style={styles.payment}>₹{item.payment_amount}</Text>
+                    </View>
+                  </Pressable>
+                </>
+              )}
+            />
+
+            {/* =========== Order Details =========== */}
+          </View>
+          {/* =========== Orders List =========== */}
         </View>
-        {/* =========== Orders List =========== */}
-      </View>
+      )}
+
+      {/* ======== Order Details Modal ========  */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={orderDetails}
+        onRequestClose={() => {
+          setOrderDetails(!orderDetails);
+        }}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalCard}>
+            <Text
+              style={{
+                fontFamily: 'OpenSans-Regular',
+                color: '#000',
+              }}>
+              {brandName}
+            </Text>
+            <Text style={styles.modalText}>{productName}</Text>
+            <Text style={styles.modalText}>{brandName}</Text>
+            <Text style={styles.modalText}>{productName}</Text>
+            <Text style={styles.modalText}>{productPrice}</Text>
+            <Text style={styles.modalText}>
+              {qty}
+              {unit}
+            </Text>
+            <Text style={styles.modalText}>{noOfProducts}</Text>
+          </View>
+        </View>
+      </Modal>
+      {/* ======== Order Details Modal ========  */}
     </>
   );
 };
@@ -134,14 +290,11 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderRadius: 5,
     flexDirection: 'row',
-    marginBottom: 5,
+    marginBottom: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
   },
-  iconContainer: {
-    width: 80,
-    height: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   div: {
     flex: 1,
     marginLeft: 10,
@@ -151,18 +304,37 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
   },
+  label: {
+    fontFamily: 'OpenSans-Regular',
+    color: '#000',
+  },
   userName: {
     fontFamily: 'OpenSans-Bold',
-    fontSize: 16,
+    fontSize: 20,
     color: '#000000',
   },
   orderDate: {
     fontFamily: 'OpenSans-Regular',
     color: '#777777',
+    marginTop: 5,
   },
   payment: {
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'OpenSans-Bold',
     color: 'green',
-    fontSize: 16,
+    fontSize: 24,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'rgba(52, 52, 52, 0.3)',
+  },
+  modalCard: {
+    width: '100%',
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
 });
