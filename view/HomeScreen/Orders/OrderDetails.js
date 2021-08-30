@@ -14,6 +14,7 @@ import {
   RefreshControl,
   Linking,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -46,9 +47,11 @@ const OrderDetails = ({route, navigation}) => {
   const [partnerShop, setPartnerShop] = React.useState('');
   const [partnerId, setPartnerId] = React.useState('');
   const [orderDetails, setOrderDetails] = React.useState('');
+  const [orderProductDetails, setOrderProductDetails] = React.useState('');
 
   // Success Modal
-  const [successModal, setSuccessModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(true);
+  const [successLoading, setSuccessLoading] = useState(false);
 
   // Delivery boy Variables
   const [deliveryPartnerName, setDeliveryPartnerName] = React.useState('');
@@ -267,6 +270,9 @@ const OrderDetails = ({route, navigation}) => {
       .then(function (result) {
         if (result.error == 0) {
           setOrderDetails(result.todayorderdetails);
+          setOrderProductDetails(
+            result.todayorderdetails[0].TodayOrderOneIdWise,
+          );
           let status = result.todayorderdetails[0].orderStatus;
           let customerToken = result.todayorderdetails[0].customer_token;
           setCustomerToken(customerToken);
@@ -290,6 +296,7 @@ const OrderDetails = ({route, navigation}) => {
 
   // Order Details
   const checkOtpUserByEntered = async () => {
+    setSuccessLoading(true);
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=MatchSecurityCodePartner',
       {
@@ -308,6 +315,7 @@ const OrderDetails = ({route, navigation}) => {
         return response.json();
       })
       .then(function (result) {
+        // console.log()
         if (result.error == 0) {
           setModalVisible(false);
           // navigation.navigate('HomeScreen');
@@ -317,7 +325,8 @@ const OrderDetails = ({route, navigation}) => {
       })
       .catch(error => {
         console.error(error);
-      });
+      })
+      .finally(() => setSuccessLoading(false));
   };
 
   // Call Persmission
@@ -343,6 +352,46 @@ const OrderDetails = ({route, navigation}) => {
     } catch (err) {
       console.warn(err);
     }
+  };
+
+  /////////////////Update Inventory Status
+  const updateInventoryStatus = async (
+    brand_name,
+    product_name,
+    product_qty,
+    product_unit,
+    product_price,
+    status,
+  ) => {
+    let partner_id = AsyncStorage.getItem('partner_id');
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PantryoInventoryApi/inventory.php?flag=productInStockAndOutStockstatus',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          partner_product_brand: brand_name,
+          partner_product_name: product_name,
+          partner_product_quantity: product_qty,
+          partner_product_unit: product_unit,
+          partner_product_price: product_price,
+          product_status: status,
+          partner_id: partner_id,
+        }),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        console.log(result);
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   React.useEffect(() => {
@@ -601,11 +650,21 @@ const OrderDetails = ({route, navigation}) => {
                       onChangeText={text => setEnteredOtp(text)}
                       onSubmitEditing={() => checkOtpUserByEntered()}
                     />
-                    <Pressable
-                      onPress={() => checkOtpUserByEntered()}
-                      style={styles.modalBtn}>
-                      <Text style={styles.modalBtnTxt}>SUBMIT</Text>
-                    </Pressable>
+                    {successLoading == false ? (
+                      <TouchableOpacity
+                        onPress={() => checkOtpUserByEntered()}
+                        style={styles.modalBtn}>
+                        <Text style={styles.modalBtnTxt}>SUBMIT</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <View style={styles.modalBtn}>
+                        <ActivityIndicator
+                          animating={true}
+                          color="#fff"
+                          size="small"
+                        />
+                      </View>
+                    )}
                   </View>
                 </View>
               </Modal>
@@ -650,16 +709,16 @@ const OrderDetails = ({route, navigation}) => {
                                 }}>
                                 <Text
                                   style={{
-                                    fontFamily: 'OpenSans-Bold',
-                                    fontSize: 20,
+                                    fontFamily: 'OpenSans-Regular',
+                                    fontSize: 16,
                                     color: '#000',
                                   }}>
                                   {item.brandName}
                                 </Text>
                                 <Text
                                   style={{
-                                    fontFamily: 'OpenSans-Regular',
-                                    fontSize: 16,
+                                    fontFamily: 'OpenSans-Bold',
+                                    fontSize: 20,
                                     color: '#000',
                                     marginTop: 5,
                                   }}>
@@ -672,22 +731,66 @@ const OrderDetails = ({route, navigation}) => {
                                   paddingVertical: 30,
                                   paddingHorizontal: 30,
                                 }}>
-                                <Text>
+                                <Text style={styles.weight}>
                                   {item.productQty} {item.productUnit}
                                 </Text>
-                                <Text style={{marginLeft: 20}}>
+                                <Text style={[styles.cost, {marginLeft: 20}]}>
                                   ₹ {item.productPrice}
                                 </Text>
                               </View>
                             </View>
 
-                      <TouchableOpacity>
-                        <Text>Yes</Text>
-                      </TouchableOpacity>
+                            <Text
+                              style={{
+                                fontFamily: 'OpenSans-Bold',
+                                fontSize: 18,
+                                color: '#000',
+                                marginBottom: 10,
+                              }}>
+                              Is this product in your Inventory?
+                            </Text>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginTop: 10,
+                                marginBottom: 10,
+                              }}>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  updateInventoryStatus(
+                                    item.brandName,
+                                    item.productName,
+                                    item.productQty,
+                                    item.productUnit,
+                                    item.productPrice,
+                                    '1',
+                                  )
+                                }
+                                style={styles.inventoryBtn}>
+                                <Text style={styles.inventoryBtnTxt}>Yes</Text>
+                              </TouchableOpacity>
 
-                      <TouchableOpacity>
-                        <Text>No</Text>
-                      </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  updateInventoryStatus(
+                                    item.brandName,
+                                    item.productName,
+                                    item.productQty,
+                                    item.productUnit,
+                                    item.productPrice,
+                                    '2',
+                                  )
+                                }
+                                style={styles.inventoryBtn}>
+                                <Text style={styles.inventoryBtnTxt}>No</Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        )}
+                      />
                     </View>
                   </View>
                 </View>
@@ -898,8 +1001,8 @@ const styles = StyleSheet.create({
   },
   successModalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     backgroundColor: 'rgba(52, 52, 52, 0.3)',
     paddingHorizontal: 10,
   },
@@ -907,13 +1010,29 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#fff',
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     paddingVertical: 20,
+    paddingHorizontal: 20,
   },
   successModalTxt: {
     fontFamily: 'FredokaOne-Regular',
     fontSize: 24,
     marginTop: 10,
+  },
+  inventoryBtn: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ca4533',
+    borderRadius: 10,
+    marginRight: 10,
+    paddingVertical: 10,
+  },
+  inventoryBtnTxt: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 15,
+    color: '#000',
   },
 });
