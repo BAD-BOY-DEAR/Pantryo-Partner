@@ -50,7 +50,7 @@ const OrderDetails = ({route, navigation}) => {
   const [orderProductDetails, setOrderProductDetails] = React.useState('');
 
   // Success Modal
-  const [successModal, setSuccessModal] = useState(true);
+  const [successModal, setSuccessModal] = useState(false);
   const [successLoading, setSuccessLoading] = useState(false);
 
   // Delivery boy Variables
@@ -363,7 +363,7 @@ const OrderDetails = ({route, navigation}) => {
     product_price,
     status,
   ) => {
-    let partner_id = AsyncStorage.getItem('partner_id');
+    let partner_id = await AsyncStorage.getItem('partner_id');
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PantryoInventoryApi/inventory.php?flag=productInStockAndOutStockstatus',
       {
@@ -686,7 +686,11 @@ const OrderDetails = ({route, navigation}) => {
                       </Text>
                       <FlatList
                         data={orderProductDetails}
-                        style={{width: '100%'}}
+                        style={{
+                          width: '100%',
+                          paddingTop: 20,
+                          paddingBottom: 20,
+                        }}
                         keyExtractor={item => item.cart_id}
                         renderItem={({item}) => (
                           <View
