@@ -622,12 +622,64 @@ const OrderDetails = ({route, navigation}) => {
                 <View style={styles.successModalContainer}>
                   <View style={styles.successModalCard}>
                     <View>
-                      <Text>Please confirm the stock in your inventory</Text>
-                      <Text>Brand Name</Text>
-                      <Text>Product Name</Text>
-                      <Text>100gm</Text>
-                      <Text>₹100</Text>
-                      <Text>Is this product in your Inventory?</Text>
+                      <Text style={styles.successModalTxt}>
+                        Please confirm the stock in your inventory
+                      </Text>
+                      <FlatList
+                        data={orderProductDetails}
+                        style={{width: '100%'}}
+                        keyExtractor={item => item.cart_id}
+                        renderItem={({item}) => (
+                          <View
+                            style={{
+                              flex: 1,
+                              marginTop: 10,
+                              marginBottom: 10,
+                              borderBottomColor: '#777',
+                              borderBottomWidth: 0.7,
+                              paddingBottom: 10,
+                            }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                              }}>
+                              <View
+                                style={{
+                                  flexDirection: 'column',
+                                  paddingVertical: 10,
+                                }}>
+                                <Text
+                                  style={{
+                                    fontFamily: 'OpenSans-Bold',
+                                    fontSize: 20,
+                                    color: '#000',
+                                  }}>
+                                  {item.brandName}
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontFamily: 'OpenSans-Regular',
+                                    fontSize: 16,
+                                    color: '#000',
+                                    marginTop: 5,
+                                  }}>
+                                  {item.productName}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  paddingVertical: 30,
+                                  paddingHorizontal: 30,
+                                }}>
+                                <Text>
+                                  {item.productQty} {item.productUnit}
+                                </Text>
+                                <Text style={{marginLeft: 20}}>
+                                  ₹ {item.productPrice}
+                                </Text>
+                              </View>
+                            </View>
 
                       <TouchableOpacity>
                         <Text>Yes</Text>
