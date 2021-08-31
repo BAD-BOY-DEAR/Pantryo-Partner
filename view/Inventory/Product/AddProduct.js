@@ -553,27 +553,19 @@ const AddProducts = ({route, navigation}) => {
                           tintColors={{true: '#F15927', false: 'black'}}
                           onValueChange={newValue => {
                             // setToggleCheckBox(newValue);
-                            setPantryoInventory(qty =>
-                              produce(qty, v => {
-                                // v[index].checkbox = newValue;
-                                if (v[index].checkbox == false) {
-                                  v[index].checkbox = true;
-                                } else {
-                                  v[index].checkbox = false;
-                                }
-                              }),
-                            );
-                            ChooseInventoryData({
-                              partner_category_id: item.partner_category_id,
-                              pantryo_main_category_id:
-                                item.pantryo_main_category_id,
-                              pantryo_inventory_id: item.pantryo_inventory_id,
-                              partner_product_name: item.pantryo_item_name,
-                              partner_product_brand: item.pantryo_brand_name,
-                              partner_product_price: item.pantryo_item_price,
-                              partner_product_quantity: item.pantryo_item_qty,
-                              partner_product_unit: item.pantryo_item_unit,
-                            });
+                            alert(newValue);
+
+                            // ChooseInventoryData({
+                            //   partner_category_id: item.partner_category_id,
+                            //   pantryo_main_category_id:
+                            //     item.pantryo_main_category_id,
+                            //   pantryo_inventory_id: item.pantryo_inventory_id,
+                            //   partner_product_name: item.pantryo_item_name,
+                            //   partner_product_brand: item.pantryo_brand_name,
+                            //   partner_product_price: item.pantryo_item_price,
+                            //   partner_product_quantity: item.pantryo_item_qty,
+                            //   partner_product_unit: item.pantryo_item_unit,
+                            // });
                           }}
                           style={{
                             // transform: [{scaleX: 1.2}, {scaleY: 1.2}],
