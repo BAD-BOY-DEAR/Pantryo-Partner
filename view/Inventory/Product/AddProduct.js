@@ -559,14 +559,7 @@ const AddProducts = ({route, navigation}) => {
                           value={item.selected}
                           tintColors={{true: '#F15927', false: 'black'}}
                           onValueChange={() => {
-                            // setToggleCheckBox(newValue);
-                            // alert(index);
-                            // updateCheckBox(item, index);
-                            // setPantryoInventory(qty =>
-                            //   produce(qty, v => {
-                            //     v[index].checkbox = newValue;
-                            //   }),
-                            // );
+                            updateCheckBox(item, index);
                             ChooseInventoryData({
                               partner_category_id: item.partner_category_id,
                               pantryo_main_category_id:
@@ -579,6 +572,7 @@ const AddProducts = ({route, navigation}) => {
                               partner_product_unit: item.pantryo_item_unit,
                             });
                           }}
+                          // onValueChange={() => updateCheckBox(item, index)}
                           style={{
                             // transform: [{scaleX: 1.2}, {scaleY: 1.2}],
                             marginTop: 50,
