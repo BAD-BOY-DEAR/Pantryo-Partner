@@ -313,7 +313,6 @@ const AddProducts = ({route, navigation}) => {
   }, []);
 
   ///////////////Set Data
-
   const ChooseInventoryData = newItem => {
     const index = chooseInventory.findIndex(
       item => item.pantryo_inventory_id === newItem.pantryo_inventory_id,
@@ -322,6 +321,14 @@ const AddProducts = ({route, navigation}) => {
     } else {
       setChooseInventory([...chooseInventory, newItem]);
     }
+    console.log(chooseInventory);
+  };
+
+  //////////Update Checkbox
+  const updateCheckBox = (item, i) => {
+    let items = pantryoInvetory;
+    items[i].selected = items[i].selected ? !items[i].selected : true;
+    setPantryoInventory(items);
   };
 
   return (
@@ -549,23 +556,28 @@ const AddProducts = ({route, navigation}) => {
                       <View style={styles.productDiv}>
                         <CheckBox
                           disabled={false}
-                          value={toggleCheckBox}
+                          value={item.selected}
                           tintColors={{true: '#F15927', false: 'black'}}
-                          onValueChange={newValue => {
+                          onValueChange={() => {
                             // setToggleCheckBox(newValue);
-                            alert(newValue);
-
-                            // ChooseInventoryData({
-                            //   partner_category_id: item.partner_category_id,
-                            //   pantryo_main_category_id:
-                            //     item.pantryo_main_category_id,
-                            //   pantryo_inventory_id: item.pantryo_inventory_id,
-                            //   partner_product_name: item.pantryo_item_name,
-                            //   partner_product_brand: item.pantryo_brand_name,
-                            //   partner_product_price: item.pantryo_item_price,
-                            //   partner_product_quantity: item.pantryo_item_qty,
-                            //   partner_product_unit: item.pantryo_item_unit,
-                            // });
+                            // alert(index);
+                            // updateCheckBox(item, index);
+                            // setPantryoInventory(qty =>
+                            //   produce(qty, v => {
+                            //     v[index].checkbox = newValue;
+                            //   }),
+                            // );
+                            ChooseInventoryData({
+                              partner_category_id: item.partner_category_id,
+                              pantryo_main_category_id:
+                                item.pantryo_main_category_id,
+                              pantryo_inventory_id: item.pantryo_inventory_id,
+                              partner_product_name: item.pantryo_item_name,
+                              partner_product_brand: item.pantryo_brand_name,
+                              partner_product_price: item.pantryo_item_price,
+                              partner_product_quantity: item.pantryo_item_qty,
+                              partner_product_unit: item.pantryo_item_unit,
+                            });
                           }}
                           style={{
                             // transform: [{scaleX: 1.2}, {scaleY: 1.2}],
