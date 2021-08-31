@@ -11,6 +11,8 @@ import {
   RefreshControl,
 } from 'react-native';
 
+import {produce} from 'immer';
+
 // ===== Images ===== //
 import masala from '../../../assets/productImages/masala.png';
 import edibleOils from '../../../assets/productImages/edibleOils.jpg';
@@ -43,6 +45,17 @@ const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
+// const  Inventory =[{
+//   'partner_category_id': '',
+//   'pantryo_main_category_id': '',
+//   'pantryo_inventory_id': '',
+//   'partner_product_name': '',
+//   'partner_product_brand': '',
+//   'partner_product_price': '',
+//   'partner_product_quantity': '',
+//   'partner_product_unit': '',
+// }];
+
 const AddProducts = ({route, navigation}) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
@@ -55,6 +68,7 @@ const AddProducts = ({route, navigation}) => {
   const [selectedUnit, setSelectedUnit] = React.useState('');
   const [partner_id, setPartnerId] = React.useState('');
   const [inventoryQty, setInventoryQty] = React.useState('');
+  const [chooseInventory, setChooseInventory] = React.useState([]);
 
   // Checkbox
   const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
@@ -124,7 +138,7 @@ const AddProducts = ({route, navigation}) => {
           } else {
             showToast('Something went Wrong!');
           }
-          fetchPantryoInventory(partner_category, main_category_id);
+          // fetchPantryoInventory(partner_category, main_category_id);
         })
         .catch(error => {
           console.error(error);
@@ -298,6 +312,10 @@ const AddProducts = ({route, navigation}) => {
     }
   }, []);
 
+  ///////////////Set Data
+
+  const ChooseInventory = async ({item, index}) => {};
+
   return (
     <>
       {isLoading == true ? (
@@ -426,16 +444,18 @@ const AddProducts = ({route, navigation}) => {
                             placeholderTextColor="#000"
                             placeholder="Quantity"
                             keyboardType="number-pad"
-                            value={
-                              item.pantryo_inventory_id === inventoryId
-                                ? inventoryQty
-                                : item.pantryo_item_qty !== ''
-                                ? item.pantryo_item_qty
-                                : 'No'
-                            }
-                            onChangeText={text => {
-                              setInventoryQty(text);
-                              setInventoryId(item.pantryo_inventory_id);
+                            value={item.pantryo_item_qty}
+                            // onChangeText={text => {
+                            //   setInventoryQty(text);
+                            //   setInventoryId(item.pantryo_inventory_id);
+                            // }}.
+                            onChangeText={e => {
+                              let pantryo_item_qty = e;
+                              setPantryoInventory(qty =>
+                                produce(qty, v => {
+                                  v[index].pantryo_item_qty = pantryo_item_qty;
+                                }),
+                              );
                             }}
                             style={styles.productInput}
                           />
@@ -449,21 +469,48 @@ const AddProducts = ({route, navigation}) => {
                             <Picker
                               mode="dropdown"
                               style={{
-                                width: '80%',
+                                width: '100%',
                                 justifyContent: 'flex-end',
                                 textAlign: 'center',
+                                color: '#000',
                               }}
+                              selectedValue={item.pantryo_item_unit}
+                              // onValueChange={(itemValue, itemIndex) => {
+                              //   setSelectedUnit(itemValue);
+                              //   setInventoryId(item.pantryo_inventory_id);
+                              // }}
                               onValueChange={(itemValue, itemIndex) => {
-                                setSelectedUnit(itemValue);
-                                setInventoryId(item.pantryo_inventory_id);
+                                let pantryo_item_unit = itemValue;
+                                setPantryoInventory(qty =>
+                                  produce(qty, v => {
+                                    v[index].pantryo_item_unit =
+                                      pantryo_item_unit;
+                                  }),
+                                );
                               }}>
-                              <Picker.Item label="gm" value="gm" />
-                              <Picker.Item label="kg" value="kg" />
-                              <Picker.Item label="ml" value="ml" />
-                              <Picker.Item label="ltr" value="ltr" />
-                              <Picker.Item label="pcs" value="pcs" />
-                              <Picker.Item label="crate" value="crate" />
-                              <Picker.Item label="Dozen" value="Dozen" />
+                              <Picker.Item label="gm" value="gm" color="#fff" />
+                              <Picker.Item label="kg" value="kg" color="#fff" />
+                              <Picker.Item label="ml" value="ml" color="#fff" />
+                              <Picker.Item
+                                label="ltr"
+                                value="ltr"
+                                color="#fff"
+                              />
+                              <Picker.Item
+                                label="pcs"
+                                value="pcs"
+                                color="#fff"
+                              />
+                              <Picker.Item
+                                label="crate"
+                                value="crate"
+                                color="#fff"
+                              />
+                              <Picker.Item
+                                label="Dozen"
+                                value="Dozen"
+                                color="#fff"
+                              />
                             </Picker>
                           </View>
 
@@ -471,15 +518,20 @@ const AddProducts = ({route, navigation}) => {
                             placeholder="₹"
                             placeholderTextColor="#777"
                             keyboardType="number-pad"
-                            value={
-                              item.pantryo_inventory_id === inventoryId
-                                ? newprice
-                                : item.pantryo_item_price
-                            }
+                            value={item.pantryo_item_price}
                             style={styles.productInput}
-                            onChangeText={text => {
-                              setNewPrice(text);
-                              setInventoryId(item.pantryo_inventory_id);
+                            // onChangeText={text => {
+                            //   setNewPrice(text);
+                            //   setInventoryId(item.pantryo_inventory_id);
+                            // }}
+                            onChangeText={e => {
+                              let pantryo_item_price = e;
+                              setPantryoInventory(qty =>
+                                produce(qty, v => {
+                                  v[index].pantryo_item_price =
+                                    pantryo_item_price;
+                                }),
+                              );
                             }}
                           />
                         </View>
@@ -489,9 +541,14 @@ const AddProducts = ({route, navigation}) => {
                         <CheckBox
                           disabled={false}
                           value={toggleCheckBox}
+                          tintColors={{true: '#F15927', false: 'black'}}
                           onValueChange={newValue =>
                             setToggleCheckBox(newValue)
                           }
+                          style={{
+                            // transform: [{scaleX: 1.2}, {scaleY: 1.2}],
+                            marginTop: 50,
+                          }}
                         />
                       </View>
                     </View>
@@ -887,5 +944,6 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Regular',
     fontSize: 16,
     borderColor: '#c7c7c7c7',
+    color: '#000',
   },
 });
