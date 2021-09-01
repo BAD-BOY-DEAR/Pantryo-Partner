@@ -148,60 +148,22 @@ const AddProducts = ({route, navigation}) => {
   };
 
   // ====== Add Product ======= //
-  const addProductApi = (
-    partner_category_id,
-    main_category_id,
-    inventory_id,
-    product_name,
-    product_brand,
-    product_qty,
-    product_price,
-    product_unit,
-  ) => {
-    // let partner_id = await AsyncStorage.getItem('partner_id');
-    let price = null;
-    let qty = null;
-    let unit = null;
-    if (newprice) {
-      price = newprice;
-    } else {
-      price = product_price;
-    }
-    if (inventoryQty) {
-      qty = inventoryQty;
-    } else {
-      qty = product_qty;
-    }
-    if (selectedUnit) {
-      unit = selectedUnit;
-    } else {
-      unit = product_unit;
-    }
-    if (!partner_category_id) {
+  const addProductApi = () => {
+    console.log(chooseInventory);
+    if (!partnerCategoryId) {
       showToast('Partner Category ID not found!');
       return;
-    } else if (!main_category_id) {
+    } else if (!partnerMainCategoryId) {
       showToast('Partner Main Category ID not found!');
       return;
     } else if (!partner_id) {
       showToast('Partner ID not found!');
       return;
-    } else if (!inventory_id) {
-      showToast('Partner Inventory ID not found!');
-      return;
-    } else if (!product_name) {
-      showToast('Enter Product Name!');
-      return;
-    } else if (!qty) {
-      showToast('Please Enter Product Quantity Name!');
-      return;
-    } else if (!price) {
-      showToast('Enter Product Price!');
-      return;
-    } else if (!unit) {
-      showToast('Please Product Unit!');
+    } else if (!chooseInventory) {
+      showToast('Please Choose atleast one Item!');
       return;
     } else {
+      // return;
       setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=addProductByPartner',
@@ -213,14 +175,9 @@ const AddProducts = ({route, navigation}) => {
           },
           body: JSON.stringify({
             partner_id: partner_id,
-            partner_category_id: partner_category_id,
-            main_category_id: main_category_id,
-            inventory_id: inventory_id,
-            product_brand: product_brand,
-            product_name: product_name,
-            product_quantity: qty,
-            product_unit: unit,
-            product_price: price,
+            partner_category_id: partnerCategoryId,
+            main_category_id: partnerMainCategoryId,
+            partner_inventory: chooseInventory,
           }),
         },
       )
@@ -339,7 +296,7 @@ const AddProducts = ({route, navigation}) => {
         <View style={styles.container}>
           {/* ======== Header Add Button ======== */}
           <View style={styles.header}>
-            <Pressable style={styles.headerBtn}>
+            <Pressable onPress={addProductApi} style={styles.headerBtn}>
               <Text style={styles.headerBtnTxt}>Add</Text>
             </Pressable>
           </View>
@@ -559,7 +516,6 @@ const AddProducts = ({route, navigation}) => {
                           value={item.selected}
                           tintColors={{true: '#F15927', false: 'black'}}
                           onValueChange={() => {
-                            updateCheckBox(item, index);
                             ChooseInventoryData({
                               partner_category_id: item.partner_category_id,
                               pantryo_main_category_id:
@@ -572,7 +528,6 @@ const AddProducts = ({route, navigation}) => {
                               partner_product_unit: item.pantryo_item_unit,
                             });
                           }}
-                          // onValueChange={() => updateCheckBox(item, index)}
                           style={{
                             // transform: [{scaleX: 1.2}, {scaleY: 1.2}],
                             marginTop: 50,
