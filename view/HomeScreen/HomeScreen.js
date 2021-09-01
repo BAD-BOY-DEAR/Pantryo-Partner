@@ -162,13 +162,15 @@ const HomeScreen = ({navigation}) => {
       })
       .then(result => {
         // console.log(result);
-        setPartnerStatus(result.partner_status);
-        if (result.partner_status == 1) {
-          setToggleCheckBox(true);
-        } else {
-          setToggleCheckBox(false);
+        if ((result.error = 0)) {
+          setPartnerStatus(result.partner_status);
+          if (result.partner_status == 1) {
+            setToggleCheckBox(true);
+          } else {
+            setToggleCheckBox(false);
+          }
         }
-        // getStatus();
+        getStatus();
       })
       .catch(error => {
         console.log(error);
@@ -196,8 +198,10 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
-        console.log(result.earn);
-        setEarning(result.earn);
+        // console.log(result);
+        if (result.error == 0) {
+          setEarning(result.earn);
+        }
       })
       .catch(error => {
         console.log(error);
