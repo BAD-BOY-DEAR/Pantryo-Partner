@@ -313,8 +313,23 @@ const AddProducts = ({route, navigation}) => {
   }, []);
 
   ///////////////Set Data
+  const ChooseInventoryData = newItem => {
+    const index = chooseInventory.findIndex(
+      item => item.pantryo_inventory_id === newItem.pantryo_inventory_id,
+    );
+    if (index !== -1) {
+    } else {
+      setChooseInventory([...chooseInventory, newItem]);
+    }
+    console.log(chooseInventory);
+  };
 
-  const ChooseInventory = async ({item, index}) => {};
+  //////////Update Checkbox
+  const updateCheckBox = (item, i) => {
+    let items = pantryoInvetory;
+    items[i].selected = items[i].selected ? !items[i].selected : true;
+    setPantryoInventory(items);
+  };
 
   return (
     <>
@@ -537,14 +552,27 @@ const AddProducts = ({route, navigation}) => {
                         </View>
                         {/* ========= Products Qty/Price/Unit End ========= */}
                       </View>
+
                       <View style={styles.productDiv}>
                         <CheckBox
                           disabled={false}
-                          value={toggleCheckBox}
+                          value={item.selected}
                           tintColors={{true: '#F15927', false: 'black'}}
-                          onValueChange={newValue =>
-                            setToggleCheckBox(newValue)
-                          }
+                          onValueChange={() => {
+                            updateCheckBox(item, index);
+                            ChooseInventoryData({
+                              partner_category_id: item.partner_category_id,
+                              pantryo_main_category_id:
+                                item.pantryo_main_category_id,
+                              pantryo_inventory_id: item.pantryo_inventory_id,
+                              partner_product_name: item.pantryo_item_name,
+                              partner_product_brand: item.pantryo_brand_name,
+                              partner_product_price: item.pantryo_item_price,
+                              partner_product_quantity: item.pantryo_item_qty,
+                              partner_product_unit: item.pantryo_item_unit,
+                            });
+                          }}
+                          // onValueChange={() => updateCheckBox(item, index)}
                           style={{
                             // transform: [{scaleX: 1.2}, {scaleY: 1.2}],
                             marginTop: 50,
