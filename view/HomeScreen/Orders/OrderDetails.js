@@ -88,7 +88,7 @@ const OrderDetails = ({route, navigation}) => {
           ' ' +
           'has confirmed your order. Please wait while we search for a Delivery Partner in your area',
         vibrate: 1,
-        sound: 1,
+        sound: 'default',
         show_in_foreground: true,
         priority: 'high',
         content_available: true,
@@ -129,7 +129,7 @@ const OrderDetails = ({route, navigation}) => {
           ' ' +
           '. Please open your app to accept',
         vibrate: 1,
-        sound: 1,
+        sound: 'default',
         show_in_foreground: true,
         priority: 'high',
         content_available: true,
