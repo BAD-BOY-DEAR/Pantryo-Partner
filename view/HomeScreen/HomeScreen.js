@@ -61,6 +61,7 @@ const HomeScreen = ({navigation}) => {
     changePartnerStatus();
     getPartnerDetails();
     getTodayOrder();
+    getPartnerEarning();
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
@@ -96,12 +97,12 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        // console.log(result);
         if (result.error == 0) {
           setTodayOrderData(result.todayorderdetails);
           setNumberOfOrderAll(result.allordercount);
           setNumberOfOrderToday(result.todayordercount);
         }
+        getTodayOrder();
       })
       .catch(error => {
         console.error(error);
@@ -198,7 +199,6 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
-        // console.log(result);
         if (result.error == 0) {
           setEarning(result.earn);
         }
@@ -220,7 +220,6 @@ const HomeScreen = ({navigation}) => {
     getTodayOrder();
     getUserProfile();
     getPartnerEarning();
-    //// Partner Status
     getStatus();
   }, []);
 
@@ -333,7 +332,7 @@ const HomeScreen = ({navigation}) => {
 
                   {/* ========== Overview Section ========== */}
                   <LinearGradient
-                    colors={['#b586b8', '#87548a']}
+                    colors={['#fff', '#fff']}
                     style={styles.middleSection}>
                     <View style={styles.row}>
                       <View style={styles.cardOne}>
@@ -403,12 +402,12 @@ const HomeScreen = ({navigation}) => {
                       <FlatList
                         data={todayOrderData}
                         style={{width: '100%'}}
-                        refreshControl={
-                          <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={onRefresh}
-                          />
-                        }
+                        // refreshControl={
+                        //   <RefreshControl
+                        //     refreshing={refreshing}
+                        //     onRefresh={onRefresh}
+                        //   />
+                        // }
                         keyExtractor={item => item.orderId}
                         renderItem={({item}) => (
                           <>
@@ -741,13 +740,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     flexDirection: 'row',
-    backgroundColor: '#b586b8',
+    backgroundColor: '#fff',
   },
   screenName: {
     fontFamily: 'OpenSans-Bold',
     fontSize: 20,
     flex: 1,
-    color: '#fff',
+    color: '#000',
   },
   tabContainer: {
     marginTop: 30,
@@ -853,7 +852,7 @@ const styles = StyleSheet.create({
   cardOne: {
     flex: 1,
     borderRadius: 5,
-    shadowColor: '#fff',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 3,
@@ -984,7 +983,7 @@ const styles = StyleSheet.create({
   checkBoxTxt: {
     fontFamily: 'OpenSans-Bold',
     fontSize: 20,
-    color: '#fff',
+    color: '#000',
   },
   newRow: {
     flex: 1,

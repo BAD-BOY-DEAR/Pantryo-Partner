@@ -12,11 +12,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.CALL_PHONE"/>
-    
-    <!-- <meta-data  
-      android:name="com.google.android.geo.API_KEY"  
-      android:value="AIzaSyDBpVun7zOunu5uqB2YCx0dPv-woCa27UA"/>   -->
-
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
