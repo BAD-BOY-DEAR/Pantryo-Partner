@@ -149,7 +149,7 @@ const AddProducts = ({route, navigation}) => {
 
   // ====== Add Product ======= //
   const addProductApi = () => {
-    console.log(chooseInventory);
+    // console.log(chooseInventory);
     if (!partnerCategoryId) {
       showToast('Partner Category ID not found!');
       return;
