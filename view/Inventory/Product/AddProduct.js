@@ -9,6 +9,7 @@ import {
   FlatList,
   ToastAndroid,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 
 import {produce} from 'immer';
@@ -339,9 +340,9 @@ const AddProducts = ({route, navigation}) => {
         <View style={styles.container}>
           {/* ======== Header Add Button ======== */}
           <View style={styles.header}>
-            <Pressable style={styles.headerBtn}>
+            <TouchableOpacity style={styles.headerBtn}>
               <Text style={styles.headerBtnTxt}>Add</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
           {/* ======== Header Add Button ======== */}
 
@@ -366,6 +367,7 @@ const AddProducts = ({route, navigation}) => {
           <View
             style={{
               width: '100%',
+              marginBottom: 150,
             }}>
             {pantryoInvetory !== '' ? (
               <FlatList
