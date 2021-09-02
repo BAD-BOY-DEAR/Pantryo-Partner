@@ -36,7 +36,7 @@ const UploadDocs = ({navigation}) => {
   const [gstCertificate, setGstCertificate] = React.useState('');
   const [gstCertificatePath, setGstCertificatePath] = React.useState('');
 
-  ///Take Image
+  // Take Image
   const requestGalleryPermission = async selectForImage => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -94,7 +94,7 @@ const UploadDocs = ({navigation}) => {
     }
   };
 
-  /////Doc
+  // Upload Documents
   const uploadDocument = async () => {
     try {
       const res = await DocumentPicker.pick({
@@ -136,19 +136,19 @@ const UploadDocs = ({navigation}) => {
     }
   };
 
-  /////////Upload KYC Documents
+  // Upload KYC Documents
   const kycDocumentUpdate = async () => {
     if (!value) {
-      Alert.alert('Select Id Type');
+      alert('Select Id Type');
       return;
     } else if (!docFrontImage) {
-      Alert.alert('Please Upload your Id front side Image');
+      alert('Please Upload your Id front side Image');
       return;
     } else if (!docBackImage) {
-      Alert.alert('Please Upload your Id Back side Image');
+      alert('Please Upload your Id Back side Image');
       return;
     } else if (!gstCertificate) {
-      Alert.alert('Please Upload your gst Document in  Image or Pdf');
+      alert('Please Upload your gst Document in  Image or Pdf');
       return;
     } else {
       let partner_id = await AsyncStorage.getItem('partner_id');
@@ -182,7 +182,7 @@ const UploadDocs = ({navigation}) => {
             );
             RazorpayFunction();
           }
-          Alert.alert(result.msg);
+          alert(result.msg);
         })
         .catch(error => {
           console.error(error);

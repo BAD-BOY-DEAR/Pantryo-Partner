@@ -12,6 +12,7 @@ import {
   ToastAndroid,
   Platform,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -26,8 +27,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Animatable from 'react-native-animatable';
 import DropDownPicker from 'react-native-dropdown-picker';
 import CheckBox from '@react-native-community/checkbox';
-
-///========Screen Loader==========///
 import LoaderScreen from '../../../controller/LoaderScreen';
 import {event, onChange, set} from 'react-native-reanimated';
 import {AuthContext} from '../../../controller/Utils';
@@ -61,6 +60,7 @@ const RegisterScreen = ({navigation, route}) => {
   const [bankAccountNumber, setBankAccountNumber] = React.useState('');
   const [bankISFCCode, setBankISFCCode] = React.useState('');
   const [addressPlaceHolder, setAddressPlaceHolder] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [upiId, setUPIID] = React.useState('');
   const [FCMToken, setFCMToken] = React.useState('');
 
@@ -125,45 +125,30 @@ const RegisterScreen = ({navigation, route}) => {
     }
   };
 
-  // ======Registration Api============= //
+  // Registration Api
   const registrationApi = async () => {
     if (!shopName) {
-      showToast('Please Enter Your Shop Name');
+      showToast('Shop Name is mandatory');
       return;
     } else if (!gstStatus) {
-      showToast('Please Choose GST  registartion Status');
+      showToast('Select your GST Status');
       return;
     } else if (!partnerCategoryId) {
-      showToast('Please Enter Your Category');
+      showToast('Select category field cannot be empty');
       return;
     } else if (!partnerContactNumber) {
-      showToast('Please Enter Your Contact Number');
+      showToast('Contact number is mandatory to receive orders');
       return;
     } else if (!partnerShopAddress) {
-      showToast('Please Enter Your  Full Shop Address');
+      showToast('Shop Address is required to pickup customer orders');
       return;
     } else if (!partnerPinCode) {
-      showToast('Please Enter Your  Pincode');
-      return;
-    } else if (!bankHolderName) {
-      showToast('Please Enter Your Bank Account Holder Name');
-      return;
-    } else if (!bankAccountNumber) {
-      showToast('Please Enter Your Bank Account Number');
-      return;
-    } else if (!bankName) {
-      showToast('Please Enter Your Bank Name');
-      return;
-    } else if (!bankISFCCode) {
-      showToast('Please Enter Your Bank ISFC Code');
-      return;
-    } else if (!upiId) {
-      showToast('Please Enter Your UPI ID');
+      showToast('Pincode is required to locate you');
       return;
     } else {
       if (gstStatus == 'Yes') {
         if (!gstNumber) {
-          showToast('Please Enter Your GST Number');
+          showToast('Please enter your GST number');
           return;
         }
       }
@@ -182,6 +167,7 @@ const RegisterScreen = ({navigation, route}) => {
       data.append('partner_upiId', upiId);
       data.append('partner_storeImage', storeImage);
       data.append('partner_deviceId', FCMToken);
+      data.append('partner_email', email);
       setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerRegistration.php',
@@ -198,7 +184,7 @@ const RegisterScreen = ({navigation, route}) => {
           return response.json();
         })
         .then(function (result) {
-          // console.log(result);
+          console.log(result);
           if (result.error == 0) {
             let partner_id = result.partner_id;
             let partner_contactNumber = result.partner_contactNumber;
@@ -235,7 +221,7 @@ const RegisterScreen = ({navigation, route}) => {
     }
   };
 
-  // ====== Get user location ========== //
+  // Get user location
   const getOneTimeLocation = () => {
     setAddressPlaceHolder('Getting Location ...');
     navigator.geolocation.getCurrentPosition(
@@ -278,7 +264,8 @@ const RegisterScreen = ({navigation, route}) => {
       },
     );
   };
-  // ======Get user location========== //
+
+  // Get user location
   const showToast = msg => {
     ToastAndroid.showWithGravityAndOffset(
       msg,
@@ -289,7 +276,7 @@ const RegisterScreen = ({navigation, route}) => {
     );
   };
 
-  ///Fetch Partner Category///
+  // Fetch Partner Category
   const fetchPartnerCategoryApi = () => {
     setLoading(true);
     fetch(
@@ -309,7 +296,7 @@ const RegisterScreen = ({navigation, route}) => {
       .finally(() => setLoading(false));
   };
 
-  ///Location Permission
+  // Location Permission
   const requestLocationPermission = async () => {
     if (Platform.OS === 'ios') {
       getOneTimeLocation();
@@ -354,271 +341,193 @@ const RegisterScreen = ({navigation, route}) => {
       {isLoading == true ? <LoaderScreen /> : null}
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
-          <Text style={styles.screenDescription}>
-            Enter your business/shop details
-          </Text>
+          {/* ========== STEP 1 ========== */}
+          <View style={styles.box}>
+            <Text style={styles.stepNo}>STEP 1</Text>
+            <Text style={styles.stepCaption}>Enter your business details</Text>
 
-          {/* ======= Store Logo Section ======= */}
-          <View style={styles.imgContainer}>
-            <Pressable
-              onPress={() => requestGalleryPermission()}
-              style={styles.imgBox}>
-              {storeImagePath === '' ? (
-                <Icons name="image-outline" size={30} color="#C6B5C7" />
-              ) : (
-                <Image
-                  source={{uri: storeImagePath}}
-                  style={{
-                    height: 70,
-                    width: 70,
-                    borderRadius: 7,
-                  }}
-                />
-              )}
-            </Pressable>
-            {storeImagePath === '' ? (
-              <Text style={styles.imgLabel}>Upload Store Logo (if any)</Text>
-            ) : (
-              <Text style={styles.imgLabel}>Upload Store Logo Uploaded</Text>
-            )}
-          </View>
-          {/* ======= Store Logo Section ======= */}
-
-          {/* ======= Business Name Section ======= */}
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>BUSINESS/SHOP NAME</Text>
-            <View style={styles.formRow}>
-              <Icons name="business-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder=""
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                autoCapitalize="words"
-                onChangeText={txt => setShopName(txt)}
-                require
-              />
-            </View>
-          </View>
-          {/* ======= Business Name Section ======= */}
-
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>GST REGISTERED</Text>
-            <View style={[styles.formRow, {marginTop: 10}]}>
-              <Icons name="flag-outline" size={20} color="#5E3360" />
-              <Picker
-                selectedValue={gstStatus}
-                style={{height: 50, width: 150}}
-                onValueChange={(itemValue, itemIndex) =>
-                  setGSTStatus(itemValue)
-                }>
-                <Picker.Item label="Choose GST Status" value="" />
-                <Picker.Item label="Yes" value="Yes" />
-                <Picker.Item label="No" value="No" />
-              </Picker>
-              {/* <DropDownPicker
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-                bottomOffset={100}
-                containerStyle={{
-                  backgroundColor: '#FFFFFF',
-                }}
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  borderWidth: 0,
-                }}
-                dropDownContainerStyle={{
-                  backgroundColor: '#FFFFFF',
-                  borderWidth: 0.5,
-                }}
-                textStyle={{
-                  fontFamily: 'OpenSans-Regular',
-                  backgroundColor: '#FFFFFF',
-                }}
-              /> */}
-            </View>
-          </View>
-
-          {/* ======= GST Number ======= */}
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>GST NUMBER</Text>
-            <View style={styles.formRow}>
-              <Icons name="grid-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder="Optional"
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                autoCapitalize="characters"
-                onChangeText={txt => setGSTNumber(txt)}
-              />
-            </View>
-          </View>
-          {/* ======= GST Number ======= */}
-
-          {/* ======= Business Category ======= */}
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>CATEGORY</Text>
-            <Pressable
-              onPress={() => setModalVisible(true)}
-              style={styles.formRow}>
-              <Icons name="list-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder="Choose  Category"
-                placeholderTextColor="#777"
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                autoCapitalize="words"
-                editable={false}
-                value={partnerCategory}
-                onChangeText={txt => setPartnerCategory(txt)}
-              />
-            </Pressable>
-          </View>
-          {/* ======= Business Category ======= */}
-
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>CONTACT NUMBER</Text>
-            <View style={styles.formRow}>
-              <Text style={{fontFamily: 'OpenSans-SemiBold', fontSize: 16}}>
-                +91
+            {/* Upload Logo Start */}
+            <View style={styles.section}>
+              <View style={styles.circle}>
+                {storeImagePath === '' ? (
+                  <Icons
+                    name="cloud-upload-outline"
+                    size={30}
+                    color="#5E3360"
+                  />
+                ) : (
+                  <Image
+                    source={{uri: storeImagePath}}
+                    style={{
+                      height: 150,
+                      width: 150,
+                      borderRadius: 100,
+                    }}
+                  />
+                )}
+              </View>
+              <Text style={styles.sectionCaption}>
+                Upload store image or logo
               </Text>
-              <TextInput
-                placeholder=""
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                keyboardType="phone-pad"
-                maxLength={10}
-                value={partnerContactNumber}
-                onChangeText={txt => setPartnerContactNumber(txt)}
-              />
+              <TouchableOpacity
+                onPress={() => requestGalleryPermission()}
+                style={styles.uploadBtn}>
+                <Text style={styles.uploadBtnTxt}>UPLOAD</Text>
+              </TouchableOpacity>
             </View>
+            {/* Upload Logo End */}
+
+            {/* Shop Name Start */}
+            <View style={styles.section}>
+              <Text style={styles.label}>Shop Name</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder=""
+                  onChangeText={txt => setShopName(txt)}
+                  require
+                  autoCapitalize="words"
+                  style={styles.input}
+                  value={shopName}
+                />
+              </View>
+            </View>
+            {/* Shop Name End */}
+
+            {/* GST Start */}
+            <View style={styles.section}>
+              <Text style={styles.label}>Are you registered under GST?</Text>
+              <View style={styles.inputContainer}>
+                <Picker
+                  selectedValue={gstStatus}
+                  style={{height: 50, width: '100%'}}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setGSTStatus(itemValue)
+                  }>
+                  <Picker.Item label="Are you registered under GST?" value="" />
+                  <Picker.Item label="Yes" value="Yes" />
+                  <Picker.Item label="No" value="No" />
+                </Picker>
+              </View>
+            </View>
+            {/* GST End */}
+
+            {/* GST Number Start */}
+            {gstStatus === 'Yes' ? (
+              <>
+                <View style={styles.section}>
+                  <Text style={styles.label}>Please enter your GST number</Text>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      placeholder=""
+                      onChangeText={txt => setGSTNumber(txt)}
+                      autoCapitalize="characters"
+                      style={styles.input}
+                      value={gstNumber}
+                    />
+                  </View>
+                </View>
+              </>
+            ) : null}
+            {/* GST Number End */}
+
+            {/* Contact Number Start */}
+            <View style={styles.section}>
+              <Text style={styles.label}>Mobile Number</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder=""
+                  onChangeText={txt => setPartnerContactNumber(txt)}
+                  require
+                  keyboardType="phone-pad"
+                  style={styles.input}
+                  maxLength={10}
+                  value={partnerContactNumber}
+                />
+              </View>
+            </View>
+            {/* Contact Number End */}
+
+            {/* Email Start */}
+            <View style={styles.section}>
+              <Text style={styles.label}>Email ID (optional)</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder=""
+                  onChangeText={txt => setEmail(txt)}
+                  keyboardType="email-address"
+                  style={styles.input}
+                  value={email}
+                />
+              </View>
+            </View>
+            {/* Email End */}
+
+            {/* Address Start */}
+            <View style={styles.section}>
+              <Text style={styles.label}>Shop Address (Full Address)</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder=""
+                  onChangeText={txt => setPartnerShopAddress(txt)}
+                  require
+                  keyboardType="default"
+                  autoCapitalize="words"
+                  style={styles.input}
+                  value={partnerShopAddress}
+                />
+              </View>
+            </View>
+            {/* Address End */}
+
+            {/* Pincode Start */}
+            <View style={styles.section}>
+              <Text style={styles.label}>Pincode</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder=""
+                  onChangeText={txt => setPartnerPinCode(txt)}
+                  require
+                  keyboardType="number-pad"
+                  style={styles.input}
+                  value={partnerPinCode}
+                />
+              </View>
+            </View>
+            {/* Pincode End */}
           </View>
+          {/* ========== STEP 1 ========== */}
 
-          {/* <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>GPS LOCATION</Text>
-            <View style={styles.formRow}>
-              <Icons name="location-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder={addressPlaceHolder}
-                placeholderTextColor="#777"
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                autoCapitalize="words"
-                value={partnerAddress}
-                onChangeText={txt => setPartnerAddress(txt)}
-              />
-            </View>
-          </View> */}
+          {/* ========== STEP 2 ========== */}
+          <View style={styles.box}>
+            <Text style={styles.stepNo}>STEP 2</Text>
+            <Text style={styles.stepCaption}>Select your category</Text>
 
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>SHOP ADDRESS</Text>
-            <View style={styles.formRow}>
-              <Icons name="location-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder=""
-                placeholderTextColor="#777"
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                autoCapitalize="words"
-                value={partnerShopAddress}
-                onChangeText={txt => setPartnerShopAddress(txt)}
-              />
-            </View>
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              style={styles.section}>
+              <Text style={styles.label}>Category</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder=""
+                  onChangeText={txt => setPartnerCategory(txt)}
+                  require
+                  keyboardType="default"
+                  style={styles.input}
+                  value={partnerCategory}
+                  editable={false}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
+          {/* ========== STEP 2 ========== */}
 
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>PINCODE</Text>
-            <View style={styles.formRow}>
-              <Icons name="locate-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder=""
-                placeholderTextColor="#777"
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                keyboardType="number-pad"
-                value={partnerPinCode}
-                onChangeText={txt => setPartnerPinCode(txt)}
-              />
-            </View>
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>BANK ACCOUNT HOLDER NAME</Text>
-            <View style={styles.formRow}>
-              <Icons name="business-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder=""
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                autoCapitalize="words"
-                onChangeText={txt => setBankHolderName(txt)}
-              />
-            </View>
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>BANK NAME</Text>
-            <View style={styles.formRow}>
-              <Icons name="business-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder=""
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                autoCapitalize="words"
-                onChangeText={txt => setBankName(txt)}
-              />
-            </View>
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>BANK ACCOUNT NUMBER</Text>
-            <View style={styles.formRow}>
-              <Icons name="business-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder=""
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                keyboardType="number-pad"
-                onChangeText={txt => setBankAccountNumber(txt)}
-              />
-            </View>
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>BANK ISFC CODE</Text>
-            <View style={styles.formRow}>
-              <Icons name="business-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder=""
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                keyboardType="default"
-                autoCapitalize="characters"
-                onChangeText={txt => setBankISFCCode(txt)}
-              />
-            </View>
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>UPI ID</Text>
-            <View style={styles.formRow}>
-              <Icons name="business-outline" size={20} color="#5E3360" />
-              <TextInput
-                placeholder=""
-                style={styles.txtInput}
-                selectionColor="#5E3360"
-                keyboardType="default"
-                onChangeText={text => setUPIID(text)}
-              />
-            </View>
-          </View>
-
-          <Pressable onPress={() => registrationApi()} style={styles.btn}>
-            <Text style={styles.btnTxt}>CONTINUE</Text>
-          </Pressable>
+          {/* ========== SUBMIT BUTTON START ========== */}
+          <TouchableOpacity
+            onPress={() => registrationApi()}
+            style={styles.btn}>
+            <Text style={styles.btnTxt}>SUBMIT</Text>
+          </TouchableOpacity>
+          {/* ========== SUBMIT BUTTON END ========== */}
         </View>
       </ScrollView>
 
@@ -632,15 +541,6 @@ const RegisterScreen = ({navigation, route}) => {
         }}>
         <View style={styles.modalContainer}>
           <View style={styles.modalCard}>
-            <View style={styles.modalHeadingRow}>
-              <Text style={styles.modalHeadingTxt}>
-                Select Business Category
-              </Text>
-              <Pressable onPress={() => setModalVisible(false)}>
-                <Icons name="close-circle-outline" size={25} />
-              </Pressable>
-            </View>
-
             <FlatList
               data={partnerAllCategory}
               renderItem={({item}) => (
@@ -650,8 +550,8 @@ const RegisterScreen = ({navigation, route}) => {
                     setPartnerCategoryId(item.partner_category_id);
                     setModalVisible(false);
                   }}
-                  style={styles.modalCategory}>
-                  <Text style={styles.categoryTxt}>
+                  style={{paddingVertical: 20}}>
+                  <Text style={styles.catName}>
                     {item.partner_category_name}
                   </Text>
                 </Pressable>
@@ -678,110 +578,108 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     backgroundColor: '#FFFFFF',
-    width: '100%',
     paddingHorizontal: 20,
   },
-  screenDescription: {
-    fontFamily: 'OpenSans-SemiBold',
-    marginTop: 30,
-    marginBottom: 10,
-  },
-  imgContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  imgBox: {
-    width: 70,
-    height: 70,
-    borderWidth: 0.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-  },
-  imgLabel: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 16,
-    color: '#5E3360',
-    marginLeft: 10,
-    flex: 1,
-  },
-  formGroup: {
-    marginTop: 10,
+  box: {
     width: '100%',
     marginBottom: 30,
-  },
-  formLabel: {
-    fontFamily: 'OpenSans-Regular',
-    fontSize: 12,
-    color: '#C6B5C7',
-  },
-  formRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 5,
     borderBottomWidth: 0.5,
-    borderBottomColor: '#5E3360',
+    borderBottomColor: '#c7c7c7c7',
+    paddingBottom: 40,
   },
-  txtInput: {
-    flex: 1,
+  stepNo: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 22,
+  },
+  stepCaption: {
     fontFamily: 'OpenSans-Regular',
     fontSize: 16,
-    color: '#000000',
-    marginLeft: 10,
+  },
+  section: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginTop: 30,
+  },
+  circle: {
+    width: 150,
+    height: 150,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: '#c7c7c7c7',
+    borderRadius: 100,
+    marginBottom: 20,
+  },
+  sectionCaption: {
+    alignSelf: 'center',
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 16,
+  },
+  uploadBtn: {
+    alignSelf: 'center',
+    marginTop: 10,
+    width: '40%',
+    backgroundColor: '#5E3360',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderRadius: 100,
+  },
+  uploadBtnTxt: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 16,
+    color: '#fff',
+  },
+  label: {
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 16,
+  },
+  inputContainer: {
+    width: '100%',
+    borderWidth: 1.5,
+    marginTop: 10,
+    borderRadius: 5,
+    paddingVertical: 5,
+    borderColor: '#5E3360',
+    paddingHorizontal: 10,
+  },
+  input: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 18,
+    color: '#000',
   },
   btn: {
-    backgroundColor: '#5E3360',
+    marginBottom: 50,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 15,
-    marginBottom: 40,
+    backgroundColor: '#5E3360',
   },
   btnTxt: {
-    fontFamily: 'OpenSans-SemiBold',
-    color: '#FFFFFF',
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 18,
+    color: '#fff',
   },
   modalContainer: {
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'rgba(52, 52, 52, 0.3)',
   },
   modalCard: {
-    backgroundColor: '#FEF9E5',
     width: '100%',
-    borderTopStartRadius: 20,
-    borderTopEndRadius: 20,
-    paddingHorizontal: 15,
+    backgroundColor: '#fff',
+    paddingBottom: 40,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
-  modalHeadingRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 30,
-  },
-  modalHeadingTxt: {
-    fontFamily: 'OpenSans-SemiBold',
-    fontSize: 18,
-    flex: 1,
-    color: '#5E3360',
-  },
-  modalCategory: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  categoryTxt: {
+  catName: {
     fontFamily: 'OpenSans-Regular',
-    fontSize: 14,
-    flex: 1,
+    fontSize: 20,
+    width: '100%',
   },
 });

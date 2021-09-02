@@ -172,12 +172,42 @@ const Stack = createStackNavigator();
 
 function Login() {
   return (
-    <Stack.Navigator headerMode="none">
-      <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="VerificationScreen" component={VerificationScreen} />
-      <Stack.Screen name="RegistrationForm" component={RegistrationForm} />
-      <Stack.Screen name="UploadDocs" component={UploadDocs} />
-      <Stack.Screen name="Navigation" component={Navigation} />
+    <Stack.Navigator>
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="VerificationScreen"
+        component={VerificationScreen}
+        options={{
+          title: 'Enter OTP',
+        }}
+      />
+      <Stack.Screen
+        name="RegistrationForm"
+        component={RegistrationForm}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="UploadDocs"
+        component={UploadDocs}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Navigation"
+        component={Navigation}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }
