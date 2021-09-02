@@ -371,14 +371,14 @@ const HomeScreen = ({navigation}) => {
                     <View
                       style={{
                         marginLeft: 20,
-                        marginRight: 20,
+                        marginRight: 10,
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
                       {partnerStatus == '1' ? (
                         <>
-                          <Text style={styles.checkBoxTxt}>Live</Text>
+                          <Text style={styles.checkBoxTxt}>You are live</Text>
                           <CheckBox
                             disabled={false}
                             tintColors={{true: 'green', false: 'black'}}
@@ -394,7 +394,9 @@ const HomeScreen = ({navigation}) => {
                         </>
                       ) : partnerStatus == '2' ? (
                         <>
-                          <Text style={styles.checkBoxTxt}>Offline</Text>
+                          <Text style={styles.checkBoxTxt}>
+                            You are Offline
+                          </Text>
                           <CheckBox
                             disabled={false}
                             tintColors={{true: 'green', false: 'black'}}
@@ -420,13 +422,14 @@ const HomeScreen = ({navigation}) => {
                   </View>
                   {/* ========== Header Section ========== */}
 
+                  {/* ========== Payment Notification Start ========== */}
                   {/* {paymentStatus == '1' ? ( */}
                   <Pressable
                     onPress={RazorpayFunction}
                     style={styles.notificationBtn}>
                     <View style={styles.notificationTab}>
                       <Text style={styles.notifHeading}>
-                        Payment unsuccessful!
+                        Payment Unsuccessful!
                       </Text>
                       <Text style={styles.notifTxt}>
                         Please make a payment of ₹1 to complete your
@@ -435,6 +438,7 @@ const HomeScreen = ({navigation}) => {
                     </View>
                   </Pressable>
                   {/* ) : null} */}
+                  {/* ========== Payment Notification End ========== */}
 
                   {/* ========== Overview Section ========== */}
                   <LinearGradient
@@ -742,8 +746,8 @@ const HomeScreen = ({navigation}) => {
                           autoPlay
                           loop
                           style={{
-                            width: 200,
-                            height: 200,
+                            width: 100,
+                            height: 100,
                           }}
                         />
                         <Animatable.Text
@@ -753,9 +757,9 @@ const HomeScreen = ({navigation}) => {
                             fontFamily: 'OpenSans-Regular',
                             fontSize: 20,
                             textAlign: 'center',
-                            color: '#777',
+                            color: '#000',
                           }}>
-                          Waiting for customer orders....
+                          Waiting for customer orders...
                         </Animatable.Text>
                       </View>
                       // ========== Waiting for Orders ==========
