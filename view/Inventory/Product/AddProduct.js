@@ -148,13 +148,13 @@ const AddProducts = ({route, navigation}) => {
       data.append('inventory_details', chooseInventory);
 
       // 'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=addpartnerinventory',
-      fetch(
+      await fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/AddPartnerInventory.php',
         {
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'multipart/form-data;',
+            'Content-Type': 'multipart/form-data',
           },
           body: data,
         },
@@ -235,7 +235,7 @@ const AddProducts = ({route, navigation}) => {
     }
   }, []);
 
-  ///////////////Set Data
+  // Set Data
   const ChooseInventoryData = (newItem, i) => {
     let items = pantryoInvetory;
     // console.log(!items[i].selected);
@@ -270,7 +270,9 @@ const AddProducts = ({route, navigation}) => {
         <View style={styles.container}>
           {/* ======== Header Add Button ======== */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={addProductApi} style={styles.headerBtn}>
+            <TouchableOpacity
+              onPress={() => addProductApi()}
+              style={styles.headerBtn}>
               <Text style={styles.headerBtnTxt}>Add</Text>
             </TouchableOpacity>
           </View>
