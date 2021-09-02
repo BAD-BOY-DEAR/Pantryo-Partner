@@ -4,13 +4,15 @@ import {
   Text,
   KeyboardAvoidingView,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
   TextInput,
   Alert,
   ToastAndroid,
 } from 'react-native';
 
+// Library
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icons from 'react-native-vector-icons/Ionicons';
 
 import LoaderScreen from '../controller/LoaderScreen';
 
@@ -22,66 +24,9 @@ const OtpVerification = ({navigation, route}) => {
   const [partner_contactNumber, setContactNumber] = useState('');
   const [isLoading, setLoading] = React.useState(false);
 
-  const onChangeText = val => {
-    setInternalVal(val);
-  };
-
-  ///==========Login Start================///
-  const resentOTP = async () => {
-    if (!partner_contactNumber) {
-      Alert.alert('Please Enter Your Registered Mobile Number');
-      return;
-    } else {
-      setLoading(true);
-      fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=resendOTP',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            partner_contactNumber: partner_contactNumber,
-          }),
-        },
-      )
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (result) {
-          console.log(result);
-          if (result.error == 0) {
-            setOTP(result.otp);
-            setOTP(result.partner_contactNumber);
-            // Alert.alert(result.msg);
-            ToastAndroid.showWithGravityAndOffset(
-              result.msg,
-              ToastAndroid.SHORT,
-              ToastAndroid.BOTTOM,
-              25,
-              50,
-            );
-          } else {
-            // Alert.alert(result.msg);
-            ToastAndroid.showWithGravityAndOffset(
-              result.msg,
-              ToastAndroid.SHORT,
-              ToastAndroid.BOTTOM,
-              25,
-              50,
-            );
-            navigation.navigate('LoginScreen');
-          }
-          // textInputFocus();
-        })
-        .catch(error => {
-          console.error(error);
-        })
-        .finally(() => setLoading(false));
-    }
-  };
-  ///==========Login End================///
+  // const onChangeText = val => {
+  //   setInternalVal(val);
+  // };
 
   const showToast = msg => {
     ToastAndroid.showWithGravityAndOffset(
@@ -99,21 +44,21 @@ const OtpVerification = ({navigation, route}) => {
     } else if (internalVal.length !== 6) {
       showToast('Please enter valid Otp!');
     } else if (OTP == internalVal) {
-      showToast('OTP Verification successfully completed!');
+      showToast('OTP verified');
       navigation.navigate('RegistrationForm', {
         partner_contactNumber: partner_contactNumber,
       });
     } else {
-      showToast('OTP Verification Unsuccessful');
+      showToast('OTP verification failed');
     }
   };
 
-  const textInputFocus = () => {
-    textInput.focus();
-  };
+  // const textInputFocus = () => {
+  //   textInput.focus();
+  // };
 
   useEffect(() => {
-    textInputFocus();
+    // textInputFocus();
     setOTP(route.params.otp);
     setContactNumber(route.params.mobilenumbmer);
   }, []);
@@ -122,61 +67,24 @@ const OtpVerification = ({navigation, route}) => {
     <>
       {isLoading == true ? <LoaderScreen /> : null}
       <View style={styles.container}>
-        <KeyboardAvoidingView
-          keyboardVerticalOffset={50}
-          behavior="padding"
-          style={styles.containerAvoidingView}>
-          <Text style={styles.textTile}>
-            Enter your 6 Digit OTP sent via SMS
-          </Text>
+        <Text style={styles.label}>Enter OTP to complete registration</Text>
+        <View style={styles.formRow}>
+          <Icons name="phone-portrait-outline" size={20} color="#5E3360" />
+          <TextInput
+            placeholder="X X X X X X"
+            placeholderTextColor="#c7c7c7c7"
+            value={internalVal}
+            onChangeText={setInternalVal}
+            keyboardType="number-pad"
+            onSubmitEditing={() => otpMatch()}
+            style={styles.input}
+            autoFocus={true}
+          />
+        </View>
 
-          <View>
-            <TextInput
-              placeHolder=""
-              value={internalVal}
-              maxLength={lengthInput}
-              onChangeText={onChangeText}
-              returnKeyType="done"
-              keyboardType="numeric"
-              style={styles.otpInput}
-              ref={input => (textInput = input)}
-            />
-            <View style={styles.containerInput}>
-              {Array(lengthInput)
-                .fill()
-                .map((data, index) => (
-                  <View key={index} style={styles.cellView}>
-                    <Text
-                      style={styles.cellTxt}
-                      onPress={() => textInput.focus()}>
-                      {internalVal && internalVal.length > 0
-                        ? internalVal[index]
-                        : ''}
-                    </Text>
-                  </View>
-                ))}
-            </View>
-            {/* <Pressable
-              onPress={resentOTP}
-              style={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-              <Text
-                style={{
-                  fontFamily: 'OpenSans-Medium',
-                  color: 'blue',
-                  fontSize: 16,
-                  marginTop: 20,
-                }}>
-                Resend OTP?
-              </Text>
-            </Pressable> */}
-          </View>
-          <Pressable
-            // onPress={() => navigation.navigate('RegistrationForm')}
-            onPress={() => otpMatch()}
-            style={styles.btn}>
-            <Text style={styles.btnTxt}>SUBMIT</Text>
-          </Pressable>
-        </KeyboardAvoidingView>
+        <TouchableOpacity onPress={() => otpMatch()} style={styles.btn}>
+          <Text style={styles.btnTxt}>CONTINUE</Text>
+        </TouchableOpacity>
       </View>
     </>
   );
@@ -187,53 +95,45 @@ export default OtpVerification;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FEF9E5',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+    paddingVertical: 20,
   },
-  containerAvoidingView: {
-    flex: 1,
-    padding: 10,
+  label: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 16,
+  },
+  formRow: {
+    width: '100%',
+    marginTop: 20,
+    borderWidth: 1.5,
+    borderRadius: 5,
+    borderColor: '#5E3360',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-  textTile: {
-    marginTop: 20,
-    marginBottom: 10,
-    fontSize: 16,
+  input: {
     fontFamily: 'OpenSans-Regular',
-  },
-  otpInput: {
-    width: 0,
-    height: 0,
-  },
-  containerInput: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cellView: {
-    paddingVertical: 10,
-    width: 40,
-    margin: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: '#5E3360',
-  },
-  cellTxt: {
-    textAlign: 'center',
-    fontFamily: 'OpenSans-SemiBold',
     fontSize: 16,
+    flex: 1,
+    marginLeft: 5,
   },
   btn: {
-    marginTop: 30,
+    marginTop: 20,
     width: '100%',
-    backgroundColor: '#5E3360',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 15,
+    backgroundColor: '#5E3360',
   },
   btnTxt: {
-    fontFamily: 'OpenSans-SemiBold',
-    color: '#FFFFFF',
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 18,
+    color: '#fff',
   },
 });

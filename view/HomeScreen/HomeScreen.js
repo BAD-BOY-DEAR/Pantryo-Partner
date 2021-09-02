@@ -375,7 +375,7 @@ const HomeScreen = ({navigation}) => {
 
                   {/* ========== Ongoing Orders Section ========== */}
                   <View style={styles.section}>
-                    <Text style={styles.tabHeading}>Orders Received Today</Text>
+                    <Text style={styles.tabHeading}>New orders</Text>
 
                     {isLoading == true ? (
                       <>
