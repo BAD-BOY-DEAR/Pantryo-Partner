@@ -9,6 +9,7 @@ import {
   RefreshControl,
   LogBox,
   Switch,
+  TouchableOpacity,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -424,7 +425,7 @@ const HomeScreen = ({navigation}) => {
 
                   {/* ========== Payment Notification Start ========== */}
                   {/* {paymentStatus == '1' ? ( */}
-                  <Pressable
+                  <TouchableOpacity
                     onPress={RazorpayFunction}
                     style={styles.notificationBtn}>
                     <View style={styles.notificationTab}>
@@ -436,7 +437,7 @@ const HomeScreen = ({navigation}) => {
                         registration
                       </Text>
                     </View>
-                  </Pressable>
+                  </TouchableOpacity>
                   {/* ) : null} */}
                   {/* ========== Payment Notification End ========== */}
 
