@@ -17,10 +17,11 @@ const SettingsScreen = ({navigation}) => {
   const [userCategoryName, setUserCategoryName] = React.useState('');
   const [userMobile, setUserMobile] = React.useState('');
   const [pincode, setPincode] = React.useState('');
-  const [shopAddress, setShopAddress] = React.useState('');
   const [appVersion, setAppVersion] = React.useState('');
-  const [mounted, setmounted] = React.useState(true);
   const {signOut} = React.useContext(AuthContext);
+
+  const [shopAddress, setShopAddress] = React.useState('');
+  const [mounted, setmounted] = React.useState(true);
 
   // Function to get Partner's Profile
   const getUserProfile = async () => {

@@ -111,6 +111,7 @@ const OrdersList = () => {
       })
       .finally(() => {
         setLoading(false);
+        getOrderDetails();
       });
   };
 
@@ -127,7 +128,7 @@ const OrdersList = () => {
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <ActivityIndicator size="large" color="#5E3360" />
         </View>
-      ) : (
+      ) : allDetails !== '' ? (
         <View style={styles.container}>
           {/* =========== Header Buttons =========== */}
           <View style={styles.header}>
@@ -195,6 +196,12 @@ const OrdersList = () => {
           </View>
           {/* =========== Orders List =========== */}
         </View>
+      ) : (
+        <>
+          <View style={styles.container}>
+            <Text>No Past Orders Found</Text>
+          </View>
+        </>
       )}
 
       {/* ======== Order Details Modal ========  */}

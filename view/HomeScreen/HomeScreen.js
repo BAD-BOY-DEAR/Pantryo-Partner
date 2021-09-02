@@ -9,6 +9,7 @@ import {
   RefreshControl,
   LogBox,
   Switch,
+  TouchableOpacity,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -70,8 +71,9 @@ const HomeScreen = ({navigation}) => {
   ///get Partner Details
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
+    let partner_paymentStatus = await AsyncStorage.getItem('paymentStatus');
     setKycStatus(partner_kycStatus);
-
+    setPaymentStatus(partner_paymentStatus);
     // console.log(paymentStatus);
     getPartnerDetails();
   };
@@ -79,8 +81,11 @@ const HomeScreen = ({navigation}) => {
   // Function to get Partner's Profile
   const getUserProfile = async () => {
     setPartnerId(await AsyncStorage.getItem('partner_id'));
+<<<<<<< HEAD
     setPaymentStatus(await AsyncStorage.getItem('partner_paymentStatus'));
     // console.log(await AsyncStorage.getItem('partner_paymentStatus'));
+=======
+>>>>>>> 97408bc3e668c5227b7a24396c22980475dd1b81
   };
 
   // Get Orders received today
@@ -287,10 +292,6 @@ const HomeScreen = ({navigation}) => {
       })
       .then(function (result) {
         if (result.payment_status === 'authorized') {
-          let partner_paymentStatus = result.partner_payment_status;
-          console.log('partner Payment Status  :' + partner_paymentStatus);
-          AsyncStorage.setItem('partner_paymentStatus', partner_paymentStatus);
-          getUserProfile();
           navigation.navigate('HomeScreen');
         } else {
           showToast('Status of Payment' + ' ' + JSON.stringify(result));
@@ -368,20 +369,22 @@ const HomeScreen = ({navigation}) => {
                 <View style={styles.container}>
                   {/* ========== Header Section ========== */}
                   <View style={styles.header}>
-                    <Text style={styles.screenName}>Dashboard</Text>
+                    <Text style={styles.screenName}>
+                      Dashboard{paymentStatus ? paymentStatus : 'hee'}
+                    </Text>
 
                     {/* ========== Status Section ========== */}
                     <View
                       style={{
                         marginLeft: 20,
-                        marginRight: 20,
+                        marginRight: 10,
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
                       {partnerStatus == '1' ? (
                         <>
-                          <Text style={styles.checkBoxTxt}>Live</Text>
+                          <Text style={styles.checkBoxTxt}>You are live</Text>
                           <CheckBox
                             disabled={false}
                             tintColors={{true: 'green', false: 'black'}}
@@ -397,7 +400,9 @@ const HomeScreen = ({navigation}) => {
                         </>
                       ) : partnerStatus == '2' ? (
                         <>
-                          <Text style={styles.checkBoxTxt}>Offline</Text>
+                          <Text style={styles.checkBoxTxt}>
+                            You are Offline
+                          </Text>
                           <CheckBox
                             disabled={false}
                             tintColors={{true: 'green', false: 'black'}}
@@ -423,41 +428,43 @@ const HomeScreen = ({navigation}) => {
                   </View>
                   {/* ========== Header Section ========== */}
 
-                  {paymentStatus == '1' ? (
-                    <Pressable
-                      onPress={RazorpayFunction}
-                      style={{
-                        paddingHorizontal: 20,
-                        width: '100%',
-                      }}>
-                      <View
-                        style={{
-                          width: '100%',
-                          paddingHorizontal: 10,
-                          backgroundColor: '#ed7b7b',
-                          paddingVertical: 20,
-                          borderRadius: 5,
-                        }}>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontFamily: 'OpenSans-Bold',
-                            fontSize: 24,
-                          }}>
-                          Payment unsuccessful!
-                        </Text>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontFamily: 'OpenSans-Regular',
-                            fontSize: 18,
-                          }}>
-                          Please make a payment of ₹1 to complete your
-                          registration
-                        </Text>
-                      </View>
-                    </Pressable>
-                  ) : null}
+                  {/* ========== Verification Notification Start ========== */}
+                  {/* {paymentStatus == '1' ? ( */}
+                  <TouchableOpacity style={styles.notificationBtn}>
+                    <View
+                      style={[
+                        styles.notificationTab,
+                        {backgroundColor: '#4677ab'},
+                      ]}>
+                      <Text style={styles.notifHeading}>
+                        Under Verification!
+                      </Text>
+                      <Text style={styles.notifTxt}>
+                        Please wait while we verify the documents submitted by
+                        you.
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  {/* ) : null} */}
+                  {/* ========== Verification Notification End ========== */}
+
+                  {/* ========== Payment Notification Start ========== */}
+                  {/* {paymentStatus == '1' ? ( */}
+                  <TouchableOpacity
+                    onPress={RazorpayFunction}
+                    style={styles.notificationBtn}>
+                    <View style={styles.notificationTab}>
+                      <Text style={styles.notifHeading}>
+                        Payment Unsuccessful!
+                      </Text>
+                      <Text style={styles.notifTxt}>
+                        Please make a payment of ₹1 to complete your
+                        registration
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  {/* ) : null} */}
+                  {/* ========== Payment Notification End ========== */}
 
                   {/* ========== Overview Section ========== */}
                   <LinearGradient
@@ -765,8 +772,8 @@ const HomeScreen = ({navigation}) => {
                           autoPlay
                           loop
                           style={{
-                            width: 200,
-                            height: 200,
+                            width: 100,
+                            height: 100,
                           }}
                         />
                         <Animatable.Text
@@ -776,9 +783,9 @@ const HomeScreen = ({navigation}) => {
                             fontFamily: 'OpenSans-Regular',
                             fontSize: 20,
                             textAlign: 'center',
-                            color: '#777',
+                            color: '#000',
                           }}>
-                          Waiting for customer orders....
+                          Waiting for customer orders...
                         </Animatable.Text>
                       </View>
                       // ========== Waiting for Orders ==========
@@ -1139,6 +1146,7 @@ const styles = StyleSheet.create({
   notificationBtn: {
     paddingHorizontal: 20,
     width: '100%',
+    marginBottom: 10,
   },
   notificationTab: {
     width: '100%',
