@@ -65,10 +65,11 @@ const HomeScreen = ({navigation}) => {
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
-  // get Partner Details
+  ///get Partner Details
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
     setKycStatus(partner_kycStatus);
+    // console.log(partner_kycStatus);
     getPartnerDetails();
   };
 
@@ -116,7 +117,7 @@ const HomeScreen = ({navigation}) => {
   // Partner Status
   const changePartnerStatus = async status => {
     let partner_id = await AsyncStorage.getItem('partner_id');
-    await fetch(
+    fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=partnerStatusChange',
       {
         method: 'POST',
@@ -134,7 +135,16 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
-        // console.log(result);
+        if (result.error == 0) {
+          let partner_status = result.partner_status;
+          setPartnerStatus(partner_status);
+          if (partner_status == '1') {
+            setToggleCheckBox(true);
+          }
+          if (partner_status == '2') {
+            setToggleCheckBox(false);
+          }
+        }
         getStatus();
       })
       .catch(error => {
@@ -162,12 +172,13 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(result => {
-        // console.log(result);
-        if ((result.error = 0)) {
-          setPartnerStatus(result.partner_status);
-          if (result.partner_status == 1) {
+        if (result.error == 0) {
+          let partner_status = result.partner_status;
+          setPartnerStatus(partner_status);
+          if (partner_status == '1') {
             setToggleCheckBox(true);
-          } else {
+          }
+          if (partner_status == '2') {
             setToggleCheckBox(false);
           }
         }
@@ -180,7 +191,7 @@ const HomeScreen = ({navigation}) => {
 
   // Partner Status
   const getPartnerEarning = async () => {
-    setLoading(true);
+    // setLoading(true);
     let partner_id = await AsyncStorage.getItem('partner_id');
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerCountHistroy.php?flag=gettodayearning',
@@ -208,6 +219,7 @@ const HomeScreen = ({navigation}) => {
       })
       .finally(() => {
         setLoading(false);
+        getPartnerEarning();
       });
   };
 
@@ -293,13 +305,14 @@ const HomeScreen = ({navigation}) => {
                           <Text style={styles.checkBoxTxt}>Live</Text>
                           <CheckBox
                             disabled={false}
+                            tintColors={{true: 'green', false: 'black'}}
                             value={toggleCheckBox}
-                            onValueChange={newValue =>
-                              setToggleCheckBox(newValue)
-                            }
+                            onValueChange={newValue => {
+                              setToggleCheckBox(newValue);
+                              changePartnerStatus('2');
+                            }}
                             onChange={() => {
                               changePartnerStatus('2');
-                              // setPartnerStatus('2');
                             }}
                           />
                         </>
@@ -308,13 +321,14 @@ const HomeScreen = ({navigation}) => {
                           <Text style={styles.checkBoxTxt}>Offline</Text>
                           <CheckBox
                             disabled={false}
+                            tintColors={{true: 'green', false: 'black'}}
                             value={toggleCheckBox}
-                            onValueChange={newValue =>
-                              setToggleCheckBox(newValue)
-                            }
+                            onValueChange={newValue => {
+                              setToggleCheckBox(newValue);
+                              changePartnerStatus('1');
+                            }}
                             onChange={() => {
                               changePartnerStatus('1');
-                              // setPartnerStatus('1');
                             }}
                           />
                         </>

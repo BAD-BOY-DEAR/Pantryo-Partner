@@ -138,7 +138,7 @@ const AddProducts = ({route, navigation}) => {
   };
 
   // ====== Add Product ======= //
-  const addProductApi = () => {
+  const addProductApi = async () => {
     if (!chooseInventory) {
       showToast('Please Choose atleast one Item!');
       return;
@@ -146,6 +146,8 @@ const AddProducts = ({route, navigation}) => {
       setLoading(true);
       const data = new FormData();
       data.append('inventory_details', chooseInventory);
+
+      // 'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=addpartnerinventory',
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/AddPartnerInventory.php',
         {
@@ -236,7 +238,7 @@ const AddProducts = ({route, navigation}) => {
   ///////////////Set Data
   const ChooseInventoryData = (newItem, i) => {
     let items = pantryoInvetory;
-    console.log(!items[i].selected);
+    // console.log(!items[i].selected);
     items[i].selected = items[i].selected == true ? false : true;
     const index = chooseInventory.findIndex(
       item => item.pantryo_inventory_id === newItem.pantryo_inventory_id,
@@ -249,7 +251,7 @@ const AddProducts = ({route, navigation}) => {
       setPantryoInventory(items);
       setChooseInventory([...chooseInventory, newItem]);
     }
-    console.log(chooseInventory);
+    console.log(newItem);
   };
 
   //////////Update Checkbox
@@ -487,10 +489,11 @@ const AddProducts = ({route, navigation}) => {
                         <CheckBox
                           disabled={false}
                           value={item.selected}
-                          tintColors={{true: '#F15927', false: 'black'}}
+                          tintColors={{true: 'green', false: 'black'}}
                           onValueChange={() => {
                             ChooseInventoryData(
                               {
+                                partner_id: partner_id,
                                 partner_category_id: item.partner_category_id,
                                 pantryo_main_category_id:
                                   item.pantryo_main_category_id,
