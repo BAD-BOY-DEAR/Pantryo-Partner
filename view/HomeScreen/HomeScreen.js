@@ -423,6 +423,26 @@ const HomeScreen = ({navigation}) => {
                   </View>
                   {/* ========== Header Section ========== */}
 
+                  {/* ========== Verification Notification Start ========== */}
+                  {/* {paymentStatus == '1' ? ( */}
+                  <TouchableOpacity style={styles.notificationBtn}>
+                    <View
+                      style={[
+                        styles.notificationTab,
+                        {backgroundColor: '#4677ab'},
+                      ]}>
+                      <Text style={styles.notifHeading}>
+                        Under Verification!
+                      </Text>
+                      <Text style={styles.notifTxt}>
+                        Please wait while we verify the documents submitted by
+                        you.
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  {/* ) : null} */}
+                  {/* ========== Verification Notification End ========== */}
+
                   {/* ========== Payment Notification Start ========== */}
                   {/* {paymentStatus == '1' ? ( */}
                   <TouchableOpacity
@@ -1121,6 +1141,7 @@ const styles = StyleSheet.create({
   notificationBtn: {
     paddingHorizontal: 20,
     width: '100%',
+    marginBottom: 10,
   },
   notificationTab: {
     width: '100%',
