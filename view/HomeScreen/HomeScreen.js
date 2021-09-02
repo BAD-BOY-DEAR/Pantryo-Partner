@@ -21,6 +21,7 @@ import analytics from '@react-native-firebase/analytics';
 navigator.geolocation = require('@react-native-community/geolocation');
 import CheckBox from '@react-native-community/checkbox';
 import * as Animatable from 'react-native-animatable';
+import RazorpayCheckout from 'react-native-razorpay';
 
 // ===== Screens ===== //
 import RegistrationForm from './Registration/RegistrationForm';
@@ -44,7 +45,8 @@ const HomeScreen = ({navigation}) => {
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const [isLoading, setLoading] = React.useState(true);
-  const [kycStatus, setKycStatus] = React.useState('1');
+  const [kycStatus, setKycStatus] = React.useState('');
+  const [paymentStatus, setPaymentStatus] = React.useState('');
   const [todayOrderData, setTodayOrderData] = React.useState(null);
   const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
   const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
@@ -68,8 +70,10 @@ const HomeScreen = ({navigation}) => {
   ///get Partner Details
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
+    let paymentStatus = await AsyncStorage.getItem('paymentStatus');
     setKycStatus(partner_kycStatus);
-    // console.log(partner_kycStatus);
+    setPaymentStatus(paymentStatus);
+    console.log(paymentStatus);
     getPartnerDetails();
   };
 
@@ -223,6 +227,76 @@ const HomeScreen = ({navigation}) => {
       });
   };
 
+  // RazorpayFunction Payment APi
+  const RazorpayFunction = async () => {
+    let partner_contactNumber = await AsyncStorage.getItem(
+      'partner_contactNumber',
+    );
+    let partner_shopName = await AsyncStorage.getItem('partner_shopName');
+
+    var options = {
+      description: '',
+      image: 'https://gizmmoalchemy.com/api/pantryo/Logo/PantryoLogo.png',
+      currency: 'INR',
+      key: 'rzp_test_Q7747Ni4ezPrgO',
+      amount: '100',
+      name: 'Pantryo',
+      prefill: {
+        email: 'support@pantryo.com',
+        contact: partner_contactNumber,
+        name: partner_shopName,
+      },
+      theme: {color: '#6a3091'},
+    };
+
+    RazorpayCheckout.open(options)
+      .then(data => {
+        let payment_id = `${data.razorpay_payment_id}`;
+        getPaymentStatus(payment_id);
+      })
+      .catch(error => {
+        console.log(
+          'Error: ' + JSON.stringify(`${error.code} | ${error.description}`),
+        );
+      });
+  };
+
+  // Check Payment Status
+  const getPaymentStatus = async payment_id => {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    let partner_category = await AsyncStorage.getItem('partner_category');
+    setLoading(true);
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php?flag=partner_transaction',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          payment_id: payment_id,
+          partner_id: partner_id,
+          partner_category: partner_category,
+        }),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        if (result.payment_status === 'authorized') {
+          navigation.navigate('HomeScreen');
+        } else {
+          showToast('Status of Payment' + ' ' + JSON.stringify(result));
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => setLoading(false));
+  };
+
   React.useEffect(() => {
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
@@ -289,7 +363,9 @@ const HomeScreen = ({navigation}) => {
                 <View style={styles.container}>
                   {/* ========== Header Section ========== */}
                   <View style={styles.header}>
-                    <Text style={styles.screenName}>Dashboard</Text>
+                    <Text style={styles.screenName}>
+                      Dashboard{paymentStatus ? paymentStatus : 'hee'}
+                    </Text>
 
                     {/* ========== Status Section ========== */}
                     <View
@@ -343,6 +419,16 @@ const HomeScreen = ({navigation}) => {
                     {/* ========== Status Section ========== */}
                   </View>
                   {/* ========== Header Section ========== */}
+
+                  {/*Payment Section*/}
+                  {/* {paymentStatus == '1' ? ( */}
+                  <Pressable onPress={RazorpayFunction} style={styles.row}>
+                    <View style={styles.cardOne}>
+                      <Text style={styles.cardOneLabel}>No Payment</Text>
+                    </View>
+                  </Pressable>
+                  {/* ) : null} */}
+                  {/*Payment Section*/}
 
                   {/* ========== Overview Section ========== */}
                   <LinearGradient

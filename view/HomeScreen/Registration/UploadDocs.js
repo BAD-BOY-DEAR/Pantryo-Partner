@@ -228,6 +228,7 @@ const UploadDocs = ({navigation}) => {
   // Check Payment Status
   const getPaymentStatus = async payment_id => {
     let partner_id = await AsyncStorage.getItem('partner_id');
+    let partner_category = await AsyncStorage.getItem('partner_category');
     setLoading(true);
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php?flag=partner_transaction',
@@ -240,6 +241,7 @@ const UploadDocs = ({navigation}) => {
         body: JSON.stringify({
           payment_id: payment_id,
           partner_id: partner_id,
+          partner_category: partner_category,
         }),
       },
     )

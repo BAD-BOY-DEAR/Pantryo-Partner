@@ -194,7 +194,10 @@ const RegisterScreen = ({navigation, route}) => {
             let partner_pincode = result.partner_pincode;
             let partner_shopaddress = result.partner_shopaddress;
             let partner_kycStatus = result.partner_kycStatus;
+            let partner_paymentStatus = result.partner_paymentStatus;
             let user_token = result.user_token;
+            let user_lat = result.partner_lat;
+            let user_long = result.partner_long;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -204,7 +207,10 @@ const RegisterScreen = ({navigation, route}) => {
               partner_pincode,
               partner_shopaddress,
               partner_kycStatus,
+              partner_paymentStatus,
               user_token,
+              user_lat,
+              user_long,
             });
             // navigation.navigate('UploadDocs');
           } else if (result.error == 2) {
