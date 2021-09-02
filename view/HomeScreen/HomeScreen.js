@@ -423,32 +423,12 @@ const HomeScreen = ({navigation}) => {
                   {/* {paymentStatus == '1' ? ( */}
                   <Pressable
                     onPress={RazorpayFunction}
-                    style={{
-                      paddingHorizontal: 20,
-                      width: '100%',
-                    }}>
-                    <View
-                      style={{
-                        width: '100%',
-                        paddingHorizontal: 10,
-                        backgroundColor: '#ed7b7b',
-                        paddingVertical: 20,
-                        borderRadius: 5,
-                      }}>
-                      <Text
-                        style={{
-                          color: '#fff',
-                          fontFamily: 'OpenSans-Bold',
-                          fontSize: 24,
-                        }}>
+                    style={styles.notificationBtn}>
+                    <View style={styles.notificationTab}>
+                      <Text style={styles.notifHeading}>
                         Payment unsuccessful!
                       </Text>
-                      <Text
-                        style={{
-                          color: '#fff',
-                          fontFamily: 'OpenSans-Regular',
-                          fontSize: 18,
-                        }}>
+                      <Text style={styles.notifTxt}>
                         Please make a payment of ₹1 to complete your
                         registration
                       </Text>
@@ -1132,5 +1112,26 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Bold',
     fontSize: 20,
     color: '#000',
+  },
+  notificationBtn: {
+    paddingHorizontal: 20,
+    width: '100%',
+  },
+  notificationTab: {
+    width: '100%',
+    paddingHorizontal: 10,
+    backgroundColor: '#ed7b7b',
+    paddingVertical: 20,
+    borderRadius: 5,
+  },
+  notifHeading: {
+    color: '#fff',
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 24,
+  },
+  notifTxt: {
+    color: '#fff',
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 18,
   },
 });
