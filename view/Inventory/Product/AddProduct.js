@@ -46,17 +46,6 @@ const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
-// const  Inventory =[{
-//   'partner_category_id': '',
-//   'pantryo_main_category_id': '',
-//   'pantryo_inventory_id': '',
-//   'partner_product_name': '',
-//   'partner_product_brand': '',
-//   'partner_product_price': '',
-//   'partner_product_quantity': '',
-//   'partner_product_unit': '',
-// }];
-
 const AddProducts = ({route, navigation}) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
@@ -150,61 +139,35 @@ const AddProducts = ({route, navigation}) => {
 
   // ====== Add Product ======= //
   const addProductApi = () => {
-    // console.log(chooseInventory);
-    if (!partnerCategoryId) {
-      showToast('Partner Category ID not found!');
-      return;
-    } else if (!partnerMainCategoryId) {
-      showToast('Partner Main Category ID not found!');
-      return;
-    } else if (!partner_id) {
-      showToast('Partner ID not found!');
-      return;
-    } else if (!chooseInventory) {
+    if (!chooseInventory) {
       showToast('Please Choose atleast one Item!');
       return;
     } else {
-      // return;
       setLoading(true);
+      const data = new FormData();
+      data.append('inventory_details', chooseInventory);
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=addProductByPartner',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/AddPartnerInventory.php',
         {
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data;',
           },
-          body: JSON.stringify({
-            partner_id: partner_id,
-            partner_category_id: partnerCategoryId,
-            main_category_id: partnerMainCategoryId,
-            partner_inventory: chooseInventory,
-          }),
+          body: data,
         },
       )
         .then(function (response) {
           return response.json();
         })
         .then(function (result) {
-          // console.log(result);
-          if (result.error == 0) {
-            showToast(result.msg);
-            fetchPantryoInventory(
-              result.partner_category_id,
-              result.main_category_id,
-            );
-          } else {
-            showToast(result.msg);
-          }
+          console.log(result);
         })
         .catch(error => {
           console.error(error);
         })
         .finally(() => {
           setLoading(false);
-          setInventoryQty('');
-          setSelectedUnit('');
-          setNewPrice('');
         });
     }
   };
@@ -271,23 +234,31 @@ const AddProducts = ({route, navigation}) => {
   }, []);
 
   ///////////////Set Data
-  const ChooseInventoryData = newItem => {
+  const ChooseInventoryData = (newItem, i) => {
+    let items = pantryoInvetory;
+    console.log(!items[i].selected);
+    items[i].selected = items[i].selected == true ? false : true;
     const index = chooseInventory.findIndex(
       item => item.pantryo_inventory_id === newItem.pantryo_inventory_id,
     );
     if (index !== -1) {
+      // const filteredItems = chooseInventory.pop(item => item !== newItem);
+      // setPantryoInventory(items);
+      // setChooseInventory([...chooseInventory, filteredItems]);
     } else {
+      setPantryoInventory(items);
       setChooseInventory([...chooseInventory, newItem]);
     }
     console.log(chooseInventory);
   };
 
   //////////Update Checkbox
-  const updateCheckBox = (item, i) => {
-    let items = pantryoInvetory;
-    items[i].selected = items[i].selected ? !items[i].selected : true;
-    setPantryoInventory(items);
-  };
+  // const updateCheckBox = (item, i) => {
+  //   let items = pantryoInvetory;
+  //   console.log(!items[i].selected);
+  //   items[i].selected = items[i].selected == true ? false : true;
+  //   setPantryoInventory(items);
+  // };
 
   return (
     <>
@@ -297,7 +268,7 @@ const AddProducts = ({route, navigation}) => {
         <View style={styles.container}>
           {/* ======== Header Add Button ======== */}
           <View style={styles.header}>
-            <TouchableOpacity style={styles.headerBtn}>
+            <TouchableOpacity onPress={addProductApi} style={styles.headerBtn}>
               <Text style={styles.headerBtnTxt}>Add</Text>
             </TouchableOpacity>
           </View>
@@ -518,20 +489,23 @@ const AddProducts = ({route, navigation}) => {
                           value={item.selected}
                           tintColors={{true: '#F15927', false: 'black'}}
                           onValueChange={() => {
-                            ChooseInventoryData({
-                              partner_category_id: item.partner_category_id,
-                              pantryo_main_category_id:
-                                item.pantryo_main_category_id,
-                              pantryo_inventory_id: item.pantryo_inventory_id,
-                              partner_product_name: item.pantryo_item_name,
-                              partner_product_brand: item.pantryo_brand_name,
-                              partner_product_price: item.pantryo_item_price,
-                              partner_product_quantity: item.pantryo_item_qty,
-                              partner_product_unit: item.pantryo_item_unit,
-                            });
+                            ChooseInventoryData(
+                              {
+                                partner_category_id: item.partner_category_id,
+                                pantryo_main_category_id:
+                                  item.pantryo_main_category_id,
+                                pantryo_inventory_id: item.pantryo_inventory_id,
+                                partner_product_name: item.pantryo_item_name,
+                                partner_product_brand: item.pantryo_brand_name,
+                                partner_product_price: item.pantryo_item_price,
+                                partner_product_quantity: item.pantryo_item_qty,
+                                partner_product_unit: item.pantryo_item_unit,
+                              },
+                              index,
+                            );
                           }}
                           style={{
-                            // transform: [{scaleX: 1.2}, {scaleY: 1.2}],
+                            transform: [{scaleX: 1.5}, {scaleY: 1.5}],
                             marginTop: 50,
                           }}
                         />
