@@ -70,9 +70,8 @@ const HomeScreen = ({navigation}) => {
   ///get Partner Details
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
-    let partner_paymentStatus = await AsyncStorage.getItem('paymentStatus');
     setKycStatus(partner_kycStatus);
-    setPaymentStatus(partner_paymentStatus);
+
     // console.log(paymentStatus);
     getPartnerDetails();
   };
@@ -80,6 +79,8 @@ const HomeScreen = ({navigation}) => {
   // Function to get Partner's Profile
   const getUserProfile = async () => {
     setPartnerId(await AsyncStorage.getItem('partner_id'));
+    setPaymentStatus(await AsyncStorage.getItem('partner_paymentStatus'));
+    console.log(await AsyncStorage.getItem('partner_paymentStatus'));
   };
 
   // Get Orders received today
@@ -286,6 +287,10 @@ const HomeScreen = ({navigation}) => {
       })
       .then(function (result) {
         if (result.payment_status === 'authorized') {
+          let partner_paymentStatus = result.partner_payment_status;
+          console.log('partner Payment Status  :' + partner_paymentStatus);
+          AsyncStorage.setItem('partner_paymentStatus', partner_paymentStatus);
+          getUserProfile();
           navigation.navigate('HomeScreen');
         } else {
           showToast('Status of Payment' + ' ' + JSON.stringify(result));
@@ -363,9 +368,7 @@ const HomeScreen = ({navigation}) => {
                 <View style={styles.container}>
                   {/* ========== Header Section ========== */}
                   <View style={styles.header}>
-                    <Text style={styles.screenName}>
-                      Dashboard{paymentStatus ? paymentStatus : 'hee'}
-                    </Text>
+                    <Text style={styles.screenName}>Dashboard</Text>
 
                     {/* ========== Status Section ========== */}
                     <View
@@ -420,41 +423,41 @@ const HomeScreen = ({navigation}) => {
                   </View>
                   {/* ========== Header Section ========== */}
 
-                  {/* {paymentStatus == '1' ? ( */}
-                  <Pressable
-                    onPress={RazorpayFunction}
-                    style={{
-                      paddingHorizontal: 20,
-                      width: '100%',
-                    }}>
-                    <View
+                  {paymentStatus == '1' ? (
+                    <Pressable
+                      onPress={RazorpayFunction}
                       style={{
+                        paddingHorizontal: 20,
                         width: '100%',
-                        paddingHorizontal: 10,
-                        backgroundColor: '#ed7b7b',
-                        paddingVertical: 20,
-                        borderRadius: 5,
                       }}>
-                      <Text
+                      <View
                         style={{
-                          color: '#fff',
-                          fontFamily: 'OpenSans-Bold',
-                          fontSize: 24,
+                          width: '100%',
+                          paddingHorizontal: 10,
+                          backgroundColor: '#ed7b7b',
+                          paddingVertical: 20,
+                          borderRadius: 5,
                         }}>
-                        Payment unsuccessful!
-                      </Text>
-                      <Text
-                        style={{
-                          color: '#fff',
-                          fontFamily: 'OpenSans-Regular',
-                          fontSize: 18,
-                        }}>
-                        Please make a payment of ₹1 to complete your
-                        registration
-                      </Text>
-                    </View>
-                  </Pressable>
-                  {/* ) : null} */}
+                        <Text
+                          style={{
+                            color: '#fff',
+                            fontFamily: 'OpenSans-Bold',
+                            fontSize: 24,
+                          }}>
+                          Payment unsuccessful!
+                        </Text>
+                        <Text
+                          style={{
+                            color: '#fff',
+                            fontFamily: 'OpenSans-Regular',
+                            fontSize: 18,
+                          }}>
+                          Please make a payment of ₹1 to complete your
+                          registration
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ) : null}
 
                   {/* ========== Overview Section ========== */}
                   <LinearGradient
