@@ -160,6 +160,7 @@ const App = ({navigation}) => {
           user_lat,
           user_long,
         } = data;
+        console.log(partner_paymentStatus);
         AsyncStorage.setItem('partner_id', partner_id);
         AsyncStorage.setItem('partner_shopName', partner_shopName);
         AsyncStorage.setItem('partner_kycStatus', partner_kycStatus);

@@ -70,10 +70,10 @@ const HomeScreen = ({navigation}) => {
   ///get Partner Details
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
-    let paymentStatus = await AsyncStorage.getItem('paymentStatus');
+    let partner_paymentStatus = await AsyncStorage.getItem('paymentStatus');
     setKycStatus(partner_kycStatus);
-    setPaymentStatus(paymentStatus);
-    console.log(paymentStatus);
+    setPaymentStatus(partner_paymentStatus);
+    // console.log(paymentStatus);
     getPartnerDetails();
   };
 
