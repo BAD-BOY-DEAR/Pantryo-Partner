@@ -420,15 +420,41 @@ const HomeScreen = ({navigation}) => {
                   </View>
                   {/* ========== Header Section ========== */}
 
-                  {/*Payment Section*/}
                   {/* {paymentStatus == '1' ? ( */}
-                  <Pressable onPress={RazorpayFunction} style={styles.row}>
-                    <View style={styles.cardOne}>
-                      <Text style={styles.cardOneLabel}>No Payment</Text>
+                  <Pressable
+                    onPress={RazorpayFunction}
+                    style={{
+                      paddingHorizontal: 20,
+                      width: '100%',
+                    }}>
+                    <View
+                      style={{
+                        width: '100%',
+                        paddingHorizontal: 10,
+                        backgroundColor: '#ed7b7b',
+                        paddingVertical: 20,
+                        borderRadius: 5,
+                      }}>
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontFamily: 'OpenSans-Bold',
+                          fontSize: 24,
+                        }}>
+                        Payment unsuccessful!
+                      </Text>
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontFamily: 'OpenSans-Regular',
+                          fontSize: 18,
+                        }}>
+                        Please make a payment of ₹1 to complete your
+                        registration
+                      </Text>
                     </View>
                   </Pressable>
                   {/* ) : null} */}
-                  {/*Payment Section*/}
 
                   {/* ========== Overview Section ========== */}
                   <LinearGradient
