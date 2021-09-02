@@ -80,7 +80,7 @@ const HomeScreen = ({navigation}) => {
   const getUserProfile = async () => {
     setPartnerId(await AsyncStorage.getItem('partner_id'));
     setPaymentStatus(await AsyncStorage.getItem('partner_paymentStatus'));
-    console.log(await AsyncStorage.getItem('partner_paymentStatus'));
+    // console.log(await AsyncStorage.getItem('partner_paymentStatus'));
   };
 
   // Get Orders received today

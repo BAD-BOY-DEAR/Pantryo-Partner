@@ -41,7 +41,7 @@ const LoginScreen = ({navigation}) => {
     messaging()
       .getToken()
       .then(token => {
-        console.log(FCMToken);
+        // console.log(FCMToken);
         setFCMToken(token);
       });
   };
