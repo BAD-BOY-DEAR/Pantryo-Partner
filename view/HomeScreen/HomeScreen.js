@@ -126,7 +126,7 @@ const HomeScreen = ({navigation}) => {
   }
 
   // Partner Status
-  async function changePartnerStatus() {
+  async function changePartnerStatus(status) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/partnerStatusChange.php',
