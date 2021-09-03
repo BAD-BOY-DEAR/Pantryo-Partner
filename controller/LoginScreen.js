@@ -37,16 +37,16 @@ const LoginScreen = ({navigation}) => {
   }, []);
 
   // FCM Token
-  const getFCMToken = async () => {
+  async function getFCMToken() {
     messaging()
       .getToken()
       .then(token => {
         // console.log(FCMToken);
         setFCMToken(token);
       });
-  };
+  }
 
-  const showToast = msg => {
+  function showToast(msg) {
     ToastAndroid.showWithGravityAndOffset(
       msg,
       ToastAndroid.SHORT,
@@ -54,13 +54,13 @@ const LoginScreen = ({navigation}) => {
       25,
       50,
     );
-  };
+  }
 
   const LoginApiURL =
     'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/login.php';
 
   // ==========Login Start================ //
-  const loginApi = async () => {
+  async function loginApi() {
     if (!contactNumber) {
       showToast('Please Enter Your Registered Mobile Number');
       return;
@@ -128,7 +128,7 @@ const LoginScreen = ({navigation}) => {
         })
         .finally(() => setLoading(false));
     }
-  };
+  }
 
   return (
     <>

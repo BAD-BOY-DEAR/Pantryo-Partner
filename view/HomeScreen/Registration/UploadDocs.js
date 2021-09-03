@@ -37,7 +37,7 @@ const UploadDocs = ({navigation}) => {
   const [gstCertificatePath, setGstCertificatePath] = React.useState('');
 
   // Take Image
-  const requestGalleryPermission = async selectForImage => {
+  async function requestGalleryPermission(selectForImage) {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -92,10 +92,10 @@ const UploadDocs = ({navigation}) => {
     } catch (err) {
       console.warn(err);
     }
-  };
+  }
 
   // Upload Documents
-  const uploadDocument = async () => {
+  async function uploadDocument() {
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.pdf, DocumentPicker.types.images],
@@ -112,9 +112,9 @@ const UploadDocs = ({navigation}) => {
         throw err;
       }
     }
-  };
+  }
 
-  const requestDocument = async () => {
+  async function requestDocument() {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -134,10 +134,10 @@ const UploadDocs = ({navigation}) => {
     } catch (err) {
       console.warn(err);
     }
-  };
+  }
 
   // Upload KYC Documents
-  const kycDocumentUpdate = async () => {
+  async function kycDocumentUpdate() {
     if (!value) {
       alert('Select Id Type');
       return;
@@ -189,10 +189,10 @@ const UploadDocs = ({navigation}) => {
         })
         .finally(() => setLoading(false));
     }
-  };
+  }
 
   // RazorpayFunction Payment APi
-  const RazorpayFunction = async () => {
+  async function RazorpayFunction() {
     let partner_contactNumber = await AsyncStorage.getItem(
       'partner_contactNumber',
     );
@@ -223,10 +223,10 @@ const UploadDocs = ({navigation}) => {
           'Error: ' + JSON.stringify(`${error.code} | ${error.description}`),
         );
       });
-  };
+  }
 
   // Check Payment Status
-  const getPaymentStatus = async payment_id => {
+  async function getPaymentStatus(payment_id) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
     setLoading(true);
@@ -259,7 +259,7 @@ const UploadDocs = ({navigation}) => {
         console.error(error);
       })
       .finally(() => setLoading(false));
-  };
+  }
 
   return (
     <>

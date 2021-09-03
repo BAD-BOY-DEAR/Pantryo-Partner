@@ -65,16 +65,16 @@ const RegisterScreen = ({navigation, route}) => {
   const [FCMToken, setFCMToken] = React.useState('');
 
   // FCM Token
-  const getFCMToken = async () => {
+  function getFCMToken() {
     messaging()
       .getToken()
       .then(token => {
         setFCMToken(token);
       });
-  };
+  }
 
   // Take Image
-  const requestGalleryPermission = async () => {
+  async function requestGalleryPermission() {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -123,10 +123,10 @@ const RegisterScreen = ({navigation, route}) => {
     } catch (err) {
       console.warn(err);
     }
-  };
+  }
 
   // Registration Api
-  const registrationApi = async () => {
+  function registrationApi() {
     if (!shopName) {
       showToast('Shop Name is mandatory');
       return;
@@ -227,10 +227,10 @@ const RegisterScreen = ({navigation, route}) => {
         })
         .finally(() => setLoading(false));
     }
-  };
+  }
 
   // Get user location
-  const getOneTimeLocation = () => {
+  function getOneTimeLocation() {
     setAddressPlaceHolder('Getting Location ...');
     navigator.geolocation.getCurrentPosition(
       position => {
@@ -271,10 +271,10 @@ const RegisterScreen = ({navigation, route}) => {
         maximumAge: 1000,
       },
     );
-  };
+  }
 
   // Get user location
-  const showToast = msg => {
+  function showToast(msg) {
     ToastAndroid.showWithGravityAndOffset(
       msg,
       ToastAndroid.SHORT,
@@ -282,10 +282,10 @@ const RegisterScreen = ({navigation, route}) => {
       25,
       50,
     );
-  };
+  }
 
   // Fetch Partner Category
-  const fetchPartnerCategoryApi = () => {
+  function fetchPartnerCategoryApi() {
     setLoading(true);
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getAllPartnerCategory',
@@ -302,10 +302,10 @@ const RegisterScreen = ({navigation, route}) => {
         console.error(error);
       })
       .finally(() => setLoading(false));
-  };
+  }
 
   // Location Permission
-  const requestLocationPermission = async () => {
+  async function requestLocationPermission() {
     if (Platform.OS === 'ios') {
       getOneTimeLocation();
     } else {
@@ -326,7 +326,7 @@ const RegisterScreen = ({navigation, route}) => {
         console.warn(err);
       }
     }
-  };
+  }
 
   const check = React.useMemo(() => async () => {
     getFCMToken();

@@ -73,7 +73,7 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   ///get Partner Details
-  const getPartnerDetails = async () => {
+  async function getPartnerDetails() {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
     let partner_paymentStatus = await AsyncStorage.getItem('paymentStatus');
     let user_verification = await AsyncStorage.getItem('user_verification');
@@ -81,17 +81,17 @@ const HomeScreen = ({navigation}) => {
     setPaymentStatus(partner_paymentStatus);
     setPartnerVerificationStatus(user_verification);
     getPartnerDetails();
-  };
+  }
 
   // Function to get Partner's Profile
-  const getUserProfile = async () => {
+  async function getUserProfile() {
     setPartnerId(await AsyncStorage.getItem('partner_id'));
     setPaymentStatus(await AsyncStorage.getItem('partner_paymentStatus'));
     // console.log(await AsyncStorage.getItem('partner_paymentStatus'));
-  };
+  }
 
   // Get Orders received today
-  const getTodayOrder = async () => {
+  async function getTodayOrder() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getTodayOrderOfPartner.php',
@@ -124,10 +124,10 @@ const HomeScreen = ({navigation}) => {
         getTodayOrder();
         setLoading(false);
       });
-  };
+  }
 
   // Partner Status
-  const changePartnerStatus = async status => {
+  async function changePartnerStatus() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/partnerStatusChange.php',
@@ -162,10 +162,10 @@ const HomeScreen = ({navigation}) => {
       .catch(error => {
         console.log(error);
       });
-  };
+  }
 
   // Partner Status
-  const getStatus = async () => {
+  async function getStatus() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/checkpartnerStatus.php',
@@ -199,10 +199,10 @@ const HomeScreen = ({navigation}) => {
       .catch(error => {
         console.log(error);
       });
-  };
+  }
 
   // Partner Status
-  const getPartnerEarning = async () => {
+  async function getPartnerEarning() {
     // setLoading(true);
     let partner_id = await AsyncStorage.getItem('partner_id');
     await fetch(
@@ -233,10 +233,10 @@ const HomeScreen = ({navigation}) => {
         setLoading(false);
         // getPartnerEarning();
       });
-  };
+  }
 
   // RazorpayFunction Payment APi
-  const RazorpayFunction = async () => {
+  async function RazorpayFunction() {
     let partner_contactNumber = await AsyncStorage.getItem(
       'partner_contactNumber',
     );
@@ -267,10 +267,10 @@ const HomeScreen = ({navigation}) => {
           'Error: ' + JSON.stringify(`${error.code} | ${error.description}`),
         );
       });
-  };
+  }
 
   // Check Payment Status
-  const getPaymentStatus = async payment_id => {
+  async function getPaymentStatus(payment_id) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
     setPaymentLoading(true);
@@ -305,28 +305,52 @@ const HomeScreen = ({navigation}) => {
         console.error(error);
       })
       .finally(() => setPaymentLoading(false));
-  };
-  
-  const check = React.useMemo(() => () => {
-    getPartnerDetails();
-    getTodayOrder();
-    getUserProfile();
-    getPartnerEarning();
-    getStatus();    
-  }, [])
+  }
+
+  /////////////Check Verification Status
+  async function getPartnerVarificationStatus() {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/checkVerificationStatus.php',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          partner_id: partner_id,
+        }),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        console.log(result);
+        if (result.error == 0) {
+          let user_verification = result.verificationStatus;
+          AsyncStorage.setItem('user_verification', user_verification);
+          getPartnerDetails();
+        }
+        getPartnerVarificationStatus();
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
 
   React.useEffect(() => {
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
-
-    // getPartnerDetails();
-    // getTodayOrder();
-    // getUserProfile();
-    // getPartnerEarning();
-    // getStatus();    
-    check()
-    
+    //////////////////
+    getPartnerDetails();
+    getTodayOrder();
+    getUserProfile();
+    getPartnerEarning();
+    getPartnerVarificationStatus();
+    getStatus();
   }, []);
 
   return (
