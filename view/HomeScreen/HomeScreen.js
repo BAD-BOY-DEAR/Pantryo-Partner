@@ -33,7 +33,6 @@ import OrdersList from './Orders/OrdersList';
 import PaymentScreen from './Payments/PaymentScreen';
 import FeatureTest from './FeatureTest';
 
-
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
@@ -69,7 +68,7 @@ const HomeScreen = ({navigation}) => {
     getPartnerDetails();
     getTodayOrder();
     getPartnerEarning();
-    wait(2000).then(() => setRefreshing(false));    
+    wait(2000).then(() => setRefreshing(false));
   }, []);
 
   ///get Partner Details
@@ -327,7 +326,6 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
-        console.log(result);
         if (result.error == 0) {
           let user_verification = result.verificationStatus;
           AsyncStorage.setItem('user_verification', user_verification);
