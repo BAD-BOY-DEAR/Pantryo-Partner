@@ -328,20 +328,31 @@ const RegisterScreen = ({navigation, route}) => {
     }
   }
 
-  React.useEffect(() => {
-    //Device Id
+  const check = React.useMemo(() => async () => {
     getFCMToken();
-    ////Partner Category
     fetchPartnerCategoryApi();
-    //set Partner Contact Number
     setPartnerContactNumber(route.params.partner_contactNumber);
-    ///Location
-    // requestLocationPermission();
-    //clear Watch Id
     return () => {
       // Geolocation.clearWatch({watchID});
       setLoading(false);
     };
+  }, [])
+
+  React.useEffect(() => {
+    //Device Id
+    // getFCMToken();
+    ////Partner Category
+    // fetchPartnerCategoryApi();
+    //set Partner Contact Number
+    // setPartnerContactNumber(route.params.partner_contactNumber);
+    ///Location
+    // requestLocationPermission();
+    //clear Watch Id
+    // return () => {
+    //   // Geolocation.clearWatch({watchID});
+    //   setLoading(false);
+    // };
+    check()
   }, []);
 
   return (

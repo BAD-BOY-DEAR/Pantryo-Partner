@@ -33,6 +33,7 @@ import OrdersList from './Orders/OrdersList';
 import PaymentScreen from './Payments/PaymentScreen';
 import FeatureTest from './FeatureTest';
 
+
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
@@ -68,7 +69,7 @@ const HomeScreen = ({navigation}) => {
     getPartnerDetails();
     getTodayOrder();
     getPartnerEarning();
-    wait(2000).then(() => setRefreshing(false));
+    wait(2000).then(() => setRefreshing(false));    
   }, []);
 
   ///get Partner Details
@@ -114,7 +115,7 @@ const HomeScreen = ({navigation}) => {
           setNumberOfOrderAll(result.allordercount);
           setNumberOfOrderToday(result.todayordercount);
         }
-        getTodayOrder();
+        // getTodayOrder();
       })
       .catch(error => {
         console.error(error);
@@ -128,7 +129,7 @@ const HomeScreen = ({navigation}) => {
   // Partner Status
   async function changePartnerStatus(status) {
     let partner_id = await AsyncStorage.getItem('partner_id');
-    fetch(
+    await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/partnerStatusChange.php',
       {
         method: 'POST',
@@ -193,7 +194,7 @@ const HomeScreen = ({navigation}) => {
             setToggleCheckBox(false);
           }
         }
-        getStatus();
+        // getStatus();
       })
       .catch(error => {
         console.log(error);
@@ -230,7 +231,7 @@ const HomeScreen = ({navigation}) => {
       })
       .finally(() => {
         setLoading(false);
-        getPartnerEarning();
+        // getPartnerEarning();
       });
   }
 

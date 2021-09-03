@@ -320,9 +320,15 @@ const InventoryScreen = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
+  const check = React.useMemo(() => async () => {
     setPartnerCategoryName();
-    fetchAllProductsOfPartnerApi();
+    fetchAllProductsOfPartnerApi();    
+  }, [])
+
+  useEffect(() => {
+    check();
+    // setPartnerCategoryName();
+    // fetchAllProductsOfPartnerApi();
   }, []);
 
   return (
