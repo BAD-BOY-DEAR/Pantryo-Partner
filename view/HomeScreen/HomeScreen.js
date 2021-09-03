@@ -326,8 +326,9 @@ const HomeScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
+        console.log(result);
         if (result.error == 0) {
-          let partner_paymentStatus = result.partner_payment_status;
+          let user_verification = result.verificationStatus;
           AsyncStorage.setItem('user_verification', user_verification);
           getPartnerDetails();
         }

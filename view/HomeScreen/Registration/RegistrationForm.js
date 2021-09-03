@@ -65,7 +65,7 @@ const RegisterScreen = ({navigation, route}) => {
   const [FCMToken, setFCMToken] = React.useState('');
 
   // FCM Token
-  async function getFCMToken() {
+  function getFCMToken() {
     messaging()
       .getToken()
       .then(token => {
