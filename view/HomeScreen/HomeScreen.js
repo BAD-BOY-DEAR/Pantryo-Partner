@@ -46,6 +46,7 @@ const HomeScreen = ({navigation}) => {
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const [isLoading, setLoading] = React.useState(true);
+  const [paymentLoading, setPaymentLoading] = React.useState(false);
   const [kycStatus, setKycStatus] = React.useState('');
   const [paymentStatus, setPaymentStatus] = React.useState('');
   const [todayOrderData, setTodayOrderData] = React.useState(null);
@@ -81,11 +82,8 @@ const HomeScreen = ({navigation}) => {
   // Function to get Partner's Profile
   const getUserProfile = async () => {
     setPartnerId(await AsyncStorage.getItem('partner_id'));
-<<<<<<< HEAD
     setPaymentStatus(await AsyncStorage.getItem('partner_paymentStatus'));
     // console.log(await AsyncStorage.getItem('partner_paymentStatus'));
-=======
->>>>>>> 97408bc3e668c5227b7a24396c22980475dd1b81
   };
 
   // Get Orders received today
@@ -271,7 +269,7 @@ const HomeScreen = ({navigation}) => {
   const getPaymentStatus = async payment_id => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
-    setLoading(true);
+    setPaymentLoading(true);
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php?flag=partner_transaction',
       {
@@ -292,7 +290,9 @@ const HomeScreen = ({navigation}) => {
       })
       .then(function (result) {
         if (result.payment_status === 'authorized') {
-          navigation.navigate('HomeScreen');
+          let partner_paymentStatus = result.partner_payment_status;
+          AsyncStorage.setItem('partner_paymentStatus', partner_paymentStatus);
+          getPartnerDetails();
         } else {
           showToast('Status of Payment' + ' ' + JSON.stringify(result));
         }
@@ -300,7 +300,7 @@ const HomeScreen = ({navigation}) => {
       .catch(error => {
         console.error(error);
       })
-      .finally(() => setLoading(false));
+      .finally(() => setPaymentLoading(false));
   };
 
   React.useEffect(() => {
@@ -369,9 +369,7 @@ const HomeScreen = ({navigation}) => {
                 <View style={styles.container}>
                   {/* ========== Header Section ========== */}
                   <View style={styles.header}>
-                    <Text style={styles.screenName}>
-                      Dashboard{paymentStatus ? paymentStatus : 'hee'}
-                    </Text>
+                    <Text style={styles.screenName}>Dashboard</Text>
 
                     {/* ========== Status Section ========== */}
                     <View
@@ -449,21 +447,21 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Verification Notification End ========== */}
 
                   {/* ========== Payment Notification Start ========== */}
-                  {/* {paymentStatus == '1' ? ( */}
-                  <TouchableOpacity
-                    onPress={RazorpayFunction}
-                    style={styles.notificationBtn}>
-                    <View style={styles.notificationTab}>
-                      <Text style={styles.notifHeading}>
-                        Payment Unsuccessful!
-                      </Text>
-                      <Text style={styles.notifTxt}>
-                        Please make a payment of ₹1 to complete your
-                        registration
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                  {/* ) : null} */}
+                  {paymentStatus == '1' ? (
+                    <TouchableOpacity
+                      onPress={RazorpayFunction}
+                      style={styles.notificationBtn}>
+                      <View style={styles.notificationTab}>
+                        <Text style={styles.notifHeading}>
+                          Payment Unsuccessful!
+                        </Text>
+                        <Text style={styles.notifTxt}>
+                          Please make a payment of ₹1 to complete your
+                          registration
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : null}
                   {/* ========== Payment Notification End ========== */}
 
                   {/* ========== Overview Section ========== */}
