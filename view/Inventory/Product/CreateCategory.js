@@ -69,7 +69,7 @@ const CreateCategory = ({navigation}) => {
     } else {
       setLoading(true);
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getAllMainCategoryByCategoryId',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getAllMainCategoryByCategoryId.php',
         {
           method: 'POST',
           headers: {

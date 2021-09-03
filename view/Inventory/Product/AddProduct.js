@@ -103,7 +103,7 @@ const AddProducts = ({route, navigation}) => {
     } else {
       // setLoading(true);
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getPantryoInventoryData',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getPantryoInventoryData.php',
         {
           method: 'POST',
           headers: {
@@ -146,8 +146,6 @@ const AddProducts = ({route, navigation}) => {
       setLoading(true);
       const data = new FormData();
       data.append('inventory_details', chooseInventory);
-
-      // 'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=addpartnerinventory',
       await fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/AddPartnerInventory.php',
         {
@@ -191,7 +189,7 @@ const AddProducts = ({route, navigation}) => {
       fetchPantryoInventory(partner_category, partnerMainCategoryId);
     } else {
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=searchInventoryProducts',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/searchInventoryProducts.php',
         {
           method: 'POST',
           headers: {

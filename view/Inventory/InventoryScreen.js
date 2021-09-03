@@ -97,7 +97,7 @@ const InventoryScreen = ({navigation}) => {
     } else {
       // setLoading(true);
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getProductOfPartner',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getProductOfPartner.php',
         {
           method: 'POST',
           headers: {
@@ -146,7 +146,7 @@ const InventoryScreen = ({navigation}) => {
     } else {
       setLoading(true);
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=removePartnerProduct',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/removePartnerProduct.php',
         {
           method: 'POST',
           headers: {
@@ -188,7 +188,7 @@ const InventoryScreen = ({navigation}) => {
       fetchAllProductsOfPartnerApi();
     } else {
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=searchPartnerProduct',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/searchPartnerProduct.php',
         {
           method: 'POST',
           headers: {
@@ -283,7 +283,7 @@ const InventoryScreen = ({navigation}) => {
     } else {
       setLoading(true);
       fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=updatePartnerProduct',
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/updatePartnerProduct.php',
         {
           method: 'POST',
           headers: {

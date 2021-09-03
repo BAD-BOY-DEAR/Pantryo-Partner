@@ -198,6 +198,7 @@ const RegisterScreen = ({navigation, route}) => {
             let user_token = result.user_token;
             let user_lat = result.partner_lat;
             let user_long = result.partner_long;
+            let user_verification = result.partner_verificationStatus;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -211,6 +212,7 @@ const RegisterScreen = ({navigation, route}) => {
               user_token,
               user_lat,
               user_long,
+              user_verification,
             });
             // navigation.navigate('UploadDocs');
           } else if (result.error == 2) {

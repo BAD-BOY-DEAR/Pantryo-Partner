@@ -57,6 +57,8 @@ const HomeScreen = ({navigation}) => {
   // Partner
   const [partnerId, setPartnerId] = React.useState('');
   const [partnerStatus, setPartnerStatus] = React.useState('');
+  const [partnerVerificationStatus, setPartnerVerificationStatus] =
+    React.useState('');
   const [earning, setEarning] = React.useState('');
 
   // onRefresh
@@ -73,9 +75,10 @@ const HomeScreen = ({navigation}) => {
   const getPartnerDetails = async () => {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
     let partner_paymentStatus = await AsyncStorage.getItem('paymentStatus');
+    let user_verification = await AsyncStorage.getItem('user_verification');
     setKycStatus(partner_kycStatus);
     setPaymentStatus(partner_paymentStatus);
-    // console.log(paymentStatus);
+    setPartnerVerificationStatus(user_verification);
     getPartnerDetails();
   };
 
@@ -90,7 +93,7 @@ const HomeScreen = ({navigation}) => {
   const getTodayOrder = async () => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getTodayOrderOfPartner',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getTodayOrderOfPartner.php',
       {
         method: 'POST',
         headers: {
@@ -126,7 +129,7 @@ const HomeScreen = ({navigation}) => {
   const changePartnerStatus = async status => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=partnerStatusChange',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/partnerStatusChange.php',
       {
         method: 'POST',
         headers: {
@@ -164,7 +167,7 @@ const HomeScreen = ({navigation}) => {
   const getStatus = async () => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     await fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=checkpartnerStatus',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/checkpartnerStatus.php',
       {
         method: 'POST',
         headers: {
@@ -427,23 +430,23 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Header Section ========== */}
 
                   {/* ========== Verification Notification Start ========== */}
-                  {/* {paymentStatus == '1' ? ( */}
-                  <TouchableOpacity style={styles.notificationBtn}>
-                    <View
-                      style={[
-                        styles.notificationTab,
-                        {backgroundColor: '#4677ab'},
-                      ]}>
-                      <Text style={styles.notifHeading}>
-                        Under Verification!
-                      </Text>
-                      <Text style={styles.notifTxt}>
-                        Please wait while we verify the documents submitted by
-                        you.
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                  {/* ) : null} */}
+                  {partnerVerificationStatus == '2' ? (
+                    <TouchableOpacity style={styles.notificationBtn}>
+                      <View
+                        style={[
+                          styles.notificationTab,
+                          {backgroundColor: '#4677ab'},
+                        ]}>
+                        <Text style={styles.notifHeading}>
+                          Under Verification!
+                        </Text>
+                        <Text style={styles.notifTxt}>
+                          Please wait while we verify the documents submitted by
+                          you.
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : null}
                   {/* ========== Verification Notification End ========== */}
 
                   {/* ========== Payment Notification Start ========== */}

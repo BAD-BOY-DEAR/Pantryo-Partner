@@ -162,7 +162,7 @@ const OrderDetails = ({route, navigation}) => {
   // status update
   const updtateStatus = async (status, customername) => {
     await fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=update_order_status',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/update_order_status.php',
       {
         method: 'POST',
         headers: {
@@ -216,7 +216,7 @@ const OrderDetails = ({route, navigation}) => {
     let lat = await AsyncStorage.getItem('user_lat');
     let long = await AsyncStorage.getItem('user_long');
     await fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getNearestDeliveryPartner',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getNearestDeliveryPartner.php',
       {
         method: 'POST',
         headers: {
@@ -252,7 +252,7 @@ const OrderDetails = ({route, navigation}) => {
   // Order Details
   const getOrderDetails = async order_id => {
     fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=getTodayOrderOfPartnerDetails',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getTodayOrderOfPartnerDetails.php',
       {
         method: 'POST',
         headers: {
@@ -298,7 +298,7 @@ const OrderDetails = ({route, navigation}) => {
   const checkOtpUserByEntered = async () => {
     setSuccessLoading(true);
     fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=MatchSecurityCodePartner',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/MatchSecurityCodePartner.php',
       {
         method: 'POST',
         headers: {

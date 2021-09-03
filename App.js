@@ -159,6 +159,7 @@ const App = ({navigation}) => {
           user_token,
           user_lat,
           user_long,
+          user_verification,
         } = data;
         // console.log(partner_paymentStatus);
         AsyncStorage.setItem('partner_id', partner_id);
@@ -172,6 +173,7 @@ const App = ({navigation}) => {
         AsyncStorage.setItem('partner_shopaddress', partner_shopaddress);
         AsyncStorage.setItem('user_long', user_long);
         AsyncStorage.setItem('user_lat', user_lat);
+        AsyncStorage.setItem('user_verification', user_verification);
         dispatch({type: 'SIGN_IN', token: 'userToken'});
         AsyncStorage.setItem('userToken', user_token);
         showToast('Welcome');

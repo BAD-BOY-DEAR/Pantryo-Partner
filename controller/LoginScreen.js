@@ -56,6 +56,9 @@ const LoginScreen = ({navigation}) => {
     );
   };
 
+  const LoginApiURL =
+    'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/login.php';
+
   // ==========Login Start================ //
   const loginApi = async () => {
     if (!contactNumber) {
@@ -66,20 +69,17 @@ const LoginScreen = ({navigation}) => {
       return;
     } else {
       setLoading(true);
-      fetch(
-        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=login1',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            partner_contactNumber: contactNumber,
-            partner_deviceId: FCMToken,
-          }),
+      fetch(LoginApiURL, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify({
+          partner_contactNumber: contactNumber,
+          partner_deviceId: FCMToken,
+        }),
+      })
         .then(function (response) {
           return response.json();
         })
@@ -98,6 +98,7 @@ const LoginScreen = ({navigation}) => {
             let user_token = result.user_token;
             let user_lat = result.partner_lat;
             let user_long = result.partner_long;
+            let user_verification = result.partner_verificationStatus;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -111,6 +112,7 @@ const LoginScreen = ({navigation}) => {
               user_token,
               user_lat,
               user_long,
+              user_verification,
             });
           } else if (result.error == 1) {
             navigation.navigate('VerificationScreen', {
