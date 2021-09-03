@@ -221,7 +221,9 @@ const AddProducts = ({route, navigation}) => {
     }
   };
 
-  React.useEffect(() => {
+  const check = React.useMemo(() => async () => {
+    // setPartnerCategoryName();
+    // fetchAllProductsOfPartnerApi();    
     partnerDetails();
     let {partner_category, main_category_id} = route.params;
     if (partner_category) {
@@ -231,6 +233,19 @@ const AddProducts = ({route, navigation}) => {
         fetchPantryoInventory(partner_category, main_category_id);
       }
     }
+  }, [])
+
+  React.useEffect(() => {
+    check()
+    // partnerDetails();
+    // let {partner_category, main_category_id} = route.params;
+    // if (partner_category) {
+    //   if (main_category_id) {
+    //     setPanterCategoryId(partner_category);
+    //     setPanterMainCategoryId(main_category_id);
+    //     fetchPantryoInventory(partner_category, main_category_id);
+    //   }
+    // }
   }, []);
 
   // Set Data
