@@ -2,16 +2,13 @@ import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
-  KeyboardAvoidingView,
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Alert,
   ToastAndroid,
 } from 'react-native';
 
 // Library
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icons from 'react-native-vector-icons/Ionicons';
 
 import LoaderScreen from '../controller/LoaderScreen';
@@ -24,11 +21,7 @@ const OtpVerification = ({navigation, route}) => {
   const [partner_contactNumber, setContactNumber] = useState('');
   const [isLoading, setLoading] = React.useState(false);
 
-  // const onChangeText = val => {
-  //   setInternalVal(val);
-  // };
-
-  const showToast = msg => {
+  function showToast(msg) {
     ToastAndroid.showWithGravityAndOffset(
       msg,
       ToastAndroid.SHORT,
@@ -36,9 +29,9 @@ const OtpVerification = ({navigation, route}) => {
       25,
       50,
     );
-  };
+  }
 
-  const otpMatch = () => {
+  function otpMatch() {
     if (!internalVal) {
       showToast('Please Enter Otp!');
     } else if (internalVal.length !== 6) {
@@ -51,14 +44,9 @@ const OtpVerification = ({navigation, route}) => {
     } else {
       showToast('OTP verification failed');
     }
-  };
-
-  // const textInputFocus = () => {
-  //   textInput.focus();
-  // };
+  }
 
   useEffect(() => {
-    // textInputFocus();
     setOTP(route.params.otp);
     setContactNumber(route.params.mobilenumbmer);
   }, []);
@@ -122,6 +110,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flex: 1,
     marginLeft: 5,
+    color: '#000',
   },
   btn: {
     marginTop: 20,
