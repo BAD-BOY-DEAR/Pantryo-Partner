@@ -18,7 +18,7 @@ import VersionInfo from 'react-native-version-info';
 import ProfileScreen from './Components/ProfileScreen';
 import TermsConditions from './Components/TermsConditions';
 
-const SettingsScreen = ({navigation}) => {
+function SettingsScreen({navigation}) {
   const [userShopName, getUserShopName] = React.useState('');
   const [userCategoryName, setUserCategoryName] = React.useState('');
   const [userMobile, setUserMobile] = React.useState('');
@@ -107,7 +107,7 @@ const SettingsScreen = ({navigation}) => {
       </ScrollView>
     </>
   );
-};
+}
 
 const Stack = createStackNavigator();
 

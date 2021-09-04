@@ -48,7 +48,7 @@ function wait(timeout) {
   return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-function InventoryScreen({navigation}) {
+const InventoryScreen = ({navigation}) => {
   const [changeCategoryModal, setChangeCategoryModal] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [isLoading, setLoading] = useState(true);
@@ -329,55 +329,44 @@ function InventoryScreen({navigation}) {
   );
 
   ///////////////Instock and out of Stock
-  async function InOutStock(product_id, product_status) {
+  // async function
+  const InOutStock = async (product_id, product_status) => {
     let partner_id = await AsyncStorage.getItem('partner_id');
-    if (!product_id) {
-      showToast('Partner Product ID not found!');
-      return;
-    } else if (!partner_id) {
-      showToast('Partner ID not found!');
-      return;
-    } else if (!product_status) {
-      showToast('Partner Product Status not Found!');
-      return;
-    } else {
-      // setLoading(true);
-      let data = {
-        partner_id: partner_id,
-        product_id: product_id,
-        product_status: product_status == 'In Stock' ? 2 : 1,
-      };
-      console.log(data);
-      // fetch(
-      //   'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/updatePartnerProduct.php',
-      //   {
-      //     method: 'POST',
-      //     headers: {
-      //       Accept: 'application/json',
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify(),
-      //   },
-      // )
-      //   .then(function (response) {
-      //     return response.json();
-      //   })
-      //   .then(function (result) {
-      //     if (result.error == 0) {
-      //       showToast('Product Status Updated ');
-      //       fetchAllProductsOfPartnerApi();
-      //     } else {
-      //       showToast('Something went Wrong!');
-      //     }
-      //   })
-      //   .catch(error => {
-      //     console.error(error);
-      //   })
-      //   .finally(() => {
-      //     setLoading(false);
-      //   });
-    }
-  }
+    setLoading(true);
+    let data = {
+      partner_id: partner_id,
+      product_id: product_id,
+      product_status: product_status == 'In Stock' ? 2 : 1,
+    };
+    fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/updateStocksValue.php',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        if (result.error == 0) {
+          showToast('Product Status Updated ');
+          fetchAllProductsOfPartnerApi();
+        } else {
+          showToast('Something went Wrong!');
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
     setPartnerCategoryName();
@@ -793,7 +782,7 @@ function InventoryScreen({navigation}) {
       {/* ========== Edit Modal ========== */}
     </>
   );
-}
+};
 
 const Stack = createStackNavigator();
 
