@@ -328,7 +328,6 @@ function InventoryScreen({navigation}) {
     [],
   );
 
-<<<<<<< HEAD
   ///////////////Instock and out of Stock
   async function InOutStock(product_id, product_status) {
     let partner_id = await AsyncStorage.getItem('partner_id');
@@ -380,8 +379,6 @@ function InventoryScreen({navigation}) {
     }
   }
 
-=======
->>>>>>> 0313a68122002cec2a827f5d29442d55694befde
   useEffect(() => {
     setPartnerCategoryName();
     fetchAllProductsOfPartnerApi();

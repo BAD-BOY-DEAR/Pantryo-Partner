@@ -354,13 +354,8 @@ const OrderDetails = ({route, navigation}) => {
     }
   }
 
-<<<<<<< HEAD
   /////////////////Update Inventory Status
   async function updateInventoryStatus(
-=======
-  // Update Inventory Status
-  const updateInventoryStatus = async (
->>>>>>> 0313a68122002cec2a827f5d29442d55694befde
     brand_name,
     product_name,
     product_qty,
