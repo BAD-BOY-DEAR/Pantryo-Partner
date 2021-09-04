@@ -184,7 +184,7 @@ function RegisterScreen({navigation, route}) {
           return response.json();
         })
         .then(function (result) {
-          console.log(result);
+          // console.log(result);
           if (result.error == 0) {
             let partner_id = result.partner_id;
             let partner_contactNumber = result.partner_contactNumber;
@@ -427,9 +427,13 @@ function RegisterScreen({navigation, route}) {
                   onValueChange={(itemValue, itemIndex) =>
                     setGSTStatus(itemValue)
                   }>
-                  <Picker.Item label="Are you registered under GST?" value="" />
-                  <Picker.Item label="Yes" value="Yes" />
-                  <Picker.Item label="No" value="No" />
+                  <Picker.Item
+                    label="Are you registered under GST?"
+                    value=""
+                    color="#fff"
+                  />
+                  <Picker.Item label="Yes" value="Yes" color="#fff" />
+                  <Picker.Item label="No" value="No" color="#fff" />
                 </Picker>
               </View>
             </View>
