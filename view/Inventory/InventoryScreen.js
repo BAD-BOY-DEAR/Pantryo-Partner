@@ -320,15 +320,9 @@ const InventoryScreen = ({navigation}) => {
     }
   };
 
-  const check = React.useMemo(() => async () => {
-    setPartnerCategoryName();
-    fetchAllProductsOfPartnerApi();    
-  }, [])
-
   useEffect(() => {
-    check();
-    // setPartnerCategoryName();
-    // fetchAllProductsOfPartnerApi();
+    setPartnerCategoryName();
+    fetchAllProductsOfPartnerApi();
   }, []);
 
   return (
@@ -344,12 +338,12 @@ const InventoryScreen = ({navigation}) => {
             <Text style={styles.addBtnTxt}>Filter Product Cateory</Text>
             <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
           </Pressable>
-          <Pressable
+          {/* <Pressable
             onPress={() => navigation.navigate('SelectCategory')}
             style={styles.addBtn}>
             <Text style={styles.addBtnTxt}>Add Products</Text>
             <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
-          </Pressable>
+          </Pressable> */}
           {/* ========== Add Product Section ========== */}
         </View>
         {/* ========== Header Section ========== */}

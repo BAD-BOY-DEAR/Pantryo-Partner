@@ -182,7 +182,7 @@ const UploadDocs = ({navigation}) => {
             );
             RazorpayFunction();
           }
-          alert(result.msg);
+          // alert(result.msg);
         })
         .catch(error => {
           console.error(error);

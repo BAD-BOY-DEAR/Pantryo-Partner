@@ -71,7 +71,7 @@ const HomeScreen = ({navigation}) => {
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
-  ///get Partner Details
+  // Get Partner Details
   async function getPartnerDetails() {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
     let partner_paymentStatus = await AsyncStorage.getItem('paymentStatus');
@@ -529,17 +529,20 @@ const HomeScreen = ({navigation}) => {
                         </Text>
                       </Pressable>
                     </View>
-                    <View style={styles.row}>
-                      <View style={styles.cardOne}>
-                        <Text style={styles.cardOneLabel}>
-                          Earnings for today
-                        </Text>
-                        <Text style={styles.cardOneResponse}>₹{earning}</Text>
-                        <Text style={styles.cardOneLabel}>
-                          will be credited by 6:00 PM today
-                        </Text>
+
+                    {earning !== '' ? (
+                      <View style={styles.row}>
+                        <View style={styles.cardOne}>
+                          <Text style={styles.cardOneLabel}>
+                            Earnings for today
+                          </Text>
+                          <Text style={styles.cardOneResponse}>₹{earning}</Text>
+                          <Text style={styles.cardOneLabel}>
+                            will be credited by 6:00 PM today
+                          </Text>
+                        </View>
                       </View>
-                    </View>
+                    ) : null}
                   </LinearGradient>
                   {/* ========== Overview Section ========== */}
 

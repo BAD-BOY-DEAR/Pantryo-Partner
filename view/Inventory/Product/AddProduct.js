@@ -138,6 +138,7 @@ const AddProducts = ({route, navigation}) => {
   };
 
   // ====== Add Product ======= //
+
   const addProductApi = async () => {
     if (!chooseInventory) {
       showToast('Please Choose atleast one Item!');
@@ -221,22 +222,25 @@ const AddProducts = ({route, navigation}) => {
     }
   };
 
-  const check = React.useMemo(() => async () => {
-    // setPartnerCategoryName();
-    // fetchAllProductsOfPartnerApi();    
-    partnerDetails();
-    let {partner_category, main_category_id} = route.params;
-    if (partner_category) {
-      if (main_category_id) {
-        setPanterCategoryId(partner_category);
-        setPanterMainCategoryId(main_category_id);
-        fetchPantryoInventory(partner_category, main_category_id);
+  const check = React.useMemo(
+    () => async () => {
+      // setPartnerCategoryName();
+      // fetchAllProductsOfPartnerApi();
+      partnerDetails();
+      let {partner_category, main_category_id} = route.params;
+      if (partner_category) {
+        if (main_category_id) {
+          setPanterCategoryId(partner_category);
+          setPanterMainCategoryId(main_category_id);
+          fetchPantryoInventory(partner_category, main_category_id);
+        }
       }
-    }
-  }, [])
+    },
+    [],
+  );
 
   React.useEffect(() => {
-    check()
+    check();
     // partnerDetails();
     // let {partner_category, main_category_id} = route.params;
     // if (partner_category) {
