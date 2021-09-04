@@ -320,17 +320,9 @@ const InventoryScreen = ({navigation}) => {
     }
   }
 
-  const check = React.useMemo(
-    () => async () => {
-      setPartnerCategoryName();
-      fetchAllProductsOfPartnerApi();
-    },
-    [],
-  );
-
-  ///////////////Instock and out of Stock
+  // Instock and out of Stock
   // async function
-  const InOutStock = async (product_id, product_status) => {
+  async function InOutStock(product_id, product_status) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     setLoading(true);
     let data = {
@@ -338,7 +330,7 @@ const InventoryScreen = ({navigation}) => {
       product_id: product_id,
       product_status: product_status == 'In Stock' ? 2 : 1,
     };
-    fetch(
+    await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/updateStocksValue.php',
       {
         method: 'POST',
@@ -366,7 +358,7 @@ const InventoryScreen = ({navigation}) => {
       .finally(() => {
         setLoading(false);
       });
-  };
+  }
 
   useEffect(() => {
     setPartnerCategoryName();
@@ -443,6 +435,7 @@ const InventoryScreen = ({navigation}) => {
           <FlatList
             style={{width: '100%'}}
             data={partnerProducts}
+            initialNumToRender={10}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -463,6 +456,7 @@ const InventoryScreen = ({navigation}) => {
                 <FlatList
                   style={{width: '100%'}}
                   data={item.Products}
+                  initialNumToRender={2}
                   renderItem={({item, index}) => (
                     <>
                       <View style={styles.inventorySection}>
