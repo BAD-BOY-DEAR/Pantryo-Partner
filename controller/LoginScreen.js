@@ -1,4 +1,10 @@
-import React from 'react';
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+  useContext,
+} from 'react';
 import {
   View,
   Text,
@@ -7,6 +13,10 @@ import {
   Pressable,
   TextInput,
   ToastAndroid,
+  ScrollView,
+  RefreshControl,
+  FlatList,
+  ImageBackground,
 } from 'react-native';
 
 // ===== Images ===== //
@@ -27,12 +37,14 @@ import messaging from '@react-native-firebase/messaging';
 import firebase from 'react-native-firebase';
 
 function LoginScreen({navigation}) {
-  const [contactNumber, setContactNumber] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
-  const {signIn} = React.useContext(AuthContext);
-  const [FCMToken, setFCMToken] = React.useState('');
+  const [contactNumber, setContactNumber] = useState('');
+  const [loading, setLoading] = useState(false);
+  const {signIn} = useContext(AuthContext);
+  const [FCMToken, setFCMToken] = useState('');
+  const [banner, setBanner] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     getFCMToken();
   }, []);
 
@@ -55,6 +67,45 @@ function LoginScreen({navigation}) {
       50,
     );
   }
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getBanner();
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
+  // Function to get banner images from the server
+  async function getBanner() {
+    setLoading(true);
+    await fetch(
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getallsliderimages.php',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
+        if (result.error == 0) {
+          setBanner(result.images);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  useMemo(() => {
+    getBanner();
+  }, []);
 
   const LoginApiURL =
     'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/login.php';
@@ -135,41 +186,67 @@ function LoginScreen({navigation}) {
   return (
     <>
       {loading == true ? <LoaderScreen /> : null}
-      <View style={styles.topContainer}>
-        <View>
-          <Text style={styles.topHeading}>PANTRYO</Text>
-          <Text style={styles.bottomHeading}>PARTNER</Text>
-        </View>
-        <Image source={coffeeIcon} style={styles.topIcon} />
-      </View>
-      <View style={styles.loginContainer}>
-        {/* <Text style={styles.loginHeading}>PARTNER LOGIN</Text> */}
-        <Text style={styles.loginLabel}>
-          Enter your mobile number to Login or Register with{' '}
-          <Text style={styles.logoFirst}>
-            Pantr
-            <Text style={styles.logoSecond}>yo</Text>
+
+      <FlatList
+        showsHorizontalScrollIndicator={false}
+        horizontal={true}
+        data={banner}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={{
+          maxWidth: '100%',
+          maxHeight: '100%',
+        }}
+        renderItem={({item}) => (
+          <>
+            <Pressable
+              onPress={async () =>
+                await analytics().logEvent('loginbanner', {
+                  item: item.imageName,
+                })
+              }
+              style={styles.imgcontainer}>
+              <ImageBackground
+                source={{uri: item.imageName}}
+                style={styles.img}
+              />
+            </Pressable>
+          </>
+        )}
+        keyExtractor={(item, imageName) => String(imageName)}
+      />
+
+      <ScrollView style={styles.scroll}>
+        <View style={styles.loginContainer}>
+          {/* <Text style={styles.loginHeading}>PARTNER LOGIN</Text> */}
+          <Text style={styles.loginLabel}>
+            Enter your mobile number to Login or Register with{' '}
+            <Text style={styles.logoFirst}>
+              Pantr
+              <Text style={styles.logoSecond}>yo</Text>
+            </Text>
           </Text>
-        </Text>
-        <View style={styles.div}>
-          <Text style={styles.formLabel}>10 digit mobile number</Text>
-          <View style={styles.formRow}>
-            <Text style={styles.formDigit}>+91</Text>
-            <TextInput
-              placeholder="Enter Mobile Number"
-              placeholderTextColor="#777"
-              style={styles.txtInput}
-              keyboardType="phone-pad"
-              selectionColor="#5E3360"
-              maxLength={10}
-              onChangeText={text => setContactNumber(text)}
-            />
+          <View style={styles.div}>
+            <Text style={styles.formLabel}>10 digit mobile number</Text>
+            <View style={styles.formRow}>
+              <Text style={styles.formDigit}>+91-</Text>
+              <TextInput
+                placeholder="Enter Mobile Number"
+                placeholderTextColor="#777"
+                style={styles.txtInput}
+                keyboardType="phone-pad"
+                selectionColor="#5E3360"
+                maxLength={10}
+                onChangeText={text => setContactNumber(text)}
+              />
+            </View>
+            <Pressable onPress={loginApi} style={styles.btn}>
+              <Text style={styles.btnTxt}>CONTINUE</Text>
+            </Pressable>
           </View>
-          <Pressable onPress={loginApi} style={styles.btn}>
-            <Text style={styles.btnTxt}>CONTINUE</Text>
-          </Pressable>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 }
@@ -221,14 +298,15 @@ function Login() {
 export default Login;
 
 const styles = StyleSheet.create({
-  topContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-end',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    backgroundColor: '#FEF9E5',
-    flexDirection: 'row',
+  imgcontainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 1,
+    backgroundColor: '#fff',
+  },
+  img: {
+    width: 500,
+    height: 800,
   },
   topHeading: {
     fontFamily: 'OpenSans-ExtraBold',
@@ -249,6 +327,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginBottom: 10,
   },
+  scroll: {
+    backgroundColor: '#fff',
+    paddingBottom: 40,
+  },
   loginContainer: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -259,7 +341,7 @@ const styles = StyleSheet.create({
   },
   loginLabel: {
     fontFamily: 'OpenSans-Regular',
-    fontSize: 14,
+    fontSize: 18,
     color: '#000',
   },
   loginHeading: {
@@ -269,12 +351,12 @@ const styles = StyleSheet.create({
   },
   logoFirst: {
     fontFamily: 'FredokaOne-Regular',
-    fontSize: 16,
+    fontSize: 18,
     color: '#5E3360',
   },
   logoSecond: {
     fontFamily: 'FredokaOne-Regular',
-    fontSize: 16,
+    fontSize: 18,
     color: '#F4AA79',
   },
   div: {
@@ -283,7 +365,7 @@ const styles = StyleSheet.create({
   },
   formLabel: {
     fontFamily: 'OpenSans-Regular',
-    fontSize: 12,
+    fontSize: 16,
   },
   formRow: {
     flexDirection: 'row',
@@ -291,16 +373,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 2,
     borderBottomColor: '#5E3360',
+    marginTop: 10,
   },
   formDigit: {
     fontFamily: 'OpenSans-SemiBold',
-    fontSize: 16,
+    fontSize: 18,
   },
   txtInput: {
     flex: 1,
-    marginLeft: 10,
-    fontFamily: 'OpenSans-Medium',
-    fontSize: 16,
+    marginLeft: 2,
+    fontFamily: 'OpenSans-SemiBold',
+    fontSize: 18,
     color: '#000',
   },
   btn: {
@@ -308,10 +391,11 @@ const styles = StyleSheet.create({
     marginTop: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 18,
   },
   btnTxt: {
     fontFamily: 'OpenSans-SemiBold',
     color: '#FFFFFF',
+    fontSize: 18,
   },
 });

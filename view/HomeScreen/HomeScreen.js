@@ -32,6 +32,7 @@ import OrderDetails from './Orders/OrderDetails';
 import OrdersList from './Orders/OrdersList';
 import PaymentScreen from './Payments/PaymentScreen';
 import FeatureTest from './FeatureTest';
+import Banners from './Others/Banners';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -337,7 +338,7 @@ const HomeScreen = ({navigation}) => {
       });
   }
 
-  useEffect(() => {
+  useMemo(() => {
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
@@ -470,7 +471,7 @@ const HomeScreen = ({navigation}) => {
                           {backgroundColor: '#4677ab'},
                         ]}>
                         <Text style={styles.notifHeading}>
-                          Under Verification!
+                          Profile Under Verification!
                         </Text>
                         <Text style={styles.notifTxt}>
                           Please wait while we verify the documents submitted by
@@ -499,6 +500,10 @@ const HomeScreen = ({navigation}) => {
                   ) : null}
                   {/* ========== Payment Notification End ========== */}
 
+                  {/* ==== Banner Section ==== */}
+                  {/* <Banners /> */}
+                  {/* ==== Banner Section ==== */}
+
                   {/* ========== Overview Section ========== */}
                   <LinearGradient
                     colors={['#fff', '#fff']}
@@ -515,8 +520,7 @@ const HomeScreen = ({navigation}) => {
                           await analytics().logEvent(
                             'totalorders',
                             {
-                              item: 'total orders received',
-                              description: ['total orders', 'home screen'],
+                              item: numberOfOrderAll,
                             },
                             navigation.navigate('OrdersList'),
                           )
