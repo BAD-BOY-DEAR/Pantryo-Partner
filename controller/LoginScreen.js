@@ -330,6 +330,7 @@ const styles = StyleSheet.create({
   scroll: {
     backgroundColor: '#fff',
     paddingBottom: 40,
+    paddingHorizontal: 10,
   },
   loginContainer: {
     flex: 1,
