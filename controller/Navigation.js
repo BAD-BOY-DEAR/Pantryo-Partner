@@ -13,7 +13,7 @@ import WalletScreen from '../view/Wallet/WalletScreen';
 
 const Tab = createMaterialBottomTabNavigator();
 
-const Navigation = ({navigation}) => {
+function Navigation({navigation}) {
   const {signOut} = React.useContext(AuthContext);
   return (
     <>
@@ -74,6 +74,6 @@ const Navigation = ({navigation}) => {
       </Tab.Navigator>
     </>
   );
-};
+}
 
 export default Navigation;

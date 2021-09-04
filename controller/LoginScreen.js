@@ -26,7 +26,7 @@ import LoaderScreen from '../controller/LoaderScreen';
 import messaging from '@react-native-firebase/messaging';
 import firebase from 'react-native-firebase';
 
-const LoginScreen = ({navigation}) => {
+function LoginScreen({navigation}) {
   const [contactNumber, setContactNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const {signIn} = React.useContext(AuthContext);
@@ -170,7 +170,7 @@ const LoginScreen = ({navigation}) => {
       </View>
     </>
   );
-};
+}
 
 const Stack = createStackNavigator();
 

@@ -18,7 +18,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 // ===== Images ===== //
 import rawChicken from '../../../assets/productImages/rawChicken.jpg';
 
-const ViewProduct = () => {
+function ViewProduct() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [searchModal, setSearchModal] = React.useState(false);
 
@@ -247,7 +247,7 @@ const ViewProduct = () => {
       {/* ============ Search modal ============ */}
     </>
   );
-};
+}
 
 export default ViewProduct;
 

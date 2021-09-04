@@ -27,7 +27,7 @@ const WalletScreen = ({navigation}) => {
   const [mounted, setmounted] = React.useState(true);
 
   /////////////////////////Get Partner Transaction Details
-  const getPartnerTransactionDetails = async () => {
+  async function getPartnerTransactionDetails() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     setmounted(true);
     fetch(
@@ -61,7 +61,7 @@ const WalletScreen = ({navigation}) => {
         getPartnerTransactionDetails();
         setLoading(false);
       });
-  };
+  }
 
   React.useEffect(() => {
     getPartnerTransactionDetails();
@@ -93,7 +93,7 @@ const WalletScreen = ({navigation}) => {
               <View style={styles.header}>
                 <Text style={styles.headerText}>Transaction History</Text>
               </View>
-              {transactionData !== null ? (
+              {transactionData !== null && transactionData !== '' ? (
                 <FlatList
                   style={{width: '100%'}}
                   data={transactionData}

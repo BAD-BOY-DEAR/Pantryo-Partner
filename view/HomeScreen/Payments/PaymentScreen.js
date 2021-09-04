@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 
-const PaymentScreen = () => {
+function PaymentScreen() {
   return (
     <>
       <View style={styles.container}>
@@ -35,7 +35,7 @@ const PaymentScreen = () => {
       </View>
     </>
   );
-};
+}
 
 export default PaymentScreen;
 

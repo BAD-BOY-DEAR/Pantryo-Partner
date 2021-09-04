@@ -42,11 +42,11 @@ import {Picker} from '@react-native-picker/picker';
 import {useScrollToTop} from '@react-navigation/native';
 import CheckBox from '@react-native-community/checkbox';
 
-const wait = timeout => {
+function wait(timeout) {
   return new Promise(resolve => setTimeout(resolve, timeout));
-};
+}
 
-const AddProducts = ({route, navigation}) => {
+function AddProducts({route, navigation}) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
   const [pantryoInvetory, setPantryoInventory] = React.useState([]);
@@ -73,12 +73,12 @@ const AddProducts = ({route, navigation}) => {
   }, []);
 
   ////set Partner Details
-  const partnerDetails = async () => {
+  async function partnerDetails() {
     setPartnerId(await AsyncStorage.getItem('partner_id'));
-  };
+  }
 
   // =========== Toast Function =========== //
-  const showToast = msg => {
+  function showToast(msg) {
     ToastAndroid.showWithGravityAndOffset(
       msg,
       ToastAndroid.SHORT,
@@ -86,10 +86,10 @@ const AddProducts = ({route, navigation}) => {
       25,
       50,
     );
-  };
+  }
 
   //=========== API to Fetch Category according to User Type =========== //
-  const fetchPantryoInventory = async (partner_category, main_category_id) => {
+  async function fetchPantryoInventory(partner_category, main_category_id) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_category) {
       showToast('Partner Category ID not found!');
@@ -135,11 +135,10 @@ const AddProducts = ({route, navigation}) => {
         })
         .finally(() => setLoading(false));
     }
-  };
+  }
 
   // ====== Add Product ======= //
-
-  const addProductApi = async () => {
+  async function addProductApi() {
     if (!chooseInventory) {
       showToast('Please Choose atleast one Item!');
       return;
@@ -171,10 +170,10 @@ const AddProducts = ({route, navigation}) => {
           setLoading(false);
         });
     }
-  };
+  }
 
   // ====== Search Product ======= //
-  const searchInventoryProduct = async searchkey => {
+  async function searchInventoryProduct(searchkey) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
     if (!partner_id) {
@@ -220,7 +219,7 @@ const AddProducts = ({route, navigation}) => {
         })
         .finally(() => setLoading(false));
     }
-  };
+  }
 
   const check = React.useMemo(
     () => async () => {
@@ -253,7 +252,7 @@ const AddProducts = ({route, navigation}) => {
   }, []);
 
   // Set Data
-  const ChooseInventoryData = (newItem, i) => {
+  function ChooseInventoryData(newItem, i) {
     let items = pantryoInvetory;
     // console.log(!items[i].selected);
     items[i].selected = items[i].selected == true ? false : true;
@@ -269,7 +268,7 @@ const AddProducts = ({route, navigation}) => {
       setChooseInventory([...chooseInventory, newItem]);
     }
     console.log(newItem);
-  };
+  }
 
   //////////Update Checkbox
   // const updateCheckBox = (item, i) => {
@@ -722,7 +721,7 @@ const AddProducts = ({route, navigation}) => {
       )}
     </>
   );
-};
+}
 
 export default AddProducts;
 

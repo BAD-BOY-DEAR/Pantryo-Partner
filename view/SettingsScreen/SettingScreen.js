@@ -30,13 +30,13 @@ const SettingsScreen = ({navigation}) => {
   const [mounted, setmounted] = React.useState(true);
 
   // Function to get Partner's Profile
-  const getUserProfile = async () => {
+  async function getUserProfile() {
     getUserShopName(await AsyncStorage.getItem('partner_shopName'));
     setUserCategoryName(await AsyncStorage.getItem('partner_category_name'));
     setUserMobile(await AsyncStorage.getItem('partner_contactNumber'));
     setPincode(await AsyncStorage.getItem('partner_pincode'));
     setShopAddress(await AsyncStorage.getItem('partner_shopaddress'));
-  };
+  }
 
   React.useEffect(() => {
     getUserProfile();

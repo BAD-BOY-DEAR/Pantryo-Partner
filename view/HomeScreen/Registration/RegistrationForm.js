@@ -32,7 +32,7 @@ import {event, onChange, set} from 'react-native-reanimated';
 import {AuthContext} from '../../../controller/Utils';
 import messaging from '@react-native-firebase/messaging';
 
-const RegisterScreen = ({navigation, route}) => {
+function RegisterScreen({navigation, route}) {
   const {signIn} = React.useContext(AuthContext);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
@@ -328,15 +328,18 @@ const RegisterScreen = ({navigation, route}) => {
     }
   }
 
-  const check = React.useMemo(() => async () => {
-    getFCMToken();
-    fetchPartnerCategoryApi();
-    setPartnerContactNumber(route.params.partner_contactNumber);
-    return () => {
-      // Geolocation.clearWatch({watchID});
-      setLoading(false);
-    };
-  }, [])
+  const check = React.useMemo(
+    () => async () => {
+      getFCMToken();
+      fetchPartnerCategoryApi();
+      setPartnerContactNumber(route.params.partner_contactNumber);
+      return () => {
+        // Geolocation.clearWatch({watchID});
+        setLoading(false);
+      };
+    },
+    [],
+  );
 
   React.useEffect(() => {
     //Device Id
@@ -352,7 +355,7 @@ const RegisterScreen = ({navigation, route}) => {
     //   // Geolocation.clearWatch({watchID});
     //   setLoading(false);
     // };
-    check()
+    check();
   }, []);
 
   return (
@@ -583,7 +586,7 @@ const RegisterScreen = ({navigation, route}) => {
       {/* ======= Business Category Selection Modal End ======= */}
     </>
   );
-};
+}
 
 export default RegisterScreen;
 

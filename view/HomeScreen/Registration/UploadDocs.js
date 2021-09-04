@@ -19,7 +19,7 @@ import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RazorpayCheckout from 'react-native-razorpay';
 
-const UploadDocs = ({navigation}) => {
+function UploadDocs({navigation}) {
   const [isLoading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(null);
@@ -343,7 +343,7 @@ const UploadDocs = ({navigation}) => {
       </View>
     </>
   );
-};
+}
 
 export default UploadDocs;
 

@@ -7,7 +7,7 @@ import successIcon from '../../../assets/icons/success.gif';
 // ========== Library ========== //
 import * as Animatable from 'react-native-animatable';
 
-const PostUploadStatus = () => {
+function PostUploadStatus() {
   return (
     <>
       <View style={styles.container}>
@@ -31,7 +31,7 @@ const PostUploadStatus = () => {
       </View>
     </>
   );
-};
+}
 
 export default PostUploadStatus;
 

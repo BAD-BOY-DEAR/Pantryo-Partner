@@ -35,16 +35,16 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoaderScreen from '../../../controller/LoaderScreen';
 
-const wait = timeout => {
+function wait(timeout) {
   return new Promise(resolve => setTimeout(resolve, timeout));
-};
+}
 
-const CreateCategory = ({navigation}) => {
+function CreateCategory({navigation}) {
   const [allMainCategory, setAllMainCategory] = React.useState([]);
   const [isLoading, setLoading] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
-  const showToast = msg => {
+  function showToast(msg) {
     ToastAndroid.showWithGravityAndOffset(
       msg,
       ToastAndroid.SHORT,
@@ -52,7 +52,7 @@ const CreateCategory = ({navigation}) => {
       25,
       50,
     );
-  };
+  }
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -61,7 +61,7 @@ const CreateCategory = ({navigation}) => {
   }, []);
 
   ///Fetch Partner Category
-  const fetchPartnerMainCategoryApi = async () => {
+  async function fetchPartnerMainCategoryApi() {
     let category_id = await AsyncStorage.getItem('partner_category');
     if (!category_id) {
       showToast('Partner Category Id not found!');
@@ -96,7 +96,7 @@ const CreateCategory = ({navigation}) => {
         })
         .finally(() => setLoading(false));
     }
-  };
+  }
 
   React.useEffect(() => {
     fetchPartnerMainCategoryApi();
@@ -183,7 +183,7 @@ const CreateCategory = ({navigation}) => {
       )}
     </>
   );
-};
+}
 
 export default CreateCategory;
 

@@ -44,11 +44,11 @@ import {Picker} from '@react-native-picker/picker';
 import SelectCategory from './Product/CreateCategory';
 import AddProducts from './Product/AddProduct';
 
-const wait = timeout => {
+function wait(timeout) {
   return new Promise(resolve => setTimeout(resolve, timeout));
-};
+}
 
-const InventoryScreen = ({navigation}) => {
+function InventoryScreen({navigation}) {
   const [changeCategoryModal, setChangeCategoryModal] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [isLoading, setLoading] = useState(true);
@@ -74,7 +74,7 @@ const InventoryScreen = ({navigation}) => {
   }, []);
 
   //======== Show Toast ========//
-  const showToast = msg => {
+  function showToast(msg) {
     ToastAndroid.showWithGravityAndOffset(
       msg,
       ToastAndroid.SHORT,
@@ -82,10 +82,10 @@ const InventoryScreen = ({navigation}) => {
       25,
       50,
     );
-  };
+  }
 
   //======== API to fetch all products selected by the partner ========//
-  const fetchAllProductsOfPartnerApi = async () => {
+  async function fetchAllProductsOfPartnerApi() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
     if (!partner_id) {
@@ -127,15 +127,15 @@ const InventoryScreen = ({navigation}) => {
         })
         .finally(() => setLoading(false));
     }
-  };
+  }
 
   //======== Partner Category ========//
-  const setPartnerCategoryName = async () => {
+  async function setPartnerCategoryName() {
     setPartnerCategory(await AsyncStorage.getItem('partner_category_name'));
-  };
+  }
 
   //======== API to Remove Products in the inventory of the partner ========//
-  const removeProductApi = async partner_product_id => {
+  async function removeProductApi(partner_product_id) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_id) {
       showToast('Partner ID not found!');
@@ -176,10 +176,10 @@ const InventoryScreen = ({navigation}) => {
         })
         .finally(() => setLoading(false));
     }
-  };
+  }
 
   // ======== Search Product ========= //
-  const searchProducts = async searchkey => {
+  async function searchProducts(searchkey) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partner_id) {
       showToast('Partner Id not Fouond!');
@@ -215,10 +215,10 @@ const InventoryScreen = ({navigation}) => {
           console.error(error);
         });
     }
-  };
+  }
 
   // ======== Search Product by Category ========= //
-  const searchByCategory = async main_category_id => {
+  async function searchByCategory(main_category_id) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
     if (!partner_id) {
@@ -260,10 +260,10 @@ const InventoryScreen = ({navigation}) => {
           console.error(error);
         });
     }
-  };
+  }
 
   // ======Edit Product abd Update ======= //
-  const updatePartnerProduct = async () => {
+  async function updatePartnerProduct() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partnerItemId) {
       showToast('Partner Product ID not found!');
@@ -318,7 +318,66 @@ const InventoryScreen = ({navigation}) => {
           setEditModal(false);
         });
     }
-  };
+  }
+
+  const check = React.useMemo(
+    () => async () => {
+      setPartnerCategoryName();
+      fetchAllProductsOfPartnerApi();
+    },
+    [],
+  );
+
+  ///////////////Instock and out of Stock
+  async function InOutStock(product_id, product_status) {
+    let partner_id = await AsyncStorage.getItem('partner_id');
+    if (!product_id) {
+      showToast('Partner Product ID not found!');
+      return;
+    } else if (!partner_id) {
+      showToast('Partner ID not found!');
+      return;
+    } else if (!product_status) {
+      showToast('Partner Product Status not Found!');
+      return;
+    } else {
+      // setLoading(true);
+      let data = {
+        partner_id: partner_id,
+        product_id: product_id,
+        product_status: product_status == 'In Stock' ? 2 : 1,
+      };
+      console.log(data);
+      // fetch(
+      //   'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/updatePartnerProduct.php',
+      //   {
+      //     method: 'POST',
+      //     headers: {
+      //       Accept: 'application/json',
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify(),
+      //   },
+      // )
+      //   .then(function (response) {
+      //     return response.json();
+      //   })
+      //   .then(function (result) {
+      //     if (result.error == 0) {
+      //       showToast('Product Status Updated ');
+      //       fetchAllProductsOfPartnerApi();
+      //     } else {
+      //       showToast('Something went Wrong!');
+      //     }
+      //   })
+      //   .catch(error => {
+      //     console.error(error);
+      //   })
+      //   .finally(() => {
+      //     setLoading(false);
+      //   });
+    }
+  }
 
   useEffect(() => {
     setPartnerCategoryName();
@@ -415,7 +474,7 @@ const InventoryScreen = ({navigation}) => {
                 <FlatList
                   style={{width: '100%'}}
                   data={item.Products}
-                  renderItem={({item}) => (
+                  renderItem={({item, index}) => (
                     <>
                       <View style={styles.inventorySection}>
                         <View style={styles.inventoryTab}>
@@ -490,10 +549,21 @@ const InventoryScreen = ({navigation}) => {
                                 false: '#767577',
                                 true: '#ababab',
                               }}
-                              thumbColor={isEnabled ? 'green' : '#f4f3f4'}
+                              thumbColor={
+                                item.product_status == 'In Stock'
+                                  ? 'green'
+                                  : 'red'
+                              }
                               ios_backgroundColor="#3e3e3e"
-                              onValueChange={toggleSwitch}
-                              value={isEnabled}
+                              onValueChange={() => {
+                                InOutStock(
+                                  item.product_id,
+                                  item.product_status,
+                                );
+                              }}
+                              value={
+                                item.product_status == 'In Stock' ? true : false
+                              }
                               style={styles.toggle}
                             />
                             <Text>
@@ -723,7 +793,7 @@ const InventoryScreen = ({navigation}) => {
       {/* ========== Edit Modal ========== */}
     </>
   );
-};
+}
 
 const Stack = createStackNavigator();
 
