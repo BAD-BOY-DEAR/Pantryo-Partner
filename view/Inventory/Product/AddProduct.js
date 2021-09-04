@@ -138,7 +138,12 @@ function AddProducts({route, navigation}) {
   }
 
   // ====== Add Product ======= //
+<<<<<<< HEAD
   async function addProductApi() {
+=======
+
+  const addProductApi = async () => {
+>>>>>>> 0313a68122002cec2a827f5d29442d55694befde
     if (!chooseInventory) {
       showToast('Please Choose atleast one Item!');
       return;
@@ -219,7 +224,11 @@ function AddProducts({route, navigation}) {
         })
         .finally(() => setLoading(false));
     }
+<<<<<<< HEAD
   }
+=======
+  };
+>>>>>>> 0313a68122002cec2a827f5d29442d55694befde
 
   const check = React.useMemo(
     () => async () => {

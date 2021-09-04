@@ -42,7 +42,7 @@ function Navigation({navigation}) {
           name="WalletScreen"
           component={WalletScreen}
           options={{
-            tabBarLabel: 'Wallet',
+            tabBarLabel: 'Transactions',
             tabBarColor: '#fff',
             tabBarIcon: ({color}) => (
               <Icons name="wallet-outline" color={color} size={25} />

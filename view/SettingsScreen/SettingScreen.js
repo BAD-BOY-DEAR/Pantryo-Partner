@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet, Pressable, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 
 // ===== Library ===== //
 import Icons from 'react-native-vector-icons/Ionicons';
@@ -49,9 +55,9 @@ const SettingsScreen = ({navigation}) => {
         }}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Pressable style={styles.iconBox}>
+            <TouchableOpacity style={styles.iconBox}>
               <Icons name="business-outline" size={30} color="#777" />
-            </Pressable>
+            </TouchableOpacity>
 
             <View style={styles.headerTxtContainer}>
               <Text style={styles.headerTopText}>{userShopName}</Text>
@@ -59,9 +65,10 @@ const SettingsScreen = ({navigation}) => {
               <Text style={styles.pinCode}>{pincode}</Text>
               <Text style={styles.partnerNo}>{userMobile}</Text>
 
-              <Pressable onPress={() => navigation.navigate('ProfileScreen')}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ProfileScreen')}>
                 <Text style={styles.headerBottom}>Edit Profile</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -74,20 +81,20 @@ const SettingsScreen = ({navigation}) => {
               <Icons name="alert-circle-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Support</Text>
             </View>
-            <Pressable
+            <TouchableOpacity
               onPress={() => navigation.navigate('TermsConditions')}
               style={styles.tab}>
               <Icons name="document-attach-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Terms & Conditions</Text>
-            </Pressable>
+            </TouchableOpacity>
             <View style={styles.tab}>
               <Icons name="finger-print-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Privacy Policy</Text>
             </View>
-            <Pressable onPress={() => signOut()} style={styles.tab}>
+            <TouchableOpacity onPress={() => signOut()} style={styles.tab}>
               <Icons name="log-out-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Sign Out</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.developer}>
@@ -106,10 +113,28 @@ const Stack = createStackNavigator();
 
 const SettingScreenHolder = () => {
   return (
-    <Stack.Navigator headerMode="none">
-      <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
-      <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-      <Stack.Screen name="TermsConditions" component={TermsConditions} />
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SettingsScreen"
+        component={SettingsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{
+          title: 'Profile',
+        }}
+      />
+      <Stack.Screen
+        name="TermsConditions"
+        component={TermsConditions}
+        options={{
+          title: 'Terms & Conditions',
+        }}
+      />
     </Stack.Navigator>
   );
 };

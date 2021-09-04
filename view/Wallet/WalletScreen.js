@@ -79,15 +79,13 @@ const WalletScreen = ({navigation}) => {
           <View style={styles.topContainer}>
             <View style={styles.section}>
               <Text style={styles.screenName}>Your Account</Text>
-              <Pressable
-                onPress={() => navigation.navigate('WalletActionScreen')}
-                style={styles.salesCard}>
+              <View style={styles.salesCard}>
                 <View style={{flex: 1}}>
                   <Text style={styles.salesCardHeading}>Total Collection</Text>
                   <Text style={styles.totalSales}>₹ {totalAmount}</Text>
                 </View>
-                <Icons name="add-circle" size={30} color="#5E3360" />
-              </Pressable>
+                {/* <Icons name="add-circle" size={30} color="#5E3360" /> */}
+              </View>
             </View>
           </View>
           <View style={styles.bottomContainer}>
