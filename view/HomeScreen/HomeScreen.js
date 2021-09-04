@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useCallback, useState, useMemo, useEffect} from 'react';
 import {
   View,
   Text,
@@ -33,7 +33,6 @@ import OrdersList from './Orders/OrdersList';
 import PaymentScreen from './Payments/PaymentScreen';
 import FeatureTest from './FeatureTest';
 
-
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
@@ -42,34 +41,34 @@ const HomeScreen = ({navigation}) => {
   const netInfo = useNetInfo();
 
   // Toggle Switch
-  const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
-  const [isEnabled, setIsEnabled] = React.useState(false);
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-  const [isLoading, setLoading] = React.useState(true);
-  const [paymentLoading, setPaymentLoading] = React.useState(false);
-  const [kycStatus, setKycStatus] = React.useState('');
-  const [paymentStatus, setPaymentStatus] = React.useState('');
-  const [todayOrderData, setTodayOrderData] = React.useState(null);
-  const [numberOfOrderToday, setNumberOfOrderToday] = React.useState('0');
-  const [numberOfOrderAll, setNumberOfOrderAll] = React.useState('0');
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [kycStatus, setKycStatus] = useState('');
+  const [paymentStatus, setPaymentStatus] = useState('');
+  const [todayOrderData, setTodayOrderData] = useState(null);
+  const [numberOfOrderToday, setNumberOfOrderToday] = useState('0');
+  const [numberOfOrderAll, setNumberOfOrderAll] = useState('0');
+  const [refreshing, setRefreshing] = useState(false);
 
   // Partner
-  const [partnerId, setPartnerId] = React.useState('');
-  const [partnerStatus, setPartnerStatus] = React.useState('');
+  const [partnerId, setPartnerId] = useState('');
+  const [partnerStatus, setPartnerStatus] = useState('');
   const [partnerVerificationStatus, setPartnerVerificationStatus] =
-    React.useState('');
-  const [earning, setEarning] = React.useState('');
+    useState('');
+  const [earning, setEarning] = useState('');
 
   // onRefresh
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     changePartnerStatus();
     getPartnerDetails();
     getTodayOrder();
     getPartnerEarning();
-    wait(2000).then(() => setRefreshing(false));    
+    wait(2000).then(() => setRefreshing(false));
   }, []);
 
   ///get Partner Details
@@ -307,7 +306,7 @@ const HomeScreen = ({navigation}) => {
       .finally(() => setPaymentLoading(false));
   }
 
-  /////////////Check Verification Status
+  // Check Verification Status
   async function getPartnerVarificationStatus() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     fetch(
@@ -340,11 +339,11 @@ const HomeScreen = ({navigation}) => {
       });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
-    //////////////////
+
     getPartnerDetails();
     getTodayOrder();
     getUserProfile();
