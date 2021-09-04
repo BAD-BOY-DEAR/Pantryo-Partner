@@ -48,7 +48,7 @@ const HomeScreen = ({navigation}) => {
   const [isLoading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [kycStatus, setKycStatus] = useState('');
-  const [paymentStatus, setPaymentStatus] = useState('');
+  const [paymentStatus, setPaymentStatus] = useState('2');
   const [todayOrderData, setTodayOrderData] = useState(null);
   const [numberOfOrderToday, setNumberOfOrderToday] = useState('0');
   const [numberOfOrderAll, setNumberOfOrderAll] = useState('0');
@@ -58,7 +58,7 @@ const HomeScreen = ({navigation}) => {
   const [partnerId, setPartnerId] = useState('');
   const [partnerStatus, setPartnerStatus] = useState('');
   const [partnerVerificationStatus, setPartnerVerificationStatus] =
-    useState('');
+    useState('1');
   const [earning, setEarning] = useState('');
 
   // onRefresh
@@ -482,7 +482,7 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Verification Notification End ========== */}
 
                   {/* ========== Payment Notification Start ========== */}
-                  {paymentStatus == '1' ? (
+                  {paymentStatus === '1' ? (
                     <TouchableOpacity
                       onPress={RazorpayFunction}
                       style={styles.notificationBtn}>
