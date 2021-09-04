@@ -337,6 +337,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 10,
+    paddingVertical: 10,
     paddingTop: 20,
   },
   loginLabel: {
