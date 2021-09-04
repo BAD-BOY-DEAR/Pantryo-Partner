@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -27,7 +28,10 @@ function SettingsScreen({navigation}) {
   const {signOut} = React.useContext(AuthContext);
 
   const [shopAddress, setShopAddress] = React.useState('');
+  const [partnerStoreImage, setPartnerStoreImage] = React.useState('');
   const [mounted, setmounted] = React.useState(true);
+  const partnerStoreImagePath =
+    'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PartnerImages/StoreImages/';
 
   // Function to get Partner's Profile
   async function getUserProfile() {
@@ -36,6 +40,7 @@ function SettingsScreen({navigation}) {
     setUserMobile(await AsyncStorage.getItem('partner_contactNumber'));
     setPincode(await AsyncStorage.getItem('partner_pincode'));
     setShopAddress(await AsyncStorage.getItem('partner_shopaddress'));
+    setPartnerStoreImage(await AsyncStorage.getItem('partner_storeImage'));
   }
 
   React.useEffect(() => {
@@ -56,7 +61,14 @@ function SettingsScreen({navigation}) {
         <View style={styles.container}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.iconBox}>
-              <Icons name="business-outline" size={30} color="#777" />
+              {partnerStoreImage == '' ? (
+                <Icons name="business-outline" size={30} color="#777" />
+              ) : (
+                <Image
+                  source={{uri: partnerStoreImagePath + partnerStoreImage}}
+                  style={{width: 100, height: 100}}
+                />
+              )}
             </TouchableOpacity>
 
             <View style={styles.headerTxtContainer}>
@@ -65,10 +77,10 @@ function SettingsScreen({navigation}) {
               <Text style={styles.pinCode}>{pincode}</Text>
               <Text style={styles.partnerNo}>{userMobile}</Text>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => navigation.navigate('ProfileScreen')}>
                 <Text style={styles.headerBottom}>Edit Profile</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
 

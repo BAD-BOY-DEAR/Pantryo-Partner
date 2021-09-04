@@ -153,6 +153,7 @@ const App = ({navigation}) => {
           partner_category,
           partner_categoryName,
           partner_shopaddress,
+          partner_storeImage,
           partner_pincode,
           partner_kycStatus,
           partner_paymentStatus,
@@ -171,6 +172,7 @@ const App = ({navigation}) => {
         AsyncStorage.setItem('partner_contactNumber', partner_contactNumber);
         AsyncStorage.setItem('partner_pincode', partner_pincode);
         AsyncStorage.setItem('partner_shopaddress', partner_shopaddress);
+        AsyncStorage.setItem('partner_storeImage', partner_storeImage);
         AsyncStorage.setItem('user_long', user_long);
         AsyncStorage.setItem('user_lat', user_lat);
         AsyncStorage.setItem('user_verification', user_verification);

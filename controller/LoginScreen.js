@@ -93,6 +93,7 @@ function LoginScreen({navigation}) {
             let partner_categoryName = result.partner_category_name;
             let partner_pincode = result.partner_pincode;
             let partner_shopaddress = result.partner_shopaddress;
+            let partner_storeImage = result.partner_storeImage;
             let partner_kycStatus = result.partner_kycStatus;
             let partner_paymentStatus = result.partner_paymentStatus;
             let user_token = result.user_token;
@@ -107,6 +108,7 @@ function LoginScreen({navigation}) {
               partner_categoryName,
               partner_pincode,
               partner_shopaddress,
+              partner_storeImage,
               partner_kycStatus,
               partner_paymentStatus,
               user_token,
