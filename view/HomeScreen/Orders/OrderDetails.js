@@ -354,7 +354,7 @@ const OrderDetails = ({route, navigation}) => {
     }
   }
 
-  /////////////////Update Inventory Status
+  // Update Inventory Status
   async function updateInventoryStatus(
     brand_name,
     product_name,
