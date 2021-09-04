@@ -5,7 +5,7 @@ import {View, Image, StyleSheet, Text} from 'react-native';
 import brandLogo from '../assets/logo/PantryoPartnerLogo.png';
 import flag from '../assets/icons/indianFlag.png';
 
-const SplashScreen = () => {
+function SplashScreen() {
   return (
     <>
       <View style={styles.container}>
@@ -18,7 +18,7 @@ const SplashScreen = () => {
       </View>
     </>
   );
-};
+}
 
 export default SplashScreen;
 

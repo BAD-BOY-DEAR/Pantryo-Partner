@@ -72,12 +72,12 @@ const OrderDetails = ({route, navigation}) => {
   }, []);
 
   // Function to get Partner's Profile
-  const getUserProfile = async () => {
+  async function getUserProfile() {
     setPartnerShop(await AsyncStorage.getItem('partner_shopName'));
     setPartnerId(await AsyncStorage.getItem('partner_id'));
-  };
+  }
 
-  const notificationToCustomer = async () => {
+  async function notificationToCustomer() {
     const CUSTOMER_FIREBASE_API_KEY = customer_firebase_key;
     const message = {
       to: customerToken,
@@ -114,9 +114,9 @@ const OrderDetails = ({route, navigation}) => {
     });
     response = await response.json();
     console.log(response);
-  };
+  }
 
-  const notificationToPartner = async (userToken, customerName) => {
+  async function notificationToPartner(userToken, customerName) {
     const FIREBASE_API_KEY = delivery_partner_firebase_key;
     const message = {
       to: userToken,
@@ -157,10 +157,10 @@ const OrderDetails = ({route, navigation}) => {
     });
     response = await response.json();
     console.log(response);
-  };
+  }
 
   // status update
-  const updtateStatus = async (status, customername) => {
+  async function updtateStatus(status, customername) {
     await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/update_order_status.php',
       {
@@ -209,10 +209,10 @@ const OrderDetails = ({route, navigation}) => {
         console.error(error);
       })
       .finally(() => setLoading(false));
-  };
+  }
 
   // Search Delivery Partner
-  const searchDeliveryPartner = async customername => {
+  async function searchDeliveryPartner(customername) {
     let lat = await AsyncStorage.getItem('user_lat');
     let long = await AsyncStorage.getItem('user_long');
     await fetch(
@@ -247,10 +247,10 @@ const OrderDetails = ({route, navigation}) => {
           console.log('Error: ' + JSON.stringify(result));
         }
       });
-  };
+  }
 
   // Order Details
-  const getOrderDetails = async order_id => {
+  async function getOrderDetails(order_id) {
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getTodayOrderOfPartnerDetails.php',
       {
@@ -292,10 +292,10 @@ const OrderDetails = ({route, navigation}) => {
         console.error(error);
       })
       .finally(() => setLoading(false));
-  };
+  }
 
   // Order Details
-  const checkOtpUserByEntered = async () => {
+  function checkOtpUserByEntered() {
     setSuccessLoading(true);
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/MatchSecurityCodePartner.php',
@@ -327,10 +327,10 @@ const OrderDetails = ({route, navigation}) => {
         console.error(error);
       })
       .finally(() => setSuccessLoading(false));
-  };
+  }
 
   // Call Persmission
-  const requestCallPermission = async deliveryNumber => {
+  async function requestCallPermission(deliveryNumber) {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CALL_PHONE,
@@ -352,17 +352,17 @@ const OrderDetails = ({route, navigation}) => {
     } catch (err) {
       console.warn(err);
     }
-  };
+  }
 
   /////////////////Update Inventory Status
-  const updateInventoryStatus = async (
+  async function updateInventoryStatus(
     brand_name,
     product_name,
     product_qty,
     product_unit,
     product_price,
     status,
-  ) => {
+  ) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     fetch(
       'https://gizmmoalchemy.com/api/pantryo/PantryoInventoryApi/inventory.php?flag=productInStockAndOutStockstatus',
@@ -392,7 +392,7 @@ const OrderDetails = ({route, navigation}) => {
       .catch(error => {
         console.error(error);
       });
-  };
+  }
 
   React.useEffect(() => {
     getUserProfile();

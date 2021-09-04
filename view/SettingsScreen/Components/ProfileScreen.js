@@ -12,13 +12,13 @@ const ProfileScreen = () => {
   const [shopAddress, setShopAddress] = React.useState('');
   const [pincode, setPincode] = React.useState('');
 
-  const getUserProfile = async () => {
+  async function getUserProfile() {
     setUserShopName(await AsyncStorage.getItem('partner_shopName'));
     setUserCategoryName(await AsyncStorage.getItem('partner_category_name'));
     setUserMobile(await AsyncStorage.getItem('partner_contactNumber'));
     setShopAddress(await AsyncStorage.getItem('partner_shopaddress'));
     setPincode(await AsyncStorage.getItem('partner_pincode'));
-  };
+  }
 
   React.useEffect(() => {
     getUserProfile();

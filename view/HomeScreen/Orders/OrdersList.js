@@ -39,7 +39,7 @@ const OrdersList = () => {
   const [noOfProducts, setNoOfProducts] = React.useState('');
 
   // Get Order List
-  const getOrderList = async () => {
+  async function getOrderList() {
     setLoading(true);
     let partner_id = await AsyncStorage.getItem('partner_id');
     await fetch(
@@ -67,10 +67,10 @@ const OrdersList = () => {
       .finally(() => {
         setLoading(false);
       });
-  };
+  }
 
   // Get Order List
-  const getOrderDetails = async order_id => {
+  async function getOrderDetails(order_id) {
     setOrderId(order_id);
     setLoading(true);
     let partner_id = await AsyncStorage.getItem('partner_id');
@@ -113,7 +113,7 @@ const OrdersList = () => {
         setLoading(false);
         getOrderDetails();
       });
-  };
+  }
 
   React.useEffect(() => {
     LogBox.ignoreAllLogs(true);

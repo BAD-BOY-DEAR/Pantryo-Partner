@@ -4,14 +4,14 @@ import analytics from '@react-native-firebase/analytics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 
-const FeatureTest = () => {
+function FeatureTest() {
   const userToken1 =
     'cx9uxWt6SU-nlcLWgh32PZ:APA91bEVTsAfDjeJfCV_3h3ZOIM6f2Z9xVesAzZQ2FyV7-t2k4CLKMYNBxm9QCaViqhisjEJqYbvFZiMyKJOh7hKBp7d5TY7yX3PUv80yUuFLKD9s-WqTXOeSHbBHSlLU2jt94s8Ivz9';
   const userToken2 =
     'fx16dI92QUK6luF3mEFUKv:APA91bEOozietpDn30DbDg72y5UY6HyLUw2RbnnAI9_1gegusoDXoU5cT3C0zIjE1qsq1IKOyaizmpSd2Pzfk-DeBi2yU3Kw9oRfITg34_UuyZVhWyliPpczLQCEmevWswJ9UNnSxm8B';
 
   // Send Notification to Customer
-  const sendPushNotification = async () => {
+  async function sendPushNotification() {
     const CUSTOMER_FIREBASE_API_KEY =
       'AAAAIIoSzdk:APA91bFqAg9Vu4T-_LYX5EPz9UVtqZTp0bRWOpkJLgm6GqIf4QAJtrW6RISmqWHZl6T-ykQrNLpo39kbRHLBsfGmqyz5JP8hxNCUzrfw8ECkcOItsO173OGeIrPf01_jiTLGjJsgwr33';
     const message = {
@@ -44,10 +44,10 @@ const FeatureTest = () => {
     });
     response = await response.json();
     console.log(response);
-  };
+  }
 
   // Send Notification to Delivery Partner
-  const sendPushNotification2 = async () => {
+  async function sendPushNotification2() {
     const DELIVERY_PARTNER_FIREBASE_API_KEY =
       'AAAA206GD2Q:APA91bEaq_P49bzza39abiiZgUe_-vVytc7JacVYblNvLgqGPWgKYWZhT-6zdw68tmAsM4wkDDyftgYlXNFaMA5C8IVbEFqaTUUqXLsDA21-6HuiEJqcz-QsDaVkPKVckTAIYL3u3glj';
     const message = {
@@ -80,7 +80,7 @@ const FeatureTest = () => {
     });
     response = await response.json();
     console.log(response);
-  };
+  }
 
   return (
     <>
@@ -144,6 +144,6 @@ const FeatureTest = () => {
       </View>
     </>
   );
-};
+}
 
 export default FeatureTest;

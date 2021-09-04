@@ -13,7 +13,7 @@ import Icons from 'react-native-vector-icons/Ionicons';
 
 import LoaderScreen from '../controller/LoaderScreen';
 
-const OtpVerification = ({navigation, route}) => {
+function OtpVerification({navigation, route}) {
   let textInput = useRef(null);
   const lengthInput = 6;
   const [internalVal, setInternalVal] = useState('');
@@ -76,7 +76,7 @@ const OtpVerification = ({navigation, route}) => {
       </View>
     </>
   );
-};
+}
 
 export default OtpVerification;
 
