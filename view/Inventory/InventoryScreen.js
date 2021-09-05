@@ -68,6 +68,7 @@ const InventoryScreen = ({navigation}) => {
   const [partnerItemQty, setPartnerItemQty] = useState('');
   const [partnerItemPrice, setPartnerItemPrice] = useState('');
   const [partnerItemUnit, setPartnerItemUnit] = useState('');
+  const [saerchBy, setSearchBy] = useState('');
   const [chooseInventory, setChooseInventory] = React.useState([]);
 
   //======== Pull Down to Refresh Function ========//
@@ -446,7 +447,8 @@ const InventoryScreen = ({navigation}) => {
               style={styles.searchTxtInput}
               color="#000"
               autoCapitalize="words"
-              onChangeText={txt => searchProducts(txt)}
+              onChangeText={txt => setSearchBy(txt)}
+              onSubmitEditing={() => searchProducts(saerchBy)}
             />
             {/* <Pressable style={styles.searchBtn}>
               <Icons name="arrow-forward-outline" size={20} color="#fff" />
