@@ -249,6 +249,7 @@ function UploadDocs({navigation}) {
         return response.json();
       })
       .then(function (result) {
+        console.log(result);
         if (result.payment_status === 'authorized') {
           navigation.navigate('HomeScreen');
         } else {
