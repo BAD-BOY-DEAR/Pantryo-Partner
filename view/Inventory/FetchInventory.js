@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {PureComponent, Component} from 'react';
 import {
   View,
   Text,
@@ -46,7 +46,9 @@ import {Picker} from '@react-native-picker/picker';
 // ===== Components ===== //
 import SelectCategory from './Product/CreateCategory';
 import AddProducts from './Product/AddProduct';
-class FetchInventory extends PureComponent {
+import {TouchableOpacity} from 'react-native-gesture-handler';
+
+class FetchInventory extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,7 +66,7 @@ class FetchInventory extends PureComponent {
       partnerItemUnit: '',
     };
   }
-  ////////////////////
+
   showToast = msg => {
     ToastAndroid.showWithGravityAndOffset(
       msg,
@@ -74,16 +76,17 @@ class FetchInventory extends PureComponent {
       50,
     );
   };
-  /////////////////fetchAllProductsOfPartnerApi
+
+  // fetchAllProductsOfPartnerApi
   fetchAllProductsOfPartnerApi = async () => {
     const partner_id = await AsyncStorage.getItem('partner_id');
     // console.log(partner_id);
     const partner_category = await AsyncStorage.getItem('partner_category');
     if (!partner_id) {
-      showToast('Partner ID not found!');
+      showToast('Unable to fetch partner id');
       return;
     } else if (!partner_category) {
-      showToast('Partner Category not found!');
+      showToast('Unable to fetch category');
       return;
     } else {
       const that = this;
@@ -132,140 +135,138 @@ class FetchInventory extends PureComponent {
     this.fetchAllProductsOfPartnerApi();
   }
 
+  shouldComponentUpdate() {
+    return true;
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <FlatList
-          style={{width: '100%', flex: 1}}
-          data={this.state.partnerProducts}
-          initialNumToRender={10}
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          // }
-          renderItem={({item}) => (
-            <>
-              {/* ========== Category Selection Section ========== */}
-              <View style={styles.categorySection}>
-                <View style={styles.div}>
-                  <Text style={styles.categoryLabel}>Product Category</Text>
-                  <Text style={styles.categoryResponse}>
-                    {item.main_category_name}
-                  </Text>
-                </View>
+      <FlatList
+        style={{width: '100%', flex: 1}}
+        data={this.state.partnerProducts}
+        initialNumToRender={10}
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        // }
+        renderItem={({item}) => (
+          <>
+            {/* ========== Category Selection Section ========== */}
+            <View style={styles.categorySection}>
+              <View style={styles.div}>
+                <Text style={styles.categoryLabel}>Product Category</Text>
+                <Text style={styles.categoryResponse}>
+                  {item.main_category_name}
+                </Text>
               </View>
-              {/* ========== Category Selection Section ========== */}
+            </View>
+            {/* ========== Category Selection Section ========== */}
 
-              {/* ========== Selected Inventory Section ========== */}
-              <FlatList
-                style={{width: '100%'}}
-                data={item.Products}
-                initialNumToRender={5}
-                maxToRenderPerBatch={10}
-                updateCellsBatchingPeriod={50}
-                renderItem={({item, index}) => (
-                  <>
-                    <View style={styles.inventorySection}>
-                      <View style={styles.inventoryTab}>
-                        <View style={styles.inventoryTabDiv}>
-                          <Text style={styles.inventoryBrand}>
-                            {item.product_brand ? item.product_brand : ''}
-                          </Text>
-                          <Text style={styles.inventoryProduct}>
-                            {item.product_name
-                              ? item.product_name
-                              : 'No Product Name'}
-                          </Text>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                              marginTop: 5,
-                            }}>
-                            <Pressable
-                            // onPress={() => removeProductApi(item.product_id)}
-                            >
-                              <Text
-                                style={{
-                                  fontFamily: 'OpenSans-SemiBold',
-                                  marginRight: 30,
-                                  color: 'red',
-                                }}>
-                                Remove
-                              </Text>
-                            </Pressable>
-
-                            <Pressable
-                              onPress={() => {
-                                // setPartnerItemBrand(item.product_brand);
-                                // setPartnerItemId(item.product_id);
-                                // setPartnerItemName(item.product_name);
-                                // setPartnerItemQty(item.product_qty);
-                                // setPartnerItemPrice(item.product_price);
-                                // setPartnerItemUnit(item.product_unit);
-                                // setEditModal(true);
+            {/* ========== Selected Inventory Section ========== */}
+            <FlatList
+              style={{width: '100%'}}
+              data={item.Products}
+              initialNumToRender={5}
+              maxToRenderPerBatch={10}
+              updateCellsBatchingPeriod={50}
+              renderItem={({item, index}) => (
+                <>
+                  <View style={styles.inventorySection}>
+                    <View style={styles.inventoryTab}>
+                      <View style={styles.inventoryTabDiv}>
+                        <Text style={styles.inventoryBrand}>
+                          {item.product_brand ? item.product_brand : ''}
+                        </Text>
+                        <Text style={styles.inventoryProduct}>
+                          {item.product_name
+                            ? item.product_name
+                            : 'No Product Name'}
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            marginTop: 5,
+                          }}>
+                          <TouchableOpacity
+                          // onPress={() => removeProductApi(item.product_id)}
+                          >
+                            <Text
+                              style={{
+                                fontFamily: 'OpenSans-SemiBold',
+                                marginRight: 30,
+                                color: 'red',
                               }}>
-                              <Text
-                                style={{
-                                  fontFamily: 'OpenSans-SemiBold',
-                                  color: '#444444',
-                                }}>
-                                Edit
-                              </Text>
-                            </Pressable>
-                          </View>
-                        </View>
-                        <View style={styles.inventoryRow}>
-                          <Text style={styles.qty}>
-                            {item.product_qty
-                              ? item.product_qty
-                              : 'No Quantity'}
-                            {' ' + item.product_unit}
-                          </Text>
-                        </View>
-                        <View style={{flex: 1}}>
-                          <Text style={styles.price}>
-                            {item.product_price
-                              ? '₹' + item.product_price
-                              : 'No Price'}
-                          </Text>
-                        </View>
-                        <View style={styles.btnsSection}>
-                          <Switch
-                            trackColor={{
-                              false: '#767577',
-                              true: '#ababab',
-                            }}
-                            thumbColor={
-                              item.product_status == 'In Stock'
-                                ? 'green'
-                                : 'red'
-                            }
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={() => {
-                              // InOutStock(item.product_id, item.product_status);
-                            }}
-                            value={
-                              item.product_status == 'In Stock' ? true : false
-                            }
-                            style={styles.toggle}
-                          />
-                          <Text>
-                            {item.product_status ? item.product_status : null}
-                          </Text>
+                              Remove
+                            </Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            onPress={() => {
+                              // setPartnerItemBrand(item.product_brand);
+                              // setPartnerItemId(item.product_id);
+                              // setPartnerItemName(item.product_name);
+                              // setPartnerItemQty(item.product_qty);
+                              // setPartnerItemPrice(item.product_price);
+                              // setPartnerItemUnit(item.product_unit);
+                              // setEditModal(true);
+                            }}>
+                            <Text
+                              style={{
+                                fontFamily: 'OpenSans-SemiBold',
+                                color: '#444444',
+                              }}>
+                              Edit
+                            </Text>
+                          </TouchableOpacity>
                         </View>
                       </View>
+                      <View style={styles.inventoryRow}>
+                        <Text style={styles.qty}>
+                          {item.product_qty ? item.product_qty : 'No Quantity'}
+                          {' ' + item.product_unit}
+                        </Text>
+                      </View>
+                      <View style={{flex: 1}}>
+                        <Text style={styles.price}>
+                          {item.product_price
+                            ? '₹' + item.product_price
+                            : 'No Price'}
+                        </Text>
+                      </View>
+                      <View style={styles.btnsSection}>
+                        <Switch
+                          trackColor={{
+                            false: '#767577',
+                            true: '#ababab',
+                          }}
+                          thumbColor={
+                            item.product_status == 'In Stock' ? 'green' : 'red'
+                          }
+                          ios_backgroundColor="#3e3e3e"
+                          onValueChange={() => {
+                            // InOutStock(item.product_id, item.product_status);
+                          }}
+                          value={
+                            item.product_status == 'In Stock' ? true : false
+                          }
+                          style={styles.toggle}
+                        />
+                        <Text>
+                          {item.product_status ? item.product_status : null}
+                        </Text>
+                      </View>
                     </View>
-                  </>
-                )}
-                keyExtractor={(item, product_id) => String(product_id)}
-              />
-              {/* ========== Selected Inventory Section ========== */}
-            </>
-          )}
-          keyExtractor={(item, product_id) => String(product_id)}
-        />
-      </View>
+                  </View>
+                </>
+              )}
+              keyExtractor={(item, product_id) => String(product_id)}
+            />
+            {/* ========== Selected Inventory Section ========== */}
+          </>
+        )}
+        keyExtractor={(item, product_id) => String(product_id)}
+      />
     );
   }
 }
