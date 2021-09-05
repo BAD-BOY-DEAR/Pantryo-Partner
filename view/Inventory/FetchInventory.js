@@ -77,6 +77,7 @@ class FetchInventory extends PureComponent {
   /////////////////fetchAllProductsOfPartnerApi
   fetchAllProductsOfPartnerApi = async () => {
     const partner_id = await AsyncStorage.getItem('partner_id');
+    // console.log(partner_id);
     const partner_category = await AsyncStorage.getItem('partner_category');
     if (!partner_id) {
       showToast('Partner ID not found!');
