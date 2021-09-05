@@ -86,11 +86,6 @@ const InventoryScreen = ({navigation}) => {
     );
   }
 
-  // const memoizedValue = useMemo(
-  //   () => fetchAllProductsOfPartnerApi,
-  //   [partnerProducts.Products],
-  // );
-
   //======== API to fetch all products selected by the partner ========//
   async function fetchAllProductsOfPartnerApi() {
     let partner_id = await AsyncStorage.getItem('partner_id');
@@ -363,7 +358,7 @@ const InventoryScreen = ({navigation}) => {
       .finally(() => setLoading(false));
   }
 
-  useMemo(() => {
+  useEffect(() => {
     setPartnerCategoryName();
     fetchAllProductsOfPartnerApi();
   }, []);
