@@ -185,9 +185,11 @@ const InventoryScreen = ({navigation}) => {
     if (!partner_id) {
       showToast('Partner Id not Fouond!');
       return;
-    } else if (!searchkey) {
-      fetchAllProductsOfPartnerApi();
-    } else {
+    }
+    // else if (!searchkey) {
+    //   fetchAllProductsOfPartnerApi();
+    // }
+    else {
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/searchPartnerProduct.php',
         {

@@ -825,7 +825,7 @@ const HomeScreen = ({navigation}) => {
                             textAlign: 'center',
                             color: '#000',
                           }}>
-                          Waiting for customer orders...
+                          Searching for customer orders...
                         </Animatable.Text>
                       </View>
                       // ========== Waiting for Orders ==========

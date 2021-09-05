@@ -430,10 +430,10 @@ function RegisterScreen({navigation, route}) {
                   <Picker.Item
                     label="Are you registered under GST?"
                     value=""
-                    color="#fff"
+                    color="#000"
                   />
-                  <Picker.Item label="Yes" value="Yes" color="#fff" />
-                  <Picker.Item label="No" value="No" color="#fff" />
+                  <Picker.Item label="Yes" value="Yes" color="#000" />
+                  <Picker.Item label="No" value="No" color="#000" />
                 </Picker>
               </View>
             </View>
