@@ -267,6 +267,9 @@ const InventoryScreen = ({navigation}) => {
   }
 
   // ======Edit Product abd Update ======= //
+  const update = useMemo(() => {
+    updatePartnerProduct;
+  }, [partnerItemId]);
   async function updatePartnerProduct() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partnerItemId) {
@@ -766,7 +769,7 @@ const InventoryScreen = ({navigation}) => {
                 <Text style={styles.editModalBtnTxt}>Cancel</Text>
               </Pressable>
               <Pressable
-                onPress={() => updatePartnerProduct()}
+                onPress={() => update}
                 style={styles.editModalConfirmBtn}>
                 <Text style={styles.editModalBtnTxt}>Confirm</Text>
               </Pressable>
