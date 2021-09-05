@@ -45,7 +45,6 @@ import {Picker} from '@react-native-picker/picker';
 // ===== Components ===== //
 import SelectCategory from './Product/CreateCategory';
 import AddProducts from './Product/AddProduct';
-import FetchInventory from './FetchInventory';
 
 function wait(timeout) {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -54,7 +53,7 @@ function wait(timeout) {
 const InventoryScreen = ({navigation}) => {
   const [changeCategoryModal, setChangeCategoryModal] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [partnerCategory, setPartnerCategory] = useState('');
   const [partnerProducts, setPartnerProducts] = useState('');
   const [partnerMainCategory, setPartnerMainCategory] = useState('');
@@ -186,6 +185,8 @@ const InventoryScreen = ({navigation}) => {
     if (!partner_id) {
       showToast('Partner Id not Fouond!');
       return;
+    } else if (!searchkey) {
+      fetchAllProductsOfPartnerApi();
     } else {
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/searchPartnerProduct.php',
@@ -218,7 +219,6 @@ const InventoryScreen = ({navigation}) => {
   }
 
   // ======== Search Product by Category ========= //
-
   async function searchByCategory(main_category_id) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
@@ -254,7 +254,7 @@ const InventoryScreen = ({navigation}) => {
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
           } else {
-            // showToast('Something went Wrong!');
+            showToast('Something went Wrong!');
           }
         })
         .catch(error => {
@@ -264,10 +264,6 @@ const InventoryScreen = ({navigation}) => {
   }
 
   // ======Edit Product abd Update ======= //
-  const update = useMemo(() => {
-    return updatePartnerProduct();
-  }, [partnerItemId]);
-
   async function updatePartnerProduct() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     if (!partnerItemId) {
@@ -351,7 +347,6 @@ const InventoryScreen = ({navigation}) => {
       .then(function (result) {
         if (result.error == 0) {
           showToast('Product Status Updated ');
-          // memoizedValue;
         } else {
           showToast('Something went Wrong!');
         }
@@ -364,7 +359,7 @@ const InventoryScreen = ({navigation}) => {
 
   useEffect(() => {
     setPartnerCategoryName();
-    // fetchAllProductsOfPartnerApi();
+    fetchAllProductsOfPartnerApi();
   }, []);
 
   return (
@@ -406,138 +401,166 @@ const InventoryScreen = ({navigation}) => {
         </View>
         {/* ========== Search Box Section ========== */}
 
-        {/* ========== fetch Inventory Section ========== */}
-        <FlatList
-          style={{width: '100%', flex: 1}}
-          data={partnerProducts}
-          initialNumToRender={10}
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          // }
-          renderItem={({item}) => (
-            <>
-              {/* ========== Category Selection Section ========== */}
-              <View style={styles.categorySection}>
-                <View style={styles.div}>
-                  <Text style={styles.categoryLabel}>Product Category</Text>
-                  <Text style={styles.categoryResponse}>
-                    {item.main_category_name}
+        {partnerProducts == '' ? (
+          <ScrollView
+            style={{flex: 1, paddingVertical: '50%'}}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
+            {isLoading == false ? (
+              <>
+                {/* ========== No Inventory Found ALert ========== */}
+                <View style={styles.alertSection}>
+                  <Text style={styles.alert}>
+                    You have not added any products in your inventory. Please
+                    add products to take customer orders
                   </Text>
+                  <Pressable
+                    onPress={() => navigation.navigate('SelectCategory')}
+                    style={styles.btnPrompt}>
+                    <Text style={styles.btnPromptTxt}>ADD PRODUCTS</Text>
+                  </Pressable>
                 </View>
-              </View>
-              {/* ========== Category Selection Section ========== */}
+                {/* ========== No Inventory Found ALert ========== */}
+              </>
+            ) : null}
+          </ScrollView>
+        ) : (
+          <FlatList
+            style={{width: '100%'}}
+            data={partnerProducts}
+            initialNumToRender={10}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            renderItem={({item}) => (
+              <>
+                {/* ========== Category Selection Section ========== */}
+                <View style={styles.categorySection}>
+                  <View style={styles.div}>
+                    <Text style={styles.categoryLabel}>Product Category</Text>
+                    <Text style={styles.categoryResponse}>
+                      {item.main_category_name}
+                    </Text>
+                  </View>
+                </View>
+                {/* ========== Category Selection Section ========== */}
 
-              {/* ========== Selected Inventory Section ========== */}
-              <FlatList
-                style={{width: '100%'}}
-                data={item.Products}
-                initialNumToRender={5}
-                maxToRenderPerBatch={10}
-                updateCellsBatchingPeriod={50}
-                renderItem={({item, index}) => (
-                  <>
-                    <View style={styles.inventorySection}>
-                      <View style={styles.inventoryTab}>
-                        <View style={styles.inventoryTabDiv}>
-                          <Text style={styles.inventoryBrand}>
-                            {item.product_brand ? item.product_brand : ''}
-                          </Text>
-                          <Text style={styles.inventoryProduct}>
-                            {item.product_name
-                              ? item.product_name
-                              : 'No Product Name'}
-                          </Text>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                              marginTop: 5,
-                            }}>
-                            {/* <TouchableOpacity
-                            
-                            >
-                              <Text
-                                style={{
-                                  fontFamily: 'OpenSans-SemiBold',
-                                  marginRight: 30,
-                                  color: 'red',
-                                }}>
-                                Remove
-                              </Text>
-                            </TouchableOpacity> */}
-
-                            <TouchableOpacity
-                              onPress={() => {
-                                // setPartnerItemBrand(item.product_brand);
-                                // setPartnerItemId(item.product_id);
-                                // setPartnerItemName(item.product_name);
-                                // setPartnerItemQty(item.product_qty);
-                                // setPartnerItemPrice(item.product_price);
-                                // setPartnerItemUnit(item.product_unit);
-                                // setEditModal(true);
+                {/* ========== Selected Inventory Section ========== */}
+                <FlatList
+                  style={{width: '100%'}}
+                  data={item.Products}
+                  initialNumToRender={5}
+                  maxToRenderPerBatch={10}
+                  updateCellsBatchingPeriod={50}
+                  renderItem={({item, index}) => (
+                    <>
+                      <View style={styles.inventorySection}>
+                        <View style={styles.inventoryTab}>
+                          <View style={styles.inventoryTabDiv}>
+                            <Text style={styles.inventoryBrand}>
+                              {item.product_brand ? item.product_brand : ''}
+                            </Text>
+                            <Text style={styles.inventoryProduct}>
+                              {item.product_name
+                                ? item.product_name
+                                : 'No Product Name'}
+                            </Text>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                marginTop: 5,
                               }}>
-                              <Text
-                                style={{
-                                  fontFamily: 'OpenSans-SemiBold',
-                                  color: '#444444',
+                              <Pressable
+                                onPress={() =>
+                                  removeProductApi(item.product_id)
+                                }>
+                                <Text
+                                  style={{
+                                    fontFamily: 'OpenSans-SemiBold',
+                                    marginRight: 30,
+                                    color: 'red',
+                                  }}>
+                                  Remove
+                                </Text>
+                              </Pressable>
+
+                              <Pressable
+                                onPress={() => {
+                                  setPartnerItemBrand(item.product_brand);
+                                  setPartnerItemId(item.product_id);
+                                  setPartnerItemName(item.product_name);
+                                  setPartnerItemQty(item.product_qty);
+                                  setPartnerItemPrice(item.product_price);
+                                  setPartnerItemUnit(item.product_unit);
+                                  setEditModal(true);
                                 }}>
-                                Edit
-                              </Text>
-                            </TouchableOpacity>
+                                <Text
+                                  style={{
+                                    fontFamily: 'OpenSans-SemiBold',
+                                    color: '#444444',
+                                  }}>
+                                  Edit
+                                </Text>
+                              </Pressable>
+                            </View>
+                          </View>
+                          <View style={styles.inventoryRow}>
+                            <Text style={styles.qty}>
+                              {item.product_qty
+                                ? item.product_qty
+                                : 'No Quantity'}
+                              {' ' + item.product_unit}
+                            </Text>
+                          </View>
+                          <View style={{flex: 1}}>
+                            <Text style={styles.price}>
+                              {item.product_price
+                                ? '₹' + item.product_price
+                                : 'No Price'}
+                            </Text>
+                          </View>
+                          <View style={styles.btnsSection}>
+                            <Switch
+                              trackColor={{
+                                false: '#767577',
+                                true: '#ababab',
+                              }}
+                              thumbColor={
+                                item.product_status == 'In Stock'
+                                  ? 'green'
+                                  : 'red'
+                              }
+                              ios_backgroundColor="#3e3e3e"
+                              onValueChange={() => {
+                                InOutStock(
+                                  item.product_id,
+                                  item.product_status,
+                                );
+                              }}
+                              value={
+                                item.product_status == 'In Stock' ? true : false
+                              }
+                              style={styles.toggle}
+                            />
+                            <Text>
+                              {item.product_status ? item.product_status : null}
+                            </Text>
                           </View>
                         </View>
-                        <View style={styles.inventoryRow}>
-                          <Text style={styles.qty}>
-                            {item.product_qty
-                              ? item.product_qty
-                              : 'No Quantity'}
-                            {' ' + item.product_unit}
-                          </Text>
-                        </View>
-                        <View style={{flex: 1}}>
-                          <Text style={styles.price}>
-                            {item.product_price
-                              ? '₹' + item.product_price
-                              : 'No Price'}
-                          </Text>
-                        </View>
-                        <View style={styles.btnsSection}>
-                          <Switch
-                            trackColor={{
-                              false: '#767577',
-                              true: '#ababab',
-                            }}
-                            thumbColor={
-                              item.product_status == 'In Stock'
-                                ? 'green'
-                                : 'red'
-                            }
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={() => {
-                              // InOutStock(item.product_id, item.product_status);
-                            }}
-                            value={
-                              item.product_status == 'In Stock' ? true : false
-                            }
-                            style={styles.toggle}
-                          />
-                          <Text>
-                            {item.product_status ? item.product_status : null}
-                          </Text>
-                        </View>
                       </View>
-                    </View>
-                  </>
-                )}
-                keyExtractor={(item, product_id) => String(product_id)}
-              />
-              {/* ========== Selected Inventory Section ========== */}
-            </>
-          )}
-          keyExtractor={(item, product_id) => String(product_id)}
-        />
-        {/* ==========  fetch Inventory Modal ========== */}
+                    </>
+                  )}
+                  keyExtractor={(item, product_id) => String(product_id)}
+                />
+                {/* ========== Selected Inventory Section ========== */}
+              </>
+            )}
+            keyExtractor={(item, product_id) => String(product_id)}
+          />
+        )}
       </View>
 
       {/* ========== Category Modal ========== */}
@@ -738,7 +761,7 @@ const InventoryScreen = ({navigation}) => {
                 <Text style={styles.editModalBtnTxt}>Cancel</Text>
               </Pressable>
               <Pressable
-                onPress={() => update}
+                onPress={() => updatePartnerProduct}
                 style={styles.editModalConfirmBtn}>
                 <Text style={styles.editModalBtnTxt}>Confirm</Text>
               </Pressable>

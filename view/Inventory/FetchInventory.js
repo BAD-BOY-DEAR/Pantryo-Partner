@@ -188,7 +188,7 @@ class FetchInventory extends Component {
                             alignItems: 'center',
                             marginTop: 5,
                           }}>
-                          <TouchableOpacity
+                          <Pressable
                           // onPress={() => removeProductApi(item.product_id)}
                           >
                             <Text
@@ -199,9 +199,9 @@ class FetchInventory extends Component {
                               }}>
                               Remove
                             </Text>
-                          </TouchableOpacity>
+                          </Pressable>
 
-                          <TouchableOpacity
+                          <Pressable
                             onPress={() => {
                               // setPartnerItemBrand(item.product_brand);
                               // setPartnerItemId(item.product_id);
@@ -218,7 +218,7 @@ class FetchInventory extends Component {
                               }}>
                               Edit
                             </Text>
-                          </TouchableOpacity>
+                          </Pressable>
                         </View>
                       </View>
                       <View style={styles.inventoryRow}>
