@@ -131,7 +131,7 @@ const OrdersList = () => {
       ) : allDetails !== '' ? (
         <View style={styles.container}>
           {/* =========== Header Buttons =========== */}
-          <View style={styles.header}>
+          {/* <View style={styles.header}>
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
@@ -159,7 +159,7 @@ const OrdersList = () => {
                 <Text style={styles.datePillTxt}>Last 3 Months</Text>
               </TouchableOpacity>
             </ScrollView>
-          </View>
+          </View> */}
           {/* =========== Header Buttons =========== */}
 
           {/* =========== Orders List =========== */}
@@ -171,26 +171,42 @@ const OrdersList = () => {
             {/* =========== Overview =========== */}
 
             {/* =========== Order Details =========== */}
-            <FlatList
-              data={allDetails}
-              keyExtractor={({order_id}, index) => order_id}
-              renderItem={({item}) => (
-                <>
-                  <Pressable
-                    onPress={() => getOrderDetails({order_id: item.order_id})}
-                    style={styles.orderViewTab}>
-                    <View style={styles.div}>
-                      <Text style={styles.label}>Customer Name</Text>
-                      <Text style={styles.userName}>{item.customer_name}</Text>
-                      <Text style={styles.orderDate}>{item.create_date}</Text>
-                    </View>
-                    <View style={styles.divTwo}>
-                      <Text style={styles.payment}>₹{item.payment_amount}</Text>
-                    </View>
-                  </Pressable>
-                </>
-              )}
-            />
+            {allDetails !== '' ? (
+              <FlatList
+                data={allDetails}
+                keyExtractor={({order_id}, index) => order_id}
+                renderItem={({item}) => (
+                  <>
+                    <Pressable
+                      onPress={() => getOrderDetails({order_id: item.order_id})}
+                      style={styles.orderViewTab}>
+                      <View style={styles.div}>
+                        <Text style={styles.label}>Customer Name</Text>
+                        <Text style={styles.userName}>
+                          {item.customer_name}
+                        </Text>
+                        <Text style={styles.orderDate}>{item.create_date}</Text>
+                      </View>
+                      <View style={styles.divTwo}>
+                        <Text style={styles.payment}>
+                          ₹{item.payment_amount}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  </>
+                )}
+              />
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                }}>
+                <Text>You have not received any customer orders</Text>
+              </View>
+            )}
 
             {/* =========== Order Details =========== */}
           </View>

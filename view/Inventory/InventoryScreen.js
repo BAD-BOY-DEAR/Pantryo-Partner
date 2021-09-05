@@ -430,6 +430,7 @@ const InventoryScreen = ({navigation}) => {
           </Pressable>
           <Pressable onPress={() => UpdateStocksStatus()} style={styles.addBtn}>
             <Text style={styles.addBtnTxt}>Update Inventory Status</Text>
+            <Icons name="checkmark-outline" size={20} color="#FFFFFF" />
           </Pressable>
           {/* ========== Add Product Section ========== */}
         </View>
@@ -482,7 +483,6 @@ const InventoryScreen = ({navigation}) => {
           <FlatList
             style={{width: '100%'}}
             data={partnerProducts}
-            initialNumToRender={10}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -503,9 +503,6 @@ const InventoryScreen = ({navigation}) => {
                 <FlatList
                   style={{width: '100%'}}
                   data={item.Products}
-                  initialNumToRender={5}
-                  maxToRenderPerBatch={10}
-                  updateCellsBatchingPeriod={50}
                   renderItem={({item, index}) => (
                     <>
                       <View style={styles.inventorySection}>
@@ -526,7 +523,7 @@ const InventoryScreen = ({navigation}) => {
                                 alignItems: 'center',
                                 marginTop: 5,
                               }}>
-                              <Pressable
+                              {/* <Pressable
                                 onPress={() =>
                                   removeProductApi(item.product_id)
                                 }>
@@ -538,7 +535,7 @@ const InventoryScreen = ({navigation}) => {
                                   }}>
                                   Remove
                                 </Text>
-                              </Pressable>
+                              </Pressable> */}
 
                               <Pressable
                                 onPress={() => {
@@ -771,7 +768,6 @@ const InventoryScreen = ({navigation}) => {
         transparent={true}
         visible={editModal}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
           setEditModal(!editModal);
         }}>
         <View style={styles.editModal}>
