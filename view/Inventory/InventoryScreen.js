@@ -12,6 +12,8 @@ import {
   FlatList,
   RefreshControl,
   Image,
+  Dimensions,
+  StatusBar,
 } from 'react-native';
 
 // ===== Images ===== //
@@ -83,11 +85,6 @@ const InventoryScreen = ({navigation}) => {
       50,
     );
   }
-
-  // const memoizedValue = useMemo(
-  //   () => fetchAllProductsOfPartnerApi,
-  //   [partnerProducts.Products],
-  // );
 
   //======== API to fetch all products selected by the partner ========//
   async function fetchAllProductsOfPartnerApi() {
@@ -364,7 +361,7 @@ const InventoryScreen = ({navigation}) => {
       .finally(() => setLoading(false));
   }
 
-  useMemo(() => {
+  useEffect(() => {
     setPartnerCategoryName();
     fetchAllProductsOfPartnerApi();
   }, []);
@@ -460,7 +457,9 @@ const InventoryScreen = ({navigation}) => {
                 <FlatList
                   style={{width: '100%'}}
                   data={item.Products}
-                  initialNumToRender={2}
+                  initialNumToRender={5}
+                  maxToRenderPerBatch={10}
+                  updateCellsBatchingPeriod={50}
                   renderItem={({item, index}) => (
                     <>
                       <View style={styles.inventorySection}>

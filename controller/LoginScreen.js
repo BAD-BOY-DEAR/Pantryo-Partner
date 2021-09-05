@@ -239,6 +239,7 @@ function LoginScreen({navigation}) {
                 selectionColor="#5E3360"
                 maxLength={10}
                 onChangeText={text => setContactNumber(text)}
+                onSubmitEditing={loginApi}
               />
             </View>
             <Pressable onPress={loginApi} style={styles.btn}>
