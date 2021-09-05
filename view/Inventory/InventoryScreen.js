@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -84,6 +84,11 @@ const InventoryScreen = ({navigation}) => {
     );
   }
 
+  // const memoizedValue = useMemo(
+  //   () => fetchAllProductsOfPartnerApi,
+  //   [partnerProducts.Products],
+  // );
+
   //======== API to fetch all products selected by the partner ========//
   async function fetchAllProductsOfPartnerApi() {
     let partner_id = await AsyncStorage.getItem('partner_id');
@@ -95,7 +100,6 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner Category not found!');
       return;
     } else {
-      // setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getProductOfPartner.php',
         {
@@ -321,7 +325,6 @@ const InventoryScreen = ({navigation}) => {
   }
 
   // Instock and out of Stock
-  // async function
   async function InOutStock(product_id, product_status) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     setLoading(true);
@@ -347,7 +350,7 @@ const InventoryScreen = ({navigation}) => {
       .then(function (result) {
         if (result.error == 0) {
           showToast('Product Status Updated ');
-          fetchAllProductsOfPartnerApi();
+          // memoizedValue;
         } else {
           showToast('Something went Wrong!');
         }
@@ -355,12 +358,10 @@ const InventoryScreen = ({navigation}) => {
       .catch(error => {
         console.error(error);
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   }
 
-  useEffect(() => {
+  useMemo(() => {
     setPartnerCategoryName();
     fetchAllProductsOfPartnerApi();
   }, []);
