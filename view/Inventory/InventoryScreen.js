@@ -41,6 +41,7 @@ import LoaderScreen from '../../controller/LoaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Animatable from 'react-native-animatable';
 import {Picker} from '@react-native-picker/picker';
+import CheckBox from '@react-native-community/checkbox';
 
 // ===== Components ===== //
 import SelectCategory from './Product/CreateCategory';
@@ -67,6 +68,7 @@ const InventoryScreen = ({navigation}) => {
   const [partnerItemQty, setPartnerItemQty] = useState('');
   const [partnerItemPrice, setPartnerItemPrice] = useState('');
   const [partnerItemUnit, setPartnerItemUnit] = useState('');
+  const [chooseInventory, setChooseInventory] = React.useState([]);
 
   //======== Pull Down to Refresh Function ========//
   const onRefresh = React.useCallback(() => {
@@ -121,7 +123,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             showToast('Something went Wrong!');
           }
-          fetchAllProductsOfPartnerApi();
+          // fetchAllProductsOfPartnerApi();
         })
         .catch(error => {
           console.error(error);
@@ -185,8 +187,6 @@ const InventoryScreen = ({navigation}) => {
     if (!partner_id) {
       showToast('Partner Id not Fouond!');
       return;
-    } else if (!searchkey) {
-      fetchAllProductsOfPartnerApi();
     } else {
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/searchPartnerProduct.php',
@@ -209,7 +209,7 @@ const InventoryScreen = ({navigation}) => {
           if (result.error == 0) {
             setPartnerProducts(result.AllPartnerProduct);
           } else {
-            // showToast('Something went Wrong!');
+            setPartnerProducts('');
           }
         })
         .catch(error => {
@@ -357,10 +357,63 @@ const InventoryScreen = ({navigation}) => {
       .finally(() => setLoading(false));
   }
 
+  async function UpdateStocksStatus() {
+    if (!chooseInventory) {
+      showToast('Please Choose atleast one Item!');
+      return;
+    } else {
+      setLoading(true);
+      fetch(
+        'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/updateStocksValue.php',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({product_details: chooseInventory}),
+        },
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (result) {
+          if (result.error == 0) {
+            fetchAllProductsOfPartnerApi();
+            showToast('Product Status Updated');
+          } else {
+            showToast('Something went wrong');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }
+
   useEffect(() => {
     setPartnerCategoryName();
     fetchAllProductsOfPartnerApi();
   }, []);
+
+  // Set Data
+  function ChooseInventoryData(newItem, i) {
+    let items = [...partnerProducts];
+    let index = items.findIndex(el => el.product_id === newItem.product_id);
+    items[index] = {...items[index], product_status: newItem.product_status};
+    const index2 = chooseInventory.findIndex(
+      item => item.product_id === newItem.product_id,
+    );
+    if (index2 !== -1) {
+    } else {
+      setPartnerProducts(items);
+      setChooseInventory([...chooseInventory, newItem]);
+    }
+    // console.log(newItem);
+  }
 
   return (
     <>
@@ -375,7 +428,7 @@ const InventoryScreen = ({navigation}) => {
             <Text style={styles.addBtnTxt}>Filter Product Cateory</Text>
             <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
           </Pressable>
-          <Pressable style={styles.addBtn}>
+          <Pressable onPress={() => UpdateStocksStatus()} style={styles.addBtn}>
             <Text style={styles.addBtnTxt}>Update Inventory Status</Text>
           </Pressable>
           {/* ========== Add Product Section ========== */}
@@ -411,14 +464,14 @@ const InventoryScreen = ({navigation}) => {
               <>
                 {/* ========== No Inventory Found ALert ========== */}
                 <View style={styles.alertSection}>
-                  <Text style={styles.alert}>
+                  {/* <Text style={styles.alert}>
                     You have not added any products in your inventory. Please
                     add products to take customer orders
-                  </Text>
+                  </Text> */}
                   <Pressable
-                    onPress={() => navigation.navigate('SelectCategory')}
+                    // onPress={() => navigation.navigate('SelectCategory')}
                     style={styles.btnPrompt}>
-                    <Text style={styles.btnPromptTxt}>ADD PRODUCTS</Text>
+                    <Text style={styles.btnPromptTxt}>PRODUCTS NOT FOUND!</Text>
                   </Pressable>
                 </View>
                 {/* ========== No Inventory Found ALert ========== */}
@@ -433,7 +486,7 @@ const InventoryScreen = ({navigation}) => {
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
-            renderItem={({item}) => (
+            renderItem={({item, index}) => (
               <>
                 {/* ========== Category Selection Section ========== */}
                 <View style={styles.categorySection}>
@@ -523,7 +576,7 @@ const InventoryScreen = ({navigation}) => {
                             </Text>
                           </View>
                           <View style={styles.btnsSection}>
-                            <Switch
+                            {/* <Switch
                               trackColor={{
                                 false: '#767577',
                                 true: '#ababab',
@@ -544,6 +597,28 @@ const InventoryScreen = ({navigation}) => {
                                 item.product_status == 'In Stock' ? true : false
                               }
                               style={styles.toggle}
+                            /> */}
+                            <CheckBox
+                              disabled={false}
+                              value={
+                                item.product_status == 'In Stock' ? true : false
+                              }
+                              tintColors={{true: 'green', false: 'red'}}
+                              onValueChange={() => {
+                                ChooseInventoryData(
+                                  {
+                                    partner_id: item.partner_id,
+                                    product_id: item.product_id,
+                                    product_status:
+                                      item.product_status == 'In Stock' ? 2 : 1,
+                                  },
+                                  index,
+                                );
+                              }}
+                              style={{
+                                transform: [{scaleX: 1}, {scaleY: 1}],
+                                // marginTop: 50,
+                              }}
                             />
                             <Text>
                               {item.product_status ? item.product_status : null}
@@ -820,6 +895,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 16,
     color: '#000',
+    paddingHorizontal: 20,
   },
   headerSection: {
     width: '100%',
