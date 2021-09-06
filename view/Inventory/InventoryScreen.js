@@ -417,7 +417,7 @@ const InventoryScreen = ({navigation}) => {
       setPartnerProducts(items);
       setChooseInventory([...chooseInventory, newItem]);
     }
-    // console.log(newItem);
+    // `console.log`(newItem);
   }
 
   return (
@@ -433,7 +433,9 @@ const InventoryScreen = ({navigation}) => {
             <Text style={styles.addBtnTxt}>Filter Product Cateory</Text>
             <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
           </Pressable>
-          <Pressable onPress={() => UpdateStocksStatus()} style={styles.addBtn}>
+          <Pressable
+            onPress={() => UpdateStocksStatus()}
+            style={[styles.addBtn, {backgroundColor: 'green'}]}>
             <Text style={styles.addBtnTxt}>Update Inventory Status</Text>
             <Icons name="checkmark-outline" size={20} color="#FFFFFF" />
           </Pressable>
