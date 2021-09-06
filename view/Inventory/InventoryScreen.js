@@ -855,7 +855,7 @@ const InventoryScreen = ({navigation}) => {
                 <Text style={styles.editModalBtnTxt}>Cancel</Text>
               </Pressable>
               <Pressable
-                onPress={() => updatePartnerProduct}
+                onPress={() => updatePartnerProduct()}
                 style={styles.editModalConfirmBtn}>
                 <Text style={styles.editModalBtnTxt}>Confirm</Text>
               </Pressable>
