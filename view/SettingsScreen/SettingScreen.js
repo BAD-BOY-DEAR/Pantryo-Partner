@@ -85,10 +85,11 @@ function SettingsScreen({navigation}) {
           </View>
 
           <View style={styles.tabContainer}>
-            <View style={styles.tab}>
+            {/* <View style={styles.tab}>
               <Icons name="help-circle-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>How It Works</Text>
-            </View>
+            </View> */}
+
             <View style={styles.tab}>
               <Icons name="alert-circle-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Support</Text>

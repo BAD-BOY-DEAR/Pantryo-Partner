@@ -68,7 +68,7 @@ const InventoryScreen = ({navigation}) => {
   const [partnerItemQty, setPartnerItemQty] = useState('');
   const [partnerItemPrice, setPartnerItemPrice] = useState('');
   const [partnerItemUnit, setPartnerItemUnit] = useState('');
-  const [saerchBy, setSearchBy] = useState('');
+  const [searchBy, setSearchBy] = useState('');
   const [chooseInventory, setChooseInventory] = React.useState([]);
 
   //======== Pull Down to Refresh Function ========//
@@ -189,6 +189,7 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner Id not Fouond!');
       return;
     } else {
+      setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/searchPartnerProduct.php',
         {
@@ -215,6 +216,9 @@ const InventoryScreen = ({navigation}) => {
         })
         .catch(error => {
           console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }
@@ -448,7 +452,7 @@ const InventoryScreen = ({navigation}) => {
               color="#000"
               autoCapitalize="words"
               onChangeText={txt => setSearchBy(txt)}
-              onSubmitEditing={() => searchProducts(saerchBy)}
+              onSubmitEditing={() => searchProducts(searchBy)}
             />
             {/* <Pressable style={styles.searchBtn}>
               <Icons name="arrow-forward-outline" size={20} color="#fff" />
