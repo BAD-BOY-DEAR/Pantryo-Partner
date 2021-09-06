@@ -14,6 +14,7 @@ import {
   Image,
   Dimensions,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 
 // ===== Images ===== //
@@ -431,18 +432,18 @@ const InventoryScreen = ({navigation}) => {
         {/* ========== Header Section ========== */}
         <View style={styles.headerSection}>
           {/* ========== Add Product Section ========== */}
-          <Pressable
+          <TouchableOpacity
             onPress={() => setChangeCategoryModal(true)}
             style={styles.addBtn}>
             <Text style={styles.addBtnTxt}>Filter Product Cateory</Text>
             <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => UpdateStocksStatus()}
             style={[styles.addBtn, {backgroundColor: 'green'}]}>
             <Text style={styles.addBtnTxt}>Update Inventory Status</Text>
             <Icons name="checkmark-outline" size={20} color="#FFFFFF" />
-          </Pressable>
+          </TouchableOpacity>
           {/* ========== Add Product Section ========== */}
         </View>
         {/* ========== Header Section ========== */}
@@ -453,7 +454,9 @@ const InventoryScreen = ({navigation}) => {
           <Text style={styles.caption}>
             Let us know what products are available in your stock. You may
             change the status of the products accordingly if you do not sell
-            them from your shop
+            them from your shop. Products with ₹0 will automatically be shown as
+            out of stock, you can click on the edit button to enter the price of
+            the product and then mark them as In Stock.
           </Text>
         </View>
         {/* ========== Caption Section ========== */}
@@ -471,9 +474,9 @@ const InventoryScreen = ({navigation}) => {
               onChangeText={txt => setSearchBy(txt)}
               onSubmitEditing={() => searchProducts(searchBy)}
             />
-            {/* <Pressable style={styles.searchBtn}>
+            {/* <TouchableOpacity style={styles.searchBtn}>
               <Icons name="arrow-forward-outline" size={20} color="#fff" />
-            </Pressable> */}
+            </TouchableOpacity> */}
           </View>
         </View>
         {/* ========== Search Box Section ========== */}
@@ -492,11 +495,11 @@ const InventoryScreen = ({navigation}) => {
                     You have not added any products in your inventory. Please
                     add products to take customer orders
                   </Text> */}
-                  <Pressable
+                  <TouchableOpacity
                     // onPress={() => navigation.navigate('SelectCategory')}
                     style={styles.btnPrompt}>
                     <Text style={styles.btnPromptTxt}>PRODUCTS NOT FOUND!</Text>
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
                 {/* ========== No Inventory Found ALert ========== */}
               </>
@@ -546,7 +549,7 @@ const InventoryScreen = ({navigation}) => {
                                 alignItems: 'center',
                                 marginTop: 5,
                               }}>
-                              {/* <Pressable
+                              {/* <TouchableOpacity
                                 onPress={() =>
                                   removeProductApi(item.product_id)
                                 }>
@@ -558,9 +561,9 @@ const InventoryScreen = ({navigation}) => {
                                   }}>
                                   Remove
                                 </Text>
-                              </Pressable> */}
+                              </TouchableOpacity> */}
 
-                              <Pressable
+                              <TouchableOpacity
                                 onPress={() => {
                                   setPartnerItemBrand(item.product_brand);
                                   setPartnerItemId(item.product_id);
@@ -577,7 +580,7 @@ const InventoryScreen = ({navigation}) => {
                                   }}>
                                   Edit
                                 </Text>
-                              </Pressable>
+                              </TouchableOpacity>
                             </View>
                           </View>
                           <View style={styles.inventoryRow}>
@@ -677,7 +680,7 @@ const InventoryScreen = ({navigation}) => {
                   ListHeaderComponent={() => (
                     <View style={styles.modalHeaderRow}>
                       <Text style={styles.modalHeader}>Change Category</Text>
-                      <Pressable
+                      <TouchableOpacity
                         onPress={() =>
                           setChangeCategoryModal(!changeCategoryModal)
                         }>
@@ -686,12 +689,12 @@ const InventoryScreen = ({navigation}) => {
                           size={20}
                           color="#000"
                         />
-                      </Pressable>
+                      </TouchableOpacity>
                     </View>
                   )}
                   renderItem={({item}) => (
                     <>
-                      <Pressable
+                      <TouchableOpacity
                         onPress={() => {
                           searchByCategory(item.main_category_id);
                           setChangeCategoryModal(!changeCategoryModal);
@@ -770,7 +773,7 @@ const InventoryScreen = ({navigation}) => {
                         <Text style={styles.categoryTxt}>
                           {item.main_category_name}
                         </Text>
-                      </Pressable>
+                      </TouchableOpacity>
                     </>
                   )}
                   keyExtractor={(item, product_id) => String(product_id)}
@@ -849,16 +852,16 @@ const InventoryScreen = ({navigation}) => {
             </View>
 
             <View style={styles.editModalBtnContainer}>
-              <Pressable
+              <TouchableOpacity
                 style={styles.editModalCancelBtn}
                 onPress={() => setEditModal(!editModal)}>
                 <Text style={styles.editModalBtnTxt}>Cancel</Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={() => updatePartnerProduct}
                 style={styles.editModalConfirmBtn}>
                 <Text style={styles.editModalBtnTxt}>Confirm</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </Animatable.View>
         </View>
