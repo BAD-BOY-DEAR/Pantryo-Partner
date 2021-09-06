@@ -59,11 +59,7 @@ const OrdersList = () => {
         return response.json();
       })
       .then(result => {
-<<<<<<< HEAD
-        // console.log(result);
-=======
-        console.log(result.alldetails[0].productdetails);
->>>>>>> 3e9673e325c2c98b8a6215a63f736cababf3c93c
+        // console.log(result.alldetails[0].productdetails);
         setAllDetails(result.alldetails);
       })
       .catch(error => {
