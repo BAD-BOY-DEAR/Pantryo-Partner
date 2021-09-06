@@ -68,7 +68,7 @@ const InventoryScreen = ({navigation}) => {
   const [partnerItemQty, setPartnerItemQty] = useState('');
   const [partnerItemPrice, setPartnerItemPrice] = useState('');
   const [partnerItemUnit, setPartnerItemUnit] = useState('');
-  const [saerchBy, setSearchBy] = useState('');
+  const [searchBy, setSearchBy] = useState('');
   const [chooseInventory, setChooseInventory] = React.useState([]);
 
   //======== Pull Down to Refresh Function ========//
@@ -124,6 +124,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             showToast('Something went Wrong!');
           }
+          return Promise.resolve();
           // fetchAllProductsOfPartnerApi();
         })
         .catch(error => {
@@ -189,6 +190,7 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner Id not Fouond!');
       return;
     } else {
+      setLoading(true);
       fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/searchPartnerProduct.php',
         {
@@ -212,9 +214,13 @@ const InventoryScreen = ({navigation}) => {
           } else {
             setPartnerProducts('');
           }
+          return Promise.resolve();
         })
         .catch(error => {
           console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }
@@ -257,6 +263,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             showToast('Something went Wrong!');
           }
+          return Promise.resolve();
         })
         .catch(error => {
           console.error(error);
@@ -385,6 +392,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             showToast('Something went wrong');
           }
+          return Promise.resolve();
         })
         .catch(error => {
           console.error(error);
@@ -413,7 +421,7 @@ const InventoryScreen = ({navigation}) => {
       setPartnerProducts(items);
       setChooseInventory([...chooseInventory, newItem]);
     }
-    // console.log(newItem);
+    // `console.log`(newItem);
   }
 
   return (
@@ -429,13 +437,26 @@ const InventoryScreen = ({navigation}) => {
             <Text style={styles.addBtnTxt}>Filter Product Cateory</Text>
             <Icons name="add-circle-outline" size={20} color="#FFFFFF" />
           </Pressable>
-          <Pressable onPress={() => UpdateStocksStatus()} style={styles.addBtn}>
+          <Pressable
+            onPress={() => UpdateStocksStatus()}
+            style={[styles.addBtn, {backgroundColor: 'green'}]}>
             <Text style={styles.addBtnTxt}>Update Inventory Status</Text>
             <Icons name="checkmark-outline" size={20} color="#FFFFFF" />
           </Pressable>
           {/* ========== Add Product Section ========== */}
         </View>
         {/* ========== Header Section ========== */}
+
+        {/* ========== Caption Section ========== */}
+        <View style={styles.captionSection}>
+          <Text style={styles.captionHeading}>Note:</Text>
+          <Text style={styles.caption}>
+            Let us know what products are available in your stock. You may
+            change the status of the products accordingly if you do not sell
+            them from your shop
+          </Text>
+        </View>
+        {/* ========== Caption Section ========== */}
 
         {/* ========== Search Box Section ========== */}
         <View style={styles.searchSection}>
@@ -448,7 +469,7 @@ const InventoryScreen = ({navigation}) => {
               color="#000"
               autoCapitalize="words"
               onChangeText={txt => setSearchBy(txt)}
-              onSubmitEditing={() => searchProducts(saerchBy)}
+              onSubmitEditing={() => searchProducts(searchBy)}
             />
             {/* <Pressable style={styles.searchBtn}>
               <Icons name="arrow-forward-outline" size={20} color="#fff" />
@@ -1154,5 +1175,19 @@ const styles = StyleSheet.create({
   editModalBtnTxt: {
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 16,
+  },
+  captionSection: {
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  captionHeading: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
+    color: '#5E3360',
+  },
+  caption: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 16,
+    color: '#000',
   },
 });

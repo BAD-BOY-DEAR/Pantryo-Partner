@@ -33,6 +33,7 @@ import OrdersList from './Orders/OrdersList';
 import PaymentScreen from './Payments/PaymentScreen';
 import FeatureTest from './FeatureTest';
 import Banners from './Others/Banners';
+import InventoryScreen from '../Inventory/InventoryScreen';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -193,6 +194,7 @@ const HomeScreen = ({navigation}) => {
             setToggleCheckBox(false);
           }
         }
+        return Promise.resolve();
         // getStatus();
       })
       .catch(error => {
@@ -224,6 +226,7 @@ const HomeScreen = ({navigation}) => {
         if (result.error == 0) {
           setEarning(result.earn);
         }
+        return Promise.resolve();
       })
       .catch(error => {
         console.log(error);
@@ -461,6 +464,45 @@ const HomeScreen = ({navigation}) => {
                     {/* ========== Status Section ========== */}
                   </View>
                   {/* ========== Header Section ========== */}
+
+                  {/* ========== Status ========== */}
+                  {partnerStatus !== '1' ? (
+                    <TouchableOpacity style={styles.notificationBtn}>
+                      <View
+                        style={[
+                          styles.notificationTab,
+                          {backgroundColor: '#bf3d5e'},
+                        ]}>
+                        <Text style={styles.notifHeading}>
+                          You are Offline!
+                        </Text>
+                        <Text style={styles.notifTxt}>
+                          Pantryo customers will not be able to order from your
+                          shop.
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : null}
+                  {/* ========== Status ========== */}
+
+                  {/* ========== Products Added in Inventory ========== */}
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('InventoryScreen')}
+                    style={styles.notificationBtn}>
+                    <View
+                      style={[
+                        styles.notificationTab,
+                        {backgroundColor: '#eb9310'},
+                      ]}>
+                      <Text style={styles.notifHeading}>Inventory Updated</Text>
+                      <Text style={styles.notifTxt}>
+                        We have added products in your inventory. Customers will
+                        be able to order these products from your shop. Click
+                        here to check them out
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  {/* ========== Products Added in Inventory ========== */}
 
                   {/* ========== Verification Notification Start ========== */}
                   {partnerVerificationStatus == '2' ? (
@@ -887,6 +929,13 @@ function Home() {
       />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
       <Stack.Screen name="FeatureTest" component={FeatureTest} />
+      <Stack.Screen
+        name="InventoryScreen"
+        component={InventoryScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -969,7 +1018,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     width: '100%',
     paddingHorizontal: 20,
-    marginTop: 20,
   },
   details: {
     borderRadius: 5,
@@ -1016,7 +1064,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 20,
     backgroundColor: '#5E3360',
-    paddingVertical: 30,
+    paddingVertical: 5,
   },
   row: {
     width: '100%',
@@ -1068,7 +1116,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
-    marginTop: 10,
+    marginTop: 20,
   },
   btnDetails: {
     fontFamily: 'OpenSans-SemiBold',
