@@ -343,7 +343,7 @@ const HomeScreen = ({navigation}) => {
       });
   }
 
-  useEffect(() => {
+  useMemo(() => {
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
@@ -458,7 +458,7 @@ const HomeScreen = ({navigation}) => {
                       ) : (
                         <>
                           <Text style={styles.checkBoxTxt}>
-                            Fetching Status...
+                            Fetching Status, Pull down to refresh...
                           </Text>
                         </>
                       )}
