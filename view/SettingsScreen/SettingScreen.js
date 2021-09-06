@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Linking,
+  PermissionsAndroid,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -42,6 +44,31 @@ function SettingsScreen({navigation}) {
     setShopAddress(await AsyncStorage.getItem('partner_shopaddress'));
     setPartnerStoreImage(await AsyncStorage.getItem('partner_storeImage'));
   }
+
+  /////////////
+  const requestCallPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+        {
+          title: 'Pantryo Shop App Call Permission',
+          message: 'Pantryo Shop App needs access to your Dialer',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        // console.log('You can use the Dialer');
+        let number = 'tel:${' + 8808808888 + '}';
+        Linking.openURL(number);
+      } else {
+        console.log('Dialer permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
   React.useEffect(() => {
     getUserProfile();
@@ -90,10 +117,12 @@ function SettingsScreen({navigation}) {
               <Text style={styles.tabTxt}>How It Works</Text>
             </View> */}
 
-            <View style={styles.tab}>
+            <TouchableOpacity
+              onPress={requestCallPermission}
+              style={styles.tab}>
               <Icons name="alert-circle-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Support</Text>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.navigate('TermsConditions')}
               style={styles.tab}>
