@@ -59,7 +59,9 @@ const OrdersList = () => {
         return response.json();
       })
       .then(result => {
+        // console.log(result.alldetails[0].productdetails[0].order_id);
         // console.log(result.alldetails[0].productdetails);
+        setOrderId(result.alldetails[0].productdetails[0].order_id);
         setAllDetails(result.alldetails);
       })
       .catch(error => {
@@ -189,6 +191,17 @@ const OrdersList = () => {
         }}>
         <View style={styles.modalContainer}>
           <View style={styles.modalCard}>
+            {/* <Text
+              style={{
+                color: '#000',
+                fontFamily: 'OpenSans-SemiBold',
+                fontSize: 18,
+                borderBottomWidth: 0.5,
+                paddingBottom: 10,
+                borderBottomColor: '#c7c7c7c7',
+              }}>
+              ORDER ID: {orderId}
+            </Text> */}
             {details !== '' ? (
               <FlatList
                 style={{width: '100%'}}
@@ -201,14 +214,13 @@ const OrdersList = () => {
                     <View
                       style={{
                         flexDirection: 'row',
-                        flex: 3,
                         paddingVertical: 10,
                       }}>
-                      <Text style={styles.price}>₹{item.productPrice}</Text>
                       <Text style={styles.qty}>
                         {item.productQty}
                         {item.productUnit}
                       </Text>
+                      <Text style={styles.price}>(₹{item.productPrice})</Text>
                       <Text style={styles.total}>
                         {' '}
                         X {item.numberOfProduct}
@@ -358,19 +370,18 @@ const styles = StyleSheet.create({
   price: {
     fontFamily: 'OpenSans-Bold',
     color: 'green',
-    fontSize: 18,
+    fontSize: 20,
     flex: 1,
+    marginLeft: 15,
   },
   qty: {
     fontFamily: 'OpenSans-SemiBold',
     color: '#000',
     fontSize: 18,
-    flex: 1,
   },
   total: {
     fontFamily: 'OpenSans-Bold',
     color: '#000',
     fontSize: 18,
-    flex: 1,
   },
 });
