@@ -287,7 +287,7 @@ const InventoryScreen = ({navigation}) => {
   }
 
   async function UpdateStocksStatus() {
-    if (!chooseInventory) {
+    if (!chooseInventory.length) {
       showToast('Please Choose atleast one Item!');
       return;
     } else {
