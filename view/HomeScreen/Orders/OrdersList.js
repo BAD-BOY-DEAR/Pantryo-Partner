@@ -59,7 +59,7 @@ const OrdersList = () => {
         return response.json();
       })
       .then(result => {
-        console.log(result);
+        // console.log(result);
         setAllDetails(result.alldetails);
       })
       .catch(error => {
