@@ -194,6 +194,7 @@ const HomeScreen = ({navigation}) => {
             setToggleCheckBox(false);
           }
         }
+        return Promise.resolve();
         // getStatus();
       })
       .catch(error => {
@@ -225,6 +226,7 @@ const HomeScreen = ({navigation}) => {
         if (result.error == 0) {
           setEarning(result.earn);
         }
+        return Promise.resolve();
       })
       .catch(error => {
         console.log(error);
@@ -464,19 +466,23 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Header Section ========== */}
 
                   {/* ========== Status ========== */}
-                  <TouchableOpacity style={styles.notificationBtn}>
-                    <View
-                      style={[
-                        styles.notificationTab,
-                        {backgroundColor: '#bf3d5e'},
-                      ]}>
-                      <Text style={styles.notifHeading}>You are Offline!</Text>
-                      <Text style={styles.notifTxt}>
-                        Pantryo customers will not be able to order from your
-                        shop.
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                  {partnerStatus !== '1' ? (
+                    <TouchableOpacity style={styles.notificationBtn}>
+                      <View
+                        style={[
+                          styles.notificationTab,
+                          {backgroundColor: '#bf3d5e'},
+                        ]}>
+                        <Text style={styles.notifHeading}>
+                          You are Offline!
+                        </Text>
+                        <Text style={styles.notifTxt}>
+                          Pantryo customers will not be able to order from your
+                          shop.
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : null}
                   {/* ========== Status ========== */}
 
                   {/* ========== Products Added in Inventory ========== */}
@@ -490,8 +496,9 @@ const HomeScreen = ({navigation}) => {
                       ]}>
                       <Text style={styles.notifHeading}>Inventory Updated</Text>
                       <Text style={styles.notifTxt}>
-                        We have added products in your inventory. Click here to
-                        check them Out
+                        We have added products in your inventory. Customers will
+                        be able to order these products from your shop. Click
+                        here to check them out
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -1011,7 +1018,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     width: '100%',
     paddingHorizontal: 20,
-    marginTop: 20,
   },
   details: {
     borderRadius: 5,
@@ -1058,7 +1064,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 20,
     backgroundColor: '#5E3360',
-    paddingVertical: 30,
+    paddingVertical: 5,
   },
   row: {
     width: '100%',
@@ -1110,7 +1116,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
-    marginTop: 10,
+    marginTop: 20,
   },
   btnDetails: {
     fontFamily: 'OpenSans-SemiBold',

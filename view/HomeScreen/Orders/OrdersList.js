@@ -59,43 +59,8 @@ const OrdersList = () => {
         return response.json();
       })
       .then(result => {
-        console.log(result);
+        console.log(result.alldetails[0].productdetails);
         setAllDetails(result.alldetails);
-      })
-      .catch(error => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
-
-  // Get Order List
-  async function getOrderDetails(order_id) {
-    setOrderId(order_id);
-    setLoading(true);
-    let partner_id = await AsyncStorage.getItem('partner_id');
-    await fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartnerCountHistroy.php?flag=getAllPartnerOrderDetails',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          order_id: orderId,
-          partnerId: partner_id,
-        }),
-      },
-    )
-      .then(response => {
-        return response.json();
-      })
-      .then(result => {
-        setDetails(result.alldetails[0].productdetails);
-        console.log(result);
-        setOrderDetails(true);
       })
       .catch(error => {
         console.log(error);
@@ -231,21 +196,14 @@ const OrdersList = () => {
                 keyExtractor={({cart_id}, index) => cart_id}
                 renderItem={({item}) => (
                   <View>
-                    <Text
-                      style={{
-                        fontFamily: 'OpenSans-Regular',
-                        color: '#000',
-                        fontSize: 20,
-                      }}>
-                      {item.brandName}
+                    <Text style={styles.brand}>{item.brandName}</Text>
+                    <Text style={styles.product}>{item.productName}</Text>
+                    <Text style={styles.price}>₹{item.productPrice}</Text>
+                    <Text style={styles.qty}>
+                      {item.productQty}
+                      {item.productUnit}
                     </Text>
-                    <Text style={styles.modalText}>{item.productName}</Text>
-                    <Text style={styles.modalText}>{item.productPrice}</Text>
-                    <Text style={styles.modalText}>
-                      {item.qty}
-                      {item.unit}
-                    </Text>
-                    <Text style={styles.modalText}>{item.noOfProducts}</Text>
+                    <Text style={styles.total}>{item.numberOfProduct}</Text>
                   </View>
                 )}
               />
@@ -376,5 +334,30 @@ const styles = StyleSheet.create({
   modalText: {
     fontFamily: 'OpenSans-Regular',
     color: '#000',
+  },
+  brand: {
+    fontFamily: 'OpenSans-Regular',
+    color: '#000',
+    fontSize: 16,
+  },
+  product: {
+    fontFamily: 'OpenSans-Regular',
+    color: '#000',
+    fontSize: 20,
+  },
+  price: {
+    fontFamily: 'OpenSans-Bold',
+    color: 'green',
+    fontSize: 18,
+  },
+  qty: {
+    fontFamily: 'OpenSans-SemiBold',
+    color: '#000',
+    fontSize: 18,
+  },
+  total: {
+    fontFamily: 'OpenSans-Bold',
+    color: '#000',
+    fontSize: 18,
   },
 });

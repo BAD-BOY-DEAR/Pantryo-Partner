@@ -124,6 +124,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             showToast('Something went Wrong!');
           }
+          return Promise.resolve();
           // fetchAllProductsOfPartnerApi();
         })
         .catch(error => {
@@ -213,6 +214,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             setPartnerProducts('');
           }
+          return Promise.resolve();
         })
         .catch(error => {
           console.error(error);
@@ -261,6 +263,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             showToast('Something went Wrong!');
           }
+          return Promise.resolve();
         })
         .catch(error => {
           console.error(error);
@@ -389,6 +392,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             showToast('Something went wrong');
           }
+          return Promise.resolve();
         })
         .catch(error => {
           console.error(error);
@@ -442,6 +446,17 @@ const InventoryScreen = ({navigation}) => {
           {/* ========== Add Product Section ========== */}
         </View>
         {/* ========== Header Section ========== */}
+
+        {/* ========== Caption Section ========== */}
+        <View style={styles.captionSection}>
+          <Text style={styles.captionHeading}>Note:</Text>
+          <Text style={styles.caption}>
+            Let us know what products are available in your stock. You may
+            change the status of the products accordingly if you do not sell
+            them from your shop
+          </Text>
+        </View>
+        {/* ========== Caption Section ========== */}
 
         {/* ========== Search Box Section ========== */}
         <View style={styles.searchSection}>
@@ -1160,5 +1175,19 @@ const styles = StyleSheet.create({
   editModalBtnTxt: {
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 16,
+  },
+  captionSection: {
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  captionHeading: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 20,
+    color: '#5E3360',
+  },
+  caption: {
+    fontFamily: 'OpenSans-Regular',
+    fontSize: 16,
+    color: '#000',
   },
 });
