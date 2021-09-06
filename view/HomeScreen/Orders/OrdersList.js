@@ -198,12 +198,22 @@ const OrdersList = () => {
                   <View>
                     <Text style={styles.brand}>{item.brandName}</Text>
                     <Text style={styles.product}>{item.productName}</Text>
-                    <Text style={styles.price}>₹{item.productPrice}</Text>
-                    <Text style={styles.qty}>
-                      {item.productQty}
-                      {item.productUnit}
-                    </Text>
-                    <Text style={styles.total}>{item.numberOfProduct}</Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        flex: 3,
+                        paddingVertical: 10,
+                      }}>
+                      <Text style={styles.price}>₹{item.productPrice}</Text>
+                      <Text style={styles.qty}>
+                        {item.productQty}
+                        {item.productUnit}
+                      </Text>
+                      <Text style={styles.total}>
+                        {' '}
+                        X {item.numberOfProduct}
+                      </Text>
+                    </View>
                   </View>
                 )}
               />
@@ -349,15 +359,18 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Bold',
     color: 'green',
     fontSize: 18,
+    flex: 1,
   },
   qty: {
     fontFamily: 'OpenSans-SemiBold',
     color: '#000',
     fontSize: 18,
+    flex: 1,
   },
   total: {
     fontFamily: 'OpenSans-Bold',
     color: '#000',
     fontSize: 18,
+    flex: 1,
   },
 });

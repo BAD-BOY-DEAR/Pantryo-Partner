@@ -15,6 +15,7 @@ import {
   Linking,
   TouchableOpacity,
   ScrollView,
+  ToastAndroid,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -294,6 +295,17 @@ const OrderDetails = ({route, navigation}) => {
       .finally(() => setLoading(false));
   }
 
+  //======== Show Toast ========//
+  function showToast(msg) {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  }
+
   // Order Details
   function checkOtpUserByEntered() {
     setSuccessLoading(true);
@@ -320,6 +332,8 @@ const OrderDetails = ({route, navigation}) => {
           setModalVisible(false);
           // navigation.navigate('HomeScreen');
           setSuccessModal(true);
+        } else {
+          showToast('Entered OTP is incorrect');
         }
         getOrderDetails(orderId);
       })

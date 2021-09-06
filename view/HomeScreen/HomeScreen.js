@@ -62,6 +62,7 @@ const HomeScreen = ({navigation}) => {
   const [partnerVerificationStatus, setPartnerVerificationStatus] =
     useState('1');
   const [earning, setEarning] = useState('');
+  const [inventoryUpdate, setInventoryUpdate] = useState(true);
 
   // onRefresh
   const onRefresh = useCallback(() => {
@@ -298,6 +299,7 @@ const HomeScreen = ({navigation}) => {
         if (result.payment_status === 'authorized') {
           let partner_paymentStatus = result.partner_payment_status;
           AsyncStorage.setItem('partner_paymentStatus', partner_paymentStatus);
+          setInventoryUpdate(true);
           getPartnerDetails();
         } else {
           showToast('Status of Payment' + ' ' + JSON.stringify(result));
@@ -486,22 +488,29 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Status ========== */}
 
                   {/* ========== Products Added in Inventory ========== */}
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate('InventoryScreen')}
-                    style={styles.notificationBtn}>
-                    <View
-                      style={[
-                        styles.notificationTab,
-                        {backgroundColor: '#eb9310'},
-                      ]}>
-                      <Text style={styles.notifHeading}>Inventory Updated</Text>
-                      <Text style={styles.notifTxt}>
-                        We have added products in your inventory. Customers will
-                        be able to order these products from your shop. Click
-                        here to check them out
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                  {inventoryUpdate == true ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setInventoryUpdate(false);
+                        navigation.navigate('InventoryScreen');
+                      }}
+                      style={styles.notificationBtn}>
+                      <View
+                        style={[
+                          styles.notificationTab,
+                          {backgroundColor: '#eb9310'},
+                        ]}>
+                        <Text style={styles.notifHeading}>
+                          Inventory Updated
+                        </Text>
+                        <Text style={styles.notifTxt}>
+                          We have added products in your inventory. Customers
+                          will be able to order these products from your shop.
+                          Click here to check them out
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : null}
                   {/* ========== Products Added in Inventory ========== */}
 
                   {/* ========== Verification Notification Start ========== */}
