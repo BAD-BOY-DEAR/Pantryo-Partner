@@ -83,7 +83,7 @@ const InventoryScreen = ({navigation}) => {
   function showToast(msg) {
     ToastAndroid.showWithGravityAndOffset(
       msg,
-      ToastAndroid.SHORT,
+      ToastAndroid.LONG,
       ToastAndroid.BOTTOM,
       25,
       50,
@@ -288,7 +288,7 @@ const InventoryScreen = ({navigation}) => {
 
   async function UpdateStocksStatus() {
     if (!chooseInventory.length) {
-      showToast('Please Choose atleast one Item!');
+      showToast('Please select atleast 1 item to update');
       return;
     } else {
       setLoading(true);
@@ -309,7 +309,7 @@ const InventoryScreen = ({navigation}) => {
         .then(function (result) {
           if (result.error == 0) {
             fetchAllProductsOfPartnerApi();
-            showToast('Product Status Updated');
+            showToast('Product status updated');
           } else {
             showToast('Something went wrong');
           }

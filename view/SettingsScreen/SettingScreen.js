@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Linking,
 } from 'react-native';
 
 // ===== Library ===== //
@@ -42,6 +43,10 @@ function SettingsScreen({navigation}) {
     setShopAddress(await AsyncStorage.getItem('partner_shopaddress'));
     setPartnerStoreImage(await AsyncStorage.getItem('partner_storeImage'));
   }
+
+  const supportFunction = () => {
+    Linking.openURL(`tel:${8808808888}`);
+  };
 
   React.useEffect(() => {
     getUserProfile();
@@ -90,10 +95,10 @@ function SettingsScreen({navigation}) {
               <Text style={styles.tabTxt}>How It Works</Text>
             </View> */}
 
-            <View style={styles.tab}>
+            <TouchableOpacity onPress={supportFunction} style={styles.tab}>
               <Icons name="alert-circle-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Support</Text>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.navigate('TermsConditions')}
               style={styles.tab}>
