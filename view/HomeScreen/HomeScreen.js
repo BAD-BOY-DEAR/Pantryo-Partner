@@ -62,7 +62,7 @@ const HomeScreen = ({navigation}) => {
   const [partnerVerificationStatus, setPartnerVerificationStatus] =
     useState('1');
   const [earning, setEarning] = useState('');
-  const [inventoryUpdate, setInventoryUpdate] = useState(true);
+  const [inventoryUpdate, setInventoryUpdate] = useState(false);
 
   // onRefresh
   const onRefresh = useCallback(() => {
