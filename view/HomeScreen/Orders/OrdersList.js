@@ -59,6 +59,7 @@ const OrdersList = () => {
         return response.json();
       })
       .then(result => {
+        console.log(result);
         setAllDetails(result.alldetails);
       })
       .catch(error => {
@@ -92,26 +93,15 @@ const OrdersList = () => {
         return response.json();
       })
       .then(result => {
-        console.log('ORDER ID:' + JSON.stringify(orderId));
-        console.log('PARTNER ID:' + partner_id);
-
-        setAllDetails(result.alldetails);
-
+        setDetails(result.alldetails[0].productdetails);
+        console.log(result);
         setOrderDetails(true);
-        setInnerOrderId(result.alldetails[0].productdetails.order_id);
-        setBrandName(result.alldetails[0].productdetails.brandName);
-        setProductName(result.alldetails[0].productdetails.productName);
-        setProductPrice(result.alldetails[0].productdetails.productPrice);
-        setQty(result.alldetails[0].productdetails.productQty);
-        setUnit(result.alldetails[0].productdetails.productUnit);
-        setNoOfProducts(result.alldetails[0].productdetails.numberOfProduct);
       })
       .catch(error => {
         console.log(error);
       })
       .finally(() => {
         setLoading(false);
-        getOrderDetails();
       });
   }
 
@@ -165,9 +155,9 @@ const OrdersList = () => {
           {/* =========== Orders List =========== */}
           <View style={styles.orderView}>
             {/* =========== Overview =========== */}
-            <View style={styles.midRow}>
+            {/* <View style={styles.midRow}>
               <Text style={styles.midRowTxt}>Showing orders for: Today</Text>
-            </View>
+            </View> */}
             {/* =========== Overview =========== */}
 
             {/* =========== Order Details =========== */}
@@ -178,7 +168,11 @@ const OrdersList = () => {
                 renderItem={({item}) => (
                   <>
                     <Pressable
-                      onPress={() => getOrderDetails({order_id: item.order_id})}
+                      // onPress={() => getOrderDetails({order_id: item.order_id})}
+                      onPress={() => {
+                        setDetails(item.productdetails);
+                        setOrderDetails(true);
+                      }}
                       style={styles.orderViewTab}>
                       <View style={styles.div}>
                         <Text style={styles.label}>Customer Name</Text>
@@ -230,22 +224,41 @@ const OrdersList = () => {
         }}>
         <View style={styles.modalContainer}>
           <View style={styles.modalCard}>
-            <Text
-              style={{
-                fontFamily: 'OpenSans-Regular',
-                color: '#000',
-              }}>
-              {brandName}
-            </Text>
-            <Text style={styles.modalText}>{productName}</Text>
-            <Text style={styles.modalText}>{brandName}</Text>
-            <Text style={styles.modalText}>{productName}</Text>
-            <Text style={styles.modalText}>{productPrice}</Text>
-            <Text style={styles.modalText}>
-              {qty}
-              {unit}
-            </Text>
-            <Text style={styles.modalText}>{noOfProducts}</Text>
+            {details !== '' ? (
+              <FlatList
+                style={{width: '100%'}}
+                data={details}
+                keyExtractor={({cart_id}, index) => cart_id}
+                renderItem={({item}) => (
+                  <View>
+                    <Text
+                      style={{
+                        fontFamily: 'OpenSans-Regular',
+                        color: '#000',
+                        fontSize: 20,
+                      }}>
+                      {item.brandName}
+                    </Text>
+                    <Text style={styles.modalText}>{item.productName}</Text>
+                    <Text style={styles.modalText}>{item.productPrice}</Text>
+                    <Text style={styles.modalText}>
+                      {item.qty}
+                      {item.unit}
+                    </Text>
+                    <Text style={styles.modalText}>{item.noOfProducts}</Text>
+                  </View>
+                )}
+              />
+            ) : (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingVertical: 40,
+                }}>
+                <Text>No Details</Text>
+              </View>
+            )}
           </View>
         </View>
       </Modal>
@@ -359,5 +372,9 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
+  },
+  modalText: {
+    fontFamily: 'OpenSans-Regular',
+    color: '#000',
   },
 });
