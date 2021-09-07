@@ -47,6 +47,7 @@ const WalletScreen = ({navigation}) => {
         return response.json();
       })
       .then(function (result) {
+        console.log(result);
         if (mounted) {
           if (result.error == 0) {
             setTotalAmount(result.transaction_count);

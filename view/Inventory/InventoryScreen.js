@@ -101,7 +101,7 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner Category not found!');
       return;
     } else {
-      fetch(
+      await fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getProductOfPartner.php',
         {
           method: 'POST',
@@ -148,7 +148,7 @@ const InventoryScreen = ({navigation}) => {
       return;
     } else {
       setLoading(true);
-      fetch(
+      await fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/searchPartnerProduct.php',
         {
           method: 'POST',
@@ -196,7 +196,7 @@ const InventoryScreen = ({navigation}) => {
       showToast('Partner Category Id not Fouond!');
       return;
     } else {
-      fetch(
+      await fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/PantryoPartner.php?flag=searchPartnerProductByCategory',
         {
           method: 'POST',
@@ -248,7 +248,7 @@ const InventoryScreen = ({navigation}) => {
       return;
     } else {
       setLoading(true);
-      fetch(
+      await fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/updatePartnerProduct.php',
         {
           method: 'POST',
@@ -275,6 +275,7 @@ const InventoryScreen = ({navigation}) => {
           } else {
             showToast('Something went Wrong!');
           }
+          return Promise.resolve();
         })
         .catch(error => {
           console.error(error);
@@ -292,7 +293,7 @@ const InventoryScreen = ({navigation}) => {
       return;
     } else {
       setLoading(true);
-      fetch(
+      await fetch(
         'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/updateStocksValue.php',
         {
           method: 'POST',
