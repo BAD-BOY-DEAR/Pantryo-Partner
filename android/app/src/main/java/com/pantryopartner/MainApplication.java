@@ -16,13 +16,14 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.airbnb.android.react.maps.MapsPackage;  
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
-import io.invertase.firebase.RNFirebasePackage;
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage; 
-import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+// import io.invertase.firebase.RNFirebasePackage;
+// import io.invertase.firebase.messaging.RNFirebaseMessagingPackage; 
+// import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import cx.evermeet.versioninfo.RNVersionInfoPackage;
 import com.razorpay.rn.RazorpayPackage;
+import androidx.multidex.MultiDexApplication;
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends MultiDexApplication  implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
@@ -39,8 +40,8 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new MyReactNativePackage());
           // new MapsPackage() 
           
-          packages.add(new RNFirebaseNotificationsPackage());
-          packages.add(new RNFirebaseMessagingPackage()); 
+          // packages.add(new RNFirebaseNotificationsPackage());
+          // packages.add(new RNFirebaseMessagingPackage()); 
           packages.add(new LottiePackage());           
           return packages;
         }

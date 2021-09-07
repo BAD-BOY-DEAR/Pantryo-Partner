@@ -34,7 +34,6 @@ import RegistrationForm from '../view/HomeScreen/Registration/RegistrationForm';
 import UploadDocs from '../view/HomeScreen/Registration/UploadDocs';
 import LoaderScreen from '../controller/LoaderScreen';
 import messaging from '@react-native-firebase/messaging';
-import firebase from 'react-native-firebase';
 
 function LoginScreen({navigation}) {
   const [contactNumber, setContactNumber] = useState('');
