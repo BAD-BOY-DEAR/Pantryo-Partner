@@ -537,8 +537,9 @@ const HomeScreen = ({navigation}) => {
                           Profile Under Verification!
                         </Text>
                         <Text style={styles.notifTxt}>
-                          Please wait while we verify the documents submitted by
-                          you.
+                          Please wait while we look at your documents. You may
+                          receive a call from our side to confirm the details
+                          provided by you.
                         </Text>
                       </View>
                     </TouchableOpacity>
