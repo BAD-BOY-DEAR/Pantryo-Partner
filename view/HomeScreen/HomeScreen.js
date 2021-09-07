@@ -102,7 +102,7 @@ const HomeScreen = ({navigation}) => {
   // Get Orders received today
   async function getTodayOrder() {
     let partner_id = await AsyncStorage.getItem('partner_id');
-    fetch(
+    await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/getTodayOrderOfPartner.php',
       {
         method: 'POST',
@@ -124,6 +124,7 @@ const HomeScreen = ({navigation}) => {
           setNumberOfOrderAll(result.allordercount);
           setNumberOfOrderToday(result.todayordercount);
         }
+        return Promise.resolve();
       })
       .catch(error => {
         console.error(error);
@@ -165,6 +166,7 @@ const HomeScreen = ({navigation}) => {
             setToggleCheckBox(false);
           }
         }
+        return Promise.resolve();
         getStatus();
       })
       .catch(error => {
@@ -284,7 +286,7 @@ const HomeScreen = ({navigation}) => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
     setPaymentLoading(true);
-    fetch(
+    await fetch(
       'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php?flag=partner_transaction',
       {
         method: 'POST',
@@ -311,6 +313,7 @@ const HomeScreen = ({navigation}) => {
         } else {
           showToast('Status of Payment' + ' ' + JSON.stringify(result));
         }
+        return Promise.resolve();
       })
       .catch(error => {
         console.error(error);
@@ -344,13 +347,14 @@ const HomeScreen = ({navigation}) => {
           getPartnerDetails();
         }
         getPartnerVarificationStatus();
+        return Promise.resolve();
       })
       .catch(error => {
         console.error(error);
       });
   }
 
-  useMemo(() => {
+  useEffect(() => {
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
@@ -533,8 +537,9 @@ const HomeScreen = ({navigation}) => {
                           Profile Under Verification!
                         </Text>
                         <Text style={styles.notifTxt}>
-                          Please wait while we verify the documents submitted by
-                          you.
+                          Please wait while we look at your documents. You may
+                          receive a call from our side to confirm the details
+                          provided by you.
                         </Text>
                       </View>
                     </TouchableOpacity>
