@@ -258,7 +258,7 @@ const HomeScreen = ({navigation}) => {
       description: '',
       image: 'https://gizmmoalchemy.com/api/pantryo/Logo/PantryoLogo.png',
       currency: 'INR',
-      key: 'rzp_test_Q7747Ni4ezPrgO',
+      key: 'rzp_live_TpcwwZklv2yFyL',
       amount: '100',
       name: 'Pantryo',
       prefill: {
