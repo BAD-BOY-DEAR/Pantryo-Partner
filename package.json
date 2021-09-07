@@ -31,10 +31,6 @@
     "react-native-device-info": "8.3.1",
     "react-native-document-picker": "5.2.0",
     "react-native-dropdown-picker": "5.1.15",
-<<<<<<< HEAD
-    "react-native-firebase": "5.6.0",
-=======
->>>>>>> a830057588a2364cc2f5c35f9b67a932e1b552e2
     "react-native-gesture-handler": "1.10.3",
     "react-native-image-picker": "3.7.0",
     "react-native-linear-gradient": "2.5.6",
