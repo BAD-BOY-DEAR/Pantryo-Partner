@@ -176,6 +176,7 @@ const App = ({navigation}) => {
         AsyncStorage.setItem('user_long', user_long);
         AsyncStorage.setItem('user_lat', user_lat);
         AsyncStorage.setItem('user_verification', user_verification);
+        AsyncStorage.setItem('user_inventory', 'false');
         dispatch({type: 'SIGN_IN', token: 'userToken'});
         AsyncStorage.setItem('userToken', user_token);
         showToast('Welcome');
