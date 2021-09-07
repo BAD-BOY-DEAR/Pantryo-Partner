@@ -215,7 +215,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     // This should be here already
-    implementation project(':react-native-firebase')
+    // implementation project(':react-native-firebase')
     implementation "com.google.firebase:firebase-messaging:18.0.0"
 
     // Firebase dependencies
@@ -223,7 +223,7 @@ dependencies {
     implementation "com.google.firebase:firebase-core:16.0.9"
 
     // React Native Version Info
-    implementation project(':react-native-version-info')
+    implementation project(':react-native-version-info')   
 
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
