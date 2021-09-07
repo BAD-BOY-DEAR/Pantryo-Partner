@@ -249,8 +249,9 @@ function UploadDocs({navigation}) {
         return response.json();
       })
       .then(function (result) {
-        console.log(result);
+        // console.log(result);
         if (result.payment_status === 'authorized') {
+          AsyncStorage.setItem('user_inventory', 'true');
           navigation.navigate('HomeScreen');
         } else {
           showToast('Status of Payment' + ' ' + JSON.stringify(result));

@@ -77,11 +77,18 @@ const HomeScreen = ({navigation}) => {
   // Get Partner Details
   async function getPartnerDetails() {
     let partner_kycStatus = await AsyncStorage.getItem('partner_kycStatus');
-    let partner_paymentStatus = await AsyncStorage.getItem('paymentStatus');
+    let partner_paymentStatus = await AsyncStorage.getItem(
+      'partner_paymentStatus',
+    );
     let user_verification = await AsyncStorage.getItem('user_verification');
+    let user_inventory = await AsyncStorage.getItem('user_inventory');
+    // console.log(partner_paymentStatus);
     setKycStatus(partner_kycStatus);
     setPaymentStatus(partner_paymentStatus);
     setPartnerVerificationStatus(user_verification);
+    if (user_inventory == 'true') {
+      setInventoryUpdate(true);
+    }
     getPartnerDetails();
   }
 
@@ -299,7 +306,7 @@ const HomeScreen = ({navigation}) => {
         if (result.payment_status === 'authorized') {
           let partner_paymentStatus = result.partner_payment_status;
           AsyncStorage.setItem('partner_paymentStatus', partner_paymentStatus);
-          setInventoryUpdate(true);
+          AsyncStorage.setItem('user_inventory', 'true');
           getPartnerDetails();
         } else {
           showToast('Status of Payment' + ' ' + JSON.stringify(result));
@@ -492,6 +499,7 @@ const HomeScreen = ({navigation}) => {
                     <TouchableOpacity
                       onPress={() => {
                         setInventoryUpdate(false);
+                        AsyncStorage.setItem('user_inventory', 'false');
                         navigation.navigate('InventoryScreen');
                       }}
                       style={styles.notificationBtn}>
@@ -534,7 +542,7 @@ const HomeScreen = ({navigation}) => {
                   {/* ========== Verification Notification End ========== */}
 
                   {/* ========== Payment Notification Start ========== */}
-                  {paymentStatus === '1' ? (
+                  {paymentStatus == '1' ? (
                     <TouchableOpacity
                       onPress={RazorpayFunction}
                       style={styles.notificationBtn}>
