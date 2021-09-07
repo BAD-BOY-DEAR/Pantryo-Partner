@@ -35,6 +35,7 @@ function UploadDocs({navigation}) {
   const [docBackImagePath, SetDocBackImagePath] = React.useState('');
   const [gstCertificate, setGstCertificate] = React.useState('');
   const [gstCertificatePath, setGstCertificatePath] = React.useState('');
+  const [partner_gstStatus, setPartnerGST] = React.useState('');
 
   // Take Image
   async function requestGalleryPermission(selectForImage) {
@@ -146,9 +147,6 @@ function UploadDocs({navigation}) {
       return;
     } else if (!docBackImage) {
       alert('Please Upload your Id Back side Image');
-      return;
-    } else if (!gstCertificate) {
-      alert('Please Upload your gst Document in  Image or Pdf');
       return;
     } else {
       let partner_id = await AsyncStorage.getItem('partner_id');
@@ -264,6 +262,15 @@ function UploadDocs({navigation}) {
       .finally(() => setLoading(false));
   }
 
+  ///////////////partner details
+  async function partnerdetails() {
+    setPartnerGST(await AsyncStorage.getItem('partner_gstStatus'));
+  }
+
+  React.useEffect(() => {
+    partnerdetails();
+  }, []);
+
   return (
     <>
       <View style={styles.container}>
@@ -308,20 +315,23 @@ function UploadDocs({navigation}) {
             </Pressable>
           </View>
         </View>
-
-        <Pressable onPress={() => requestDocument()} style={styles.sectionTwo}>
-          <View style={styles.uploadBox}>
-            {gstCertificate == '' ? (
-              <Icons name="cloud-upload" size={25} color="#c7c7c7c7" />
-            ) : (
-              <Icons name="checkmark-circle" size={25} color="green" />
-            )}
-          </View>
-          <View style={styles.div}>
-            <Text style={styles.divTop}>Upload GST Certificate</Text>
-            <Text style={styles.divBottom}>(.PNG, .JPG or PDF)</Text>
-          </View>
-        </Pressable>
+        {partner_gstStatus == 'Yes' ? (
+          <Pressable
+            onPress={() => requestDocument()}
+            style={styles.sectionTwo}>
+            <View style={styles.uploadBox}>
+              {gstCertificate == '' ? (
+                <Icons name="cloud-upload" size={25} color="#c7c7c7c7" />
+              ) : (
+                <Icons name="checkmark-circle" size={25} color="green" />
+              )}
+            </View>
+            <View style={styles.div}>
+              <Text style={styles.divTop}>Upload GST Certificate</Text>
+              <Text style={styles.divBottom}>(.PNG, .JPG or PDF)</Text>
+            </View>
+          </Pressable>
+        ) : null}
         {isLoading == false ? (
           <Pressable
             style={styles.btn}

@@ -151,6 +151,7 @@ function LoginScreen({navigation}) {
             let user_lat = result.partner_lat;
             let user_long = result.partner_long;
             let user_verification = result.partner_verificationStatus;
+            let partner_gstStatus = result.partner_gstStatus;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -166,6 +167,7 @@ function LoginScreen({navigation}) {
               user_lat,
               user_long,
               user_verification,
+              partner_gstStatus,
             });
           } else if (result.error == 1) {
             navigation.navigate('VerificationScreen', {
