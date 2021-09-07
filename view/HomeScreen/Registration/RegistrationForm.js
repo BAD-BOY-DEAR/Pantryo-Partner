@@ -200,6 +200,7 @@ function RegisterScreen({navigation, route}) {
             let user_lat = result.partner_lat;
             let user_long = result.partner_long;
             let user_verification = result.partner_verificationStatus;
+            let partner_gstStatus = result.partner_gstStatus;
             signIn({
               partner_id,
               partner_contactNumber,
@@ -215,6 +216,7 @@ function RegisterScreen({navigation, route}) {
               user_lat,
               user_long,
               user_verification,
+              partner_gstStatus,
             });
             // navigation.navigate('UploadDocs');
           } else if (result.error == 2) {
