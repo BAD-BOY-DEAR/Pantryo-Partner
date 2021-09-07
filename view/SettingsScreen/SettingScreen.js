@@ -20,6 +20,7 @@ import VersionInfo from 'react-native-version-info';
 // ===== Components ===== //
 import ProfileScreen from './Components/ProfileScreen';
 import TermsConditions from './Components/TermsConditions';
+import PrivacyPolicy from './Components/PrivacyPolicy';
 
 function SettingsScreen({navigation}) {
   const [userShopName, getUserShopName] = React.useState('');
@@ -123,16 +124,18 @@ function SettingsScreen({navigation}) {
               <Icons name="alert-circle-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Support</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => navigation.navigate('TermsConditions')}
               style={styles.tab}>
               <Icons name="document-attach-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Terms & Conditions</Text>
-            </TouchableOpacity>
-            <View style={styles.tab}>
+            </TouchableOpacity> */}
+            {/* <TouchableOpacity
+              onPress={() => navigation.navigate('PrivacyPolicy')}
+              style={styles.tab}>
               <Icons name="finger-print-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Privacy Policy</Text>
-            </View>
+            </TouchableOpacity> */}
             <TouchableOpacity onPress={() => signOut()} style={styles.tab}>
               <Icons name="log-out-outline" size={30} color="#5E3360" />
               <Text style={styles.tabTxt}>Sign Out</Text>
@@ -175,6 +178,13 @@ const SettingScreenHolder = () => {
         component={TermsConditions}
         options={{
           title: 'Terms & Conditions',
+        }}
+      />
+      <Stack.Screen
+        name="PrivacyPolicy"
+        component={PrivacyPolicy}
+        options={{
+          title: 'Privacy Policy',
         }}
       />
     </Stack.Navigator>

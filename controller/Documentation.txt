@@ -7,6 +7,9 @@
 6. #C6B5C7
 7. #5E3360
 
+======== Fb Messenger Token ========
+EAAMrn5rhJnMBAMu6wzUakPlwtgXFFdwS9KZAIVkdqfgKwN1caxBq9mGfn6HqzvwPxVOrtukVuwcI4licRFZBghzeLTs0psbU1zPzJpfIZBxjFJ7ZAIGVzWzYtGR16jCa98dekdZCNyE0jwgBnHDgq41IIhsiVE07AHZCo77ZAroBNzxUIhtGqWx8nd32k7peCIQO4KOS5QNHAZDZD
+
 ======== Font Used ========
 1. OpenSans-Regular
 2. OpenSans-Medium
