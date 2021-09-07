@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import WalletActionScreen from './WalletActionScreen';
 import TransactionDetails from './TransactionDetails';
 
-//////////Loader
+// Loader
 import Loader from '../../controller/LoaderScreen';
 
 const WalletScreen = ({navigation}) => {
@@ -26,7 +26,7 @@ const WalletScreen = ({navigation}) => {
   const [isLoading, setLoading] = React.useState(true);
   const [mounted, setmounted] = React.useState(true);
 
-  /////////////////////////Get Partner Transaction Details
+  // Get Partner Transaction Details
   async function getPartnerTransactionDetails() {
     let partner_id = await AsyncStorage.getItem('partner_id');
     setmounted(true);
@@ -79,6 +79,14 @@ const WalletScreen = ({navigation}) => {
           <View style={styles.topContainer}>
             <View style={styles.section}>
               <Text style={styles.screenName}>Your Account</Text>
+              <Text
+                style={{
+                  fontFamily: 'OpenSans-Regular',
+                  fontSize: 16,
+                  color: '#fff',
+                }}>
+                Credit will reflect in your account everyday at 6:00 PM{' '}
+              </Text>
               <View style={styles.salesCard}>
                 <View style={{flex: 1}}>
                   <Text style={styles.salesCardHeading}>Total Collection</Text>

@@ -61,7 +61,7 @@ const OrdersList = () => {
       .then(result => {
         // console.log(result.alldetails[0].productdetails[0].order_id);
         // console.log(result.alldetails[0].productdetails);
-        setOrderId(result.alldetails[0].productdetails[0].order_id);
+        // setOrderId(result.alldetails[0].productdetails[0].order_id);
         setAllDetails(result.alldetails);
       })
       .catch(error => {
@@ -175,8 +175,20 @@ const OrdersList = () => {
         </View>
       ) : (
         <>
-          <View style={styles.container}>
-            <Text>No Past Orders Found</Text>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#fff',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'OpenSans-SemiBold',
+                fontSize: 20,
+              }}>
+              You dont have any past orders!
+            </Text>
           </View>
         </>
       )}
