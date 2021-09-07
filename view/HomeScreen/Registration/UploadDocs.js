@@ -215,6 +215,7 @@ function UploadDocs({navigation}) {
 
     RazorpayCheckout.open(options)
       .then(data => {
+        console.log(data);
         let payment_id = `${data.razorpay_payment_id}`;
         getPaymentStatus(payment_id);
       })
