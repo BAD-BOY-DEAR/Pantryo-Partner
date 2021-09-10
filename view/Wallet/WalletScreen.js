@@ -31,7 +31,7 @@ const WalletScreen = ({navigation}) => {
     let partner_id = await AsyncStorage.getItem('partner_id');
     setmounted(true);
     fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php?flag=deliverypaymentdetails',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/partnerpaymentdetails.php',
       {
         method: 'POST',
         headers: {
