@@ -355,7 +355,7 @@ const HomeScreen = ({navigation}) => {
   }
 
   useEffect(() => {
-    // console.log('Hii');
+    console.log('Hii');
     LogBox.ignoreAllLogs(true);
     LogBox.ignoreLogs(['Warning: ...']);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested...']);
