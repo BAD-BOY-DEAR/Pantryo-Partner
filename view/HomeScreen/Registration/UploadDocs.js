@@ -224,13 +224,13 @@ function UploadDocs({navigation}) {
       });
   }
 
-  // Check Payment Status
+  // Check Payment Status 
   async function getPaymentStatus(payment_id) {
     let partner_id = await AsyncStorage.getItem('partner_id');
     let partner_category = await AsyncStorage.getItem('partner_category');
     setLoading(true);
     fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php?flag=partner_transaction',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/partner_transaction.php',
       {
         method: 'POST',
         headers: {
