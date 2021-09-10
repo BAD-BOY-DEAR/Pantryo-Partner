@@ -287,7 +287,7 @@ const HomeScreen = ({navigation}) => {
     let partner_category = await AsyncStorage.getItem('partner_category');
     setPaymentLoading(true);
     await fetch(
-      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/paymentdetails.php?flag=partner_transaction',
+      'https://gizmmoalchemy.com/api/pantryo/PartnerAppApi/partner_transaction.php',
       {
         method: 'POST',
         headers: {
